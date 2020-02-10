@@ -1,0 +1,4 @@
+Pac de desarrollo propuesta en la asignatura de programacion B, dentro del modulo de desarrollo de aplicaciones multiplataforma. Cursado en la academia ilerna online.
+Actividad que consiste en crear una lista de pasajeros para embarcar en un avión, tras la insercion de los datos, pero hay un pasajero que pierde su tarjeta de embarque
+tras lo cual, el sistema empieza a sentarlos en su asiento numerado, si esta disponible, y sino lo está los coloca aleatoriamente.
+Alfinal de todo el proceso, se especifica si el ultimo pasajer,o en embarcar en el avion, ha sido capaz de ocupar su asiento original o no.
