@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="pac.Profesor" table="profesor" catalog="m06">
+        <id name="id" type="long">
+            <column name="idProfesor" />
+            <generator class="increment" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" />
+        </property>
+        <property name="sexo" type="string">
+            <column name="sexo" />
+        </property>
+    </class>
+</hibernate-mapping>
