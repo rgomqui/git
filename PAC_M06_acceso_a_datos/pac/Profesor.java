@@ -49,7 +49,7 @@ public class Profesor {
 	
 	@Override
 	public String toString() {
-		return "Profesor, [nombre=" + nombre + ", sexo=" + sexo + "]";
+		return "Profesor [nombre=" + nombre + ", sexo=" + sexo + "]";
 	}
 	
 	

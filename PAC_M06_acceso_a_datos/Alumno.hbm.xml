@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+"http://hibernate.org/dtd/hibernate-mapping.dtd">
 <hibernate-mapping>
-    <class name="pac.Alumno" table="alumno" catalog="m06">
+    <class name="pac.Alumno" table="alumnos" catalog="m06">
         <id name="idAlumno" type="long">
             <generator class="increment" />
         </id>
@@ -12,7 +12,7 @@
         <property name="sexo" type="string"/>
 		<set name="alumno_modulo" table="alumno_modulo" cascade="all">
         	<key column="idAlumno" />
-			<many-to-many class="pac.Modulo"/>
+			<many-to-many class="pac.Modulo" column="idModulo"/>
         </set>
     </class>
 </hibernate-mapping>
