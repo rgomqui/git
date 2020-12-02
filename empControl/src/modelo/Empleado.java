@@ -1,15 +1,52 @@
 package modelo;
 
-import java.sql.Date;
-
 public class Empleado {
 	
 	
-	/*/campos de clase incluyendo los de futura implementacion/*/
+	public Empleado() {
+		
+	}
 	
+	
+	public Empleado(String nombre, String apellido1, String apellido2, String dni, String telefono) {
+		this.nombre = nombre;
+		this.apellido1 = apellido1;
+		this.apellido2 = apellido2;
+		this.dni = dni;
+		this.telefono = telefono;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	@Override
+	public String toString() {
+		return " " + apellido1+ " " + apellido2 + ", " + nombre +" ";
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	private int codigo;
-	private String nombre, apellido1, apellido2,dni, telefono, turno, tipoContrato, horasSemana ;
-	private Date antiguedad;
+	private String nombre, apellido1, apellido2,dni, telefono;
 	
 	
 	
@@ -50,32 +87,5 @@ public class Empleado {
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
-	public String getTurno() {
-		return turno;
-	}
-	public void setTurno(String turno) {
-		this.turno = turno;
-	}
-	public String getTipoContrato() {
-		return tipoContrato;
-	}
-	public void setTipoContrato(String tipoContrato) {
-		this.tipoContrato = tipoContrato;
-	}
-	public String getHorasSemana() {
-		return horasSemana;
-	}
-	public void setHorasSemana(String horasSemana) {
-		this.horasSemana = horasSemana;
-	}
-	public Date getAntiguedad() {
-		return antiguedad;
-	}
-	public void setAntiguedad(Date antiguedad) {
-		this.antiguedad = antiguedad;
-	}
-	
-	
-	
-
+		
 }

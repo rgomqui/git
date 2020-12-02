@@ -3,11 +3,18 @@ package vista;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.*;
 
-import controlador.Jcombobox;
+import controlador.Conexion;
+import controlador.Mensajes;
+import modelo.Empleado;
+import modelo.Uniformidad;
 public class PanelEmpleado extends JPanel{
 	
 	public PanelEmpleado(){
@@ -18,6 +25,10 @@ public class PanelEmpleado extends JPanel{
 		cuadro2();
 		cuadro3();
 		cuadro4();
+		
+		conexion.devolverEmpleados(comboNombre);
+		
+		
 	}
 	
 	
@@ -231,66 +242,55 @@ public class PanelEmpleado extends JPanel{
 		
 		//BUSQUEDA POR CODIGO DE EMPLEADO
 		
-		lblBuscarCod = new JLabel("Código:");
-		lblBuscarCod.setFont(fuente);
-		lblBuscarCod.setBounds(10, 280, 100, 20);
-		lblBuscarCod.setHorizontalAlignment(JLabel.RIGHT);
-		add(lblBuscarCod);
+		txtBuscarNombre = new JTextField();
+		txtBuscarNombre.setBounds(110,290,180,20);
+		add(txtBuscarNombre);
 		
-		
-		comboCodigo = new JComboBox();
-		comboCodigo.setBounds(110, 280, 80, 20);
-		comboCodigo.setEditable(true);
-		add(comboCodigo);
-		
-		
+		btnBuscarNombre = new JButton("Buscar");
+		btnBuscarNombre.setBounds(240,325,80,20);
+		btnBuscarNombre.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				conexion.devolverEmpleadosConBusqueda(comboNombre, txtBuscarNombre.getText());
+			}
+		});
+		add(btnBuscarNombre);
+
 		//BUSQUEDA POR NOMBRE DE EMPLEADO
 		
 		lblBuscarNombre = new JLabel("Nombre:");
 		lblBuscarNombre.setFont(fuente);
-		lblBuscarNombre.setBounds(10, 320, 100, 20);
+		lblBuscarNombre.setBounds(10, 290, 85, 20);
 		lblBuscarNombre.setHorizontalAlignment(JLabel.RIGHT);
 		add(lblBuscarNombre);
 		
 		comboNombre = new JComboBox();
-		comboNombre.setBounds(110, 320, 200, 20);		
+		comboNombre.setBounds(40, 325, 190, 20);		
 		comboNombre.setEditable(true);
-		MouseListener oyenteTecla = new MouseListener() {
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Apéndice de método generado automáticamente
-				
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Apéndice de método generado automáticamente
-				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Apéndice de método generado automáticamente
-				
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Apéndice de método generado automáticamente
-				JOptionPane.showConfirmDialog(null, "prueba1");
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Apéndice de método generado automáticamente
-				
-			}
-
-
+		comboNombre.addItemListener(new ItemListener() {
 			
-		};
-		comboNombre.addMouseListener(oyenteTecla);
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				
+				Empleado empleadoSeleccionado =(Empleado) comboNombre.getSelectedItem();
+				if(arg0!=null && empleadoSeleccionado!=null) {
+				//Uniformidad uniformidadSeleccionada = conexion.rellenaUniformidad(106);
+				System.out.println(empleadoSeleccionado);
+				txtCod.setText(String.valueOf(empleadoSeleccionado.getCodigo()));
+				txtNombre.setText(empleadoSeleccionado.getNombre());
+				txtApe1.setText(empleadoSeleccionado.getApellido1());
+				txtApe2.setText(empleadoSeleccionado.getApellido2());
+				txtTlf.setText(empleadoSeleccionado.getTelefono());
+				txtDni.setText(empleadoSeleccionado.getDni());
+				//txtTallaSuperior.setText(uniformidadSeleccionada.getSuperior());
+				//txtTallaInferior.setText(uniformidadSeleccionada.getInferior());
+				//txtTallaCalzado.setText(String.valueOf(uniformidadSeleccionada.getTallaPie()));
+				
+				}
+			}
+		});
 		//comboNombre.getSelectedItem();
 		add(comboNombre);
 			
@@ -342,9 +342,12 @@ public class PanelEmpleado extends JPanel{
 			btnActualizar.addActionListener(new ActionListener() {
 				
 				@Override
-				public void actionPerformed(ActionEvent e) {				
-					vMenu = new VentanaMenuPrincipal();				
-					formularioActualizarEmpleado = new FormularioActualizarEmpleado();
+				public void actionPerformed(ActionEvent e) {	
+					Conexion con = new Conexion();
+					System.out.println(con.fechaDuplicada(1111111));
+					
+					/*vMenu = new VentanaMenuPrincipal();				
+					formularioActualizarEmpleado = new FormularioActualizarEmpleado();*/
 				}
 			});
 			
@@ -366,6 +369,27 @@ public class PanelEmpleado extends JPanel{
 			}catch ( Exception e){
 				System.out.println("Error al cargar la imagen " + e.getMessage());
 			}	
+			
+			btnEliminar.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					
+					/*
+					Integer codigo = 111;
+					Integer i = conexion.borrado("empleado", codigo);
+					if(i == 0) {
+						mensajes.mensajeInfo(getParent(),"Registro con el codigo "+codigo+" eliminado correctamente.","registro eliminado correctamente" );
+					}else if(i == 1){
+						mensajes.mensajeInfo(getParent(),"Registro con el codigo "+codigo+" no se ha podido eliminar correctamente.","error eliminando registro" );
+					}else {
+						mensajes.mensajeInfo(getParent(),"No existe ningun registro con el codigo " + codigo + ".","Registro inexistente " );
+					}
+					*/
+					conexion.getConnection();
+				}
+				
+			});
 			
 			add(lblEliminar);
 			add(btnEliminar);
@@ -439,15 +463,18 @@ public class PanelEmpleado extends JPanel{
 		
 	}
 	
+
+	Conexion conexion = new Conexion();
+	Mensajes mensajes =  new Mensajes();
 	Font fuente = new Font("arial", 1, 13);
 	private JLabel lblNombre, titulo, lblApe1, lblApe2, lblDni, lblTlf, lblTituloUniformidad, lblTituloDatos, lblTallaSuperior, lblTallaInferior,
 	lblTallaCalzado, lblTipoCalzado, lblTallaUltimaEntrega, lblTituloVacaciones, lblVacaciones, lblPermisos, lblConvenio, lblCompensatorio,
 	lblCod, lblTituloBuscar, lblBuscarCod, lblBuscarNombre, lblInsertar, lblEliminar, lblActualizar;
 	private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf, txtTallaSuperior, txtTallaInferior, txtTallaCalzado, txtTipoCalzado;
 	public JTextField txtUltimaEntrega, txtCod, txtVacaciones, txtPermisos, txtConvenio, txtCompensatorio, txtBuscarCod, txtBuscarNombre;
-	public JButton btnInsertar, btnEliminar, btnActualizar;
+	public JButton btnInsertar, btnEliminar, btnActualizar, btnBuscarNombre;
 	private FormularioEmpleadoNuevo formularioEmpleadoNuevo;
-	public JComboBox comboCodigo, comboNombre;
+	public JComboBox<Empleado> comboNombre;
 	private VentanaMenuPrincipal vMenu;
 	private FormularioActualizarEmpleado formularioActualizarEmpleado;
 	

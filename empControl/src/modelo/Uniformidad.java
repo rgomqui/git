@@ -4,6 +4,27 @@ import java.sql.Date;
 
 public class Uniformidad {
 	
+	
+	
+	
+	
+	public Uniformidad() {
+		
+	}
+	public Uniformidad( String superior, String inferior, String tipo, Date ultimaEntrega, Double tallaPie) {
+		this.superior = superior;
+		this.inferior = inferior;
+		this.tipo = tipo;
+		this.ultimaEntrega = ultimaEntrega;
+		this.tallaPie = tallaPie;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "Uniformidad [id=" + id + ", codigo=" + codigo + ", superior=" + superior + ", inferior=" + inferior
+				+ ", tipo=" + tipo + ", ultimaEntrega=" + ultimaEntrega + ", tallaPie=" + tallaPie + "]";
+	}
 	Integer id, codigo;
 	String superior, inferior, tipo;
 	Date ultimaEntrega;
@@ -43,8 +64,8 @@ public class Uniformidad {
 	public Date getUltimaEntrega() {
 		return ultimaEntrega;
 	}
-	public void setUltimaEntrega(Date ultimaEntrega) {
-		this.ultimaEntrega = ultimaEntrega;
+	public void setUltimaEntrega(Date date) {
+		this.ultimaEntrega = date;
 	}
 	public Double getTallaPie() {
 		return tallaPie;

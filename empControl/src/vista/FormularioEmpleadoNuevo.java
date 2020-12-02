@@ -3,12 +3,24 @@ package vista;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.MaskFormatter;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import controlador.Conexion;
+import controlador.Mensajes;
 import modelo.Empleado;
 import modelo.Uniformidad;
 
@@ -150,9 +162,24 @@ public class FormularioEmpleadoNuevo extends JDialog {
 					lblTallaCalzado.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTallaCalzado);
 					
+					
+					try {
+						MaskFormatter mascaraTallaCalzado = new MaskFormatter("##.#");
+						mascaraTallaCalzado.setPlaceholder("_");
+						tftTallaCalzado = new JFormattedTextField(mascaraTallaCalzado);
+						tftTallaCalzado.setBounds(460, 128, 30, 20);
+						panelFondo.add(tftTallaCalzado);
+					} catch (ParseException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+					
+					/*
 					txtTallaCalzado = new JTextField();
 					txtTallaCalzado.setBounds(460, 128, 30, 20);
 					panelFondo.add(txtTallaCalzado);
+					*/
+					
 					
 					
 					//TIPO DE CALZADO
@@ -163,22 +190,19 @@ public class FormularioEmpleadoNuevo extends JDialog {
 					lblTipoCalzado.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTipoCalzado);
 					
-					txtTipoCalzado = new JTextField();
-					txtTipoCalzado.setBounds(460, 158, 30, 20);
-					panelFondo.add(txtTipoCalzado);
+					comboTipo = new JComboBox(new String[] {"Cerrado", "Abierto", "Botas"});
+					comboTipo.setBounds(460, 158, 100, 20);
+					panelFondo.add(comboTipo);
 					
 					
-					//FECHA DE ULTIMA ENTREGA
+					//MENSAJES DE LA APLICACION
 					
-					lblTallaUltimaEntrega = new JLabel("Ultima entrega:");
-					lblTallaUltimaEntrega.setFont(fuente);
-					lblTallaUltimaEntrega.setBounds(360,188,100,20);
-					lblTallaUltimaEntrega.setHorizontalAlignment(JLabel.RIGHT);
-					panelFondo.add(lblTallaUltimaEntrega);
+					lblMensajeError = new JLabel("");
+					lblMensajeError.setFont(new Font("arial",1,13));
+					lblMensajeError.setBounds(50,220,500,20);
+					lblMensajeError.setHorizontalAlignment(JLabel.LEFT);
+					panelFondo.add(lblMensajeError);
 					
-					txtUltimaEntrega = new JTextField();
-					txtUltimaEntrega.setBounds(460, 188, 100, 20);
-					panelFondo.add(txtUltimaEntrega);
 			
 					
 					//BOTONES DE ACCION
@@ -197,38 +221,70 @@ public class FormularioEmpleadoNuevo extends JDialog {
 						System.out.println("Error al cargar la imagen " + e.getMessage());
 					}
 					
+					
+					
+					/*/ borra esto despues/*/
+					
+					
+					txtNombre.setText("a");
+					txtApe1.setText("a");
+					txtApe2.setText("a");
+					txtDni.setText("a");
+					txtTlf.setText("a");
+					txtTallaInferior.setText("LM");
+					txtTallaSuperior.setText("LM");
+					tftTallaCalzado.setText("27.5");
+					
+					
+					
+					
+					
 					btnInsertar.addActionListener(new ActionListener() {
 						
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							
-							System.out.println("entra");
-							
 							try {
-							if(!txtNombre.getText().equals("") && !txtApe1.getText().equals("") && !txtApe2.getText().equals("") && !txtDni.getText().equals("")) {
-								Integer i = JOptionPane.showConfirmDialog(getContentPane(), "Porfavor, confirme antes de ingresar al nuevo Empleado en el sistema","Confirmar insercion",JOptionPane.YES_NO_OPTION, JOptionPane.DEFAULT_OPTION);
 								
-								if(i==0){
+								
+								/*/COMPROBACION DE QUE SE HAN LLENADO LOS CAMPOS OBLIGATORIOS/*/
+							if(!txtNombre.getText().equals("") && !txtApe1.getText().equals("") && !txtApe2.getText().equals("") && !txtDni.getText().equals("")) {
+								System.out.println("hola");
+								Integer i =25;
+								i = mensajes.mensajePregunta(panelFondo,"Porfavor, confirme antes de ingresar al nuevo Empleado en el sistema", "Confirmar insercion");
+								System.out.println(i);
+								
+								
+								
+								/*/ SI SE PULSA LA OPCION "SI" EN LA VENTANA EMERGENTE, SE ENTRA EN ESTE IF Y SE DA DE ALTA EL REGISTRO EN LA BASE DE DATOS/*/
+								if(i==0){	
 									
-									//Uniformidad uniformidad = new Uniformidad();
-									Empleado empleado = new Empleado();
-									empleado.setNombre(txtNombre.getText());
-									empleado.setApellido1(txtApe1.getText());
-									empleado.setApellido2(txtApe2.getText());
-									empleado.setDni(txtDni.getText());
-									empleado.setTelefono(txtTlf.getText());
-									//uniformidad.setInferior(txtTallaInferior.getText());
-									//uniformidad.setSuperior(txtTallaSuperior.getText());
-									//uniformidad.setTallaPie(Double.valueOf(txtTallaCalzado.getText()));
-									//uniformidad.setTipo(txtTipoCalzado.getText());
-									//uniformidad.setUltimaEntrega(Date.valueOf(txtUltimaEntrega.getText()));
-									conexion.insertarEmpleado(empleado);
-									System.out.println("confirmado el aceptar");
-								}else {
-									System.out.println("dscrtado el aceptar");
+									local = new LocalDate();
+									Date fecha =  new Date(local.toDate().getTime());
+									Empleado empleado = new Empleado(txtNombre.getText(),txtApe1.getText(),txtApe2.getText(),txtDni.getText(),txtTlf.getText());
+									Uniformidad uniformidad = new Uniformidad(txtTallaSuperior.getText(),txtTallaInferior.getText(),comboTipo.getSelectedItem().toString(),
+																				fecha,Double.parseDouble(tftTallaCalzado.getText()));								
+									
+									
+									System.out.println(empleado.toString());
+									try {
+										if(con.insertarEmpleado(empleado, uniformidad)) {
+											mensajes.mensajeVisorEmpNuevo(lblMensajeError,verdeOscuro,"** El empleado ha sido insertado correctamente.");
+										}else {
+											mensajes.mensajeVisorEmpNuevo(lblMensajeError,rojo, "** El empleado ya existe en la base de datos.");
+										}
+									} catch (Exception e1) {
+										
+										System.out.println(e1.getMessage() + " error empleado en formularionuevo");
+									}
+
+									System.out.println("ahora si llega");
+									
+										
+								}else {	
+									mensajes.mensajeVisorEmpNuevo(lblMensajeError,Color.red, "** Se ha cancelado el registro del nuevo empleado.");
 								}
 								
-							}else {
+							}else{
 								s="";
 								if(txtNombre.getText().equals(""))s += "Nombre de empleado requerido.\n";
 								if(txtApe1.getText().equals(""))s += "Apellido 1 del empleado requerido.\n";
@@ -239,10 +295,8 @@ public class FormularioEmpleadoNuevo extends JDialog {
 							}
 							
 							}catch(Exception ex) {
-								ex.printStackTrace();
-							}
-							
-							
+								System.out.println(ex.getMessage() + " fallo aqui???");
+							}	
 						}
 					});
 					
@@ -273,16 +327,25 @@ public class FormularioEmpleadoNuevo extends JDialog {
 					panelFondo.add(lblSalir);
 					panelFondo.add(btnSalir);
 	
-		}			
+		}
 		
-		Conexion conexion; 
+		
+		Mensajes mensajes = new Mensajes();
+		LocalDate local = new LocalDate();
+		Conexion con = new Conexion();
+		Color verdeOscuro = new Color(67,185,86);
+		Color rojo = new Color(227,36,27); 
+		
+		private JFormattedTextField tftTallaCalzado;
 		private String s;
 		private Font fuente = new Font("arial", 1, 13);
-		private JLabel lblNombre,lblApe1, lblApe2, lblDni, lblTlf, lblTitulo, lblTallaSuperior, lblTallaInferior,
-		lblTallaCalzado, lblTipoCalzado, lblTallaUltimaEntrega,lblCod,lblInsertar, lblSalir;
-		private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf, txtTallaSuperior, txtTallaInferior, txtTallaCalzado, txtTipoCalzado, txtUltimaEntrega,
-		txtCod;
+		private JLabel lblNombre,lblApe1, lblApe2, lblDni, lblTlf, lblTitulo, lblTallaSuperior, lblTallaInferior,lblTallaCalzado, lblTipoCalzado;
+		public JLabel lblMensajeError;
+		private JLabel lblInsertar;
+		private JLabel lblSalir;
+		private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf, txtTallaSuperior, txtTallaInferior, txtTallaCalzado;
 		private JButton btnInsertar, btnSalir;
+		private JComboBox comboTipo;
 	}
 
 
