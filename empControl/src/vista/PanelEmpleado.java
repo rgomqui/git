@@ -15,6 +15,7 @@ import controlador.Conexion;
 import controlador.Mensajes;
 import modelo.Empleado;
 import modelo.Uniformidad;
+import modelo.Vacaciones;
 public class PanelEmpleado extends JPanel{
 	
 	public PanelEmpleado(){
@@ -71,8 +72,9 @@ public class PanelEmpleado extends JPanel{
 		add(lblCod);
 		
 		txtCod = new JTextField();
-		txtCod.setBounds(100,50,200,20);
+		txtCod.setBounds(100,50,50,20);
 		txtCod.setEditable(false);
+		txtCod.setFont(fuente);
 		add(txtCod);
 		
 		
@@ -87,6 +89,7 @@ public class PanelEmpleado extends JPanel{
 		txtNombre = new JTextField();
 		txtNombre.setBounds(100, 80, 200, 20);
 		txtNombre.setEditable(false);
+		txtNombre.setFont(fuente);
 		add(txtNombre);
 		
 		
@@ -101,6 +104,7 @@ public class PanelEmpleado extends JPanel{
 		txtApe1 = new JTextField();
 		txtApe1.setBounds(100, 110, 200, 20);
 		txtApe1.setEditable(false);
+		txtApe1.setFont(fuente);
 		add(txtApe1);
 		
 		
@@ -115,6 +119,7 @@ public class PanelEmpleado extends JPanel{
 		txtApe2 = new JTextField();
 		txtApe2.setBounds(100, 140, 200, 20);
 		txtApe2.setEditable(false);
+		txtApe2.setFont(fuente);
 		add(txtApe2);
 		
 		
@@ -129,6 +134,7 @@ public class PanelEmpleado extends JPanel{
 		txtTlf = new JTextField();
 		txtTlf.setBounds(100, 170, 200, 20);
 		txtTlf.setEditable(false);
+		txtTlf.setFont(fuente);
 		add(txtTlf);
 		
 		
@@ -143,6 +149,7 @@ public class PanelEmpleado extends JPanel{
 		txtDni = new JTextField();
 		txtDni.setBounds(100, 200, 200, 20);
 		txtDni.setEditable(false);
+		txtDni.setFont(fuente);
 		add(txtDni);
 	}
 	
@@ -209,7 +216,7 @@ public class PanelEmpleado extends JPanel{
 		add(lblTipoCalzado);
 		
 		txtTipoCalzado = new JTextField();
-		txtTipoCalzado.setBounds(460, 140, 30, 20);
+		txtTipoCalzado.setBounds(460, 140, 50, 20);
 		txtTipoCalzado.setEditable(false);
 		add(txtTipoCalzado);
 		
@@ -246,8 +253,8 @@ public class PanelEmpleado extends JPanel{
 		txtBuscarNombre.setBounds(110,290,180,20);
 		add(txtBuscarNombre);
 		
-		btnBuscarNombre = new JButton("Buscar");
-		btnBuscarNombre.setBounds(240,325,80,20);
+		btnBuscarNombre = new JButton("Actualizar");
+		btnBuscarNombre.setBounds(235,325,95,20);
 		btnBuscarNombre.addActionListener(new ActionListener() {
 			
 			@Override
@@ -276,7 +283,6 @@ public class PanelEmpleado extends JPanel{
 				
 				Empleado empleadoSeleccionado =(Empleado) comboNombre.getSelectedItem();
 				if(arg0!=null && empleadoSeleccionado!=null) {
-				//Uniformidad uniformidadSeleccionada = conexion.rellenaUniformidad(106);
 				System.out.println(empleadoSeleccionado);
 				txtCod.setText(String.valueOf(empleadoSeleccionado.getCodigo()));
 				txtNombre.setText(empleadoSeleccionado.getNombre());
@@ -284,14 +290,27 @@ public class PanelEmpleado extends JPanel{
 				txtApe2.setText(empleadoSeleccionado.getApellido2());
 				txtTlf.setText(empleadoSeleccionado.getTelefono());
 				txtDni.setText(empleadoSeleccionado.getDni());
-				//txtTallaSuperior.setText(uniformidadSeleccionada.getSuperior());
-				//txtTallaInferior.setText(uniformidadSeleccionada.getInferior());
-				//txtTallaCalzado.setText(String.valueOf(uniformidadSeleccionada.getTallaPie()));
-				
+				Uniformidad uniformidadSeleccionada =conexion.devolverUniformidad(empleadoSeleccionado.getCodigo());
+				if(uniformidadSeleccionada!=null){
+				txtTallaSuperior.setText(uniformidadSeleccionada.getSuperior());
+				txtTallaInferior.setText(uniformidadSeleccionada.getInferior());
+				txtTallaCalzado.setText(String.valueOf(uniformidadSeleccionada.getTallaPie()));
+				txtUltimaEntrega.setText(String.valueOf(uniformidadSeleccionada.getUltimaEntrega()));
+				txtTipoCalzado.setText(uniformidadSeleccionada.getTipo());
+				}else {
+					txtTallaSuperior.setText("");
+					txtTallaInferior.setText("");
+					txtTallaCalzado.setText("");
+					txtUltimaEntrega.setText("");
+					txtTipoCalzado.setText("");
+				}
+				//Vacaciones vacaciones = conexion.devolverVacaciones(empleadoSeleccionado.getCodigo());
+				txtVacaciones.setText(String.valueOf(conexion.devolverVacaciones(empleadoSeleccionado.getCodigo())));
+				txtConvenio.setText(String.valueOf(conexion.devolverConvenio(empleadoSeleccionado.getCodigo())));
+				txtCompensatorio.setText(String.valueOf(conexion.devolverCompensatorios(empleadoSeleccionado.getCodigo())));
 				}
 			}
 		});
-		//comboNombre.getSelectedItem();
 		add(comboNombre);
 			
 		//BOTONES DE ACCION
@@ -314,8 +333,8 @@ public class PanelEmpleado extends JPanel{
 								
 				@Override
 				public void actionPerformed(ActionEvent e) {				
-					vMenu = new VentanaMenuPrincipal();				
-					formularioEmpleadoNuevo = new FormularioEmpleadoNuevo();
+				//	vMenu = new VentanaMenuPrincipal();				
+					formularioEmpleadoNuevo = new FormularioEmpleadoNuevo(comboNombre);
 				}
 			});
 			
@@ -343,11 +362,8 @@ public class PanelEmpleado extends JPanel{
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {	
-					Conexion con = new Conexion();
-					System.out.println(con.fechaDuplicada(1111111));
-					
-					/*vMenu = new VentanaMenuPrincipal();				
-					formularioActualizarEmpleado = new FormularioActualizarEmpleado();*/
+					vMenu = new VentanaMenuPrincipal();				
+					formularioActualizarEmpleado = new FormularioActualizarEmpleado();
 				}
 			});
 			
@@ -375,18 +391,19 @@ public class PanelEmpleado extends JPanel{
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					
-					/*
-					Integer codigo = 111;
-					Integer i = conexion.borrado("empleado", codigo);
+					int respuesta =mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de querer eliminar el empleado seleccionado?", "Confirmar eliminar empleado");
+					int i = conexion.borrado("empleado", Integer.valueOf(txtCod.getText()));
 					if(i == 0) {
-						mensajes.mensajeInfo(getParent(),"Registro con el codigo "+codigo+" eliminado correctamente.","registro eliminado correctamente" );
+						mensajes.mensajeInfo(getParent(),"Registro con el codigo "+txtCod.getText()+" eliminado correctamente.","registro eliminado correctamente" );
+						comboNombre.removeAllItems();
+						conexion.devolverEmpleadosConBusqueda(comboNombre, txtBuscarNombre.getText());
 					}else if(i == 1){
-						mensajes.mensajeInfo(getParent(),"Registro con el codigo "+codigo+" no se ha podido eliminar correctamente.","error eliminando registro" );
+						mensajes.mensajeInfo(getParent(),"Registro con el codigo "+txtCod.getText()+" no se ha podido eliminar correctamente.","error eliminando registro" );
 					}else {
-						mensajes.mensajeInfo(getParent(),"No existe ningun registro con el codigo " + codigo + ".","Registro inexistente " );
+						mensajes.mensajeInfo(getParent(),"No existe ningun registro con el codigo " +txtCod.getText()+ ".","Registro inexistente " );
 					}
-					*/
-					conexion.getConnection();
+					
+					
 				}
 				
 			});
@@ -423,7 +440,7 @@ public class PanelEmpleado extends JPanel{
 		
 		lblPermisos = new JLabel("Permisos:");
 		lblPermisos.setFont(fuente);
-		lblPermisos.setBounds(350,350,110,20);
+		lblPermisos.setBounds(350,320,110,20);
 		lblPermisos.setHorizontalAlignment(JLabel.RIGHT);
 		add(lblPermisos);
 				
@@ -437,7 +454,7 @@ public class PanelEmpleado extends JPanel{
 		
 		lblConvenio = new JLabel("Convenio:");
 		lblConvenio.setFont(fuente);
-		lblConvenio.setBounds(350,320,110,20);
+		lblConvenio.setBounds(350,350,110,20);
 		lblConvenio.setHorizontalAlignment(JLabel.RIGHT);
 		add(lblConvenio);
 		
@@ -471,13 +488,12 @@ public class PanelEmpleado extends JPanel{
 	lblTallaCalzado, lblTipoCalzado, lblTallaUltimaEntrega, lblTituloVacaciones, lblVacaciones, lblPermisos, lblConvenio, lblCompensatorio,
 	lblCod, lblTituloBuscar, lblBuscarCod, lblBuscarNombre, lblInsertar, lblEliminar, lblActualizar;
 	private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf, txtTallaSuperior, txtTallaInferior, txtTallaCalzado, txtTipoCalzado;
-	public JTextField txtUltimaEntrega, txtCod, txtVacaciones, txtPermisos, txtConvenio, txtCompensatorio, txtBuscarCod, txtBuscarNombre;
+	public JTextField txtUltimaEntrega, txtCod, txtVacaciones, txtPermisos, txtConvenio, txtCompensatorio, txtBuscarNombre;
 	public JButton btnInsertar, btnEliminar, btnActualizar, btnBuscarNombre;
 	private FormularioEmpleadoNuevo formularioEmpleadoNuevo;
 	public JComboBox<Empleado> comboNombre;
 	private VentanaMenuPrincipal vMenu;
 	private FormularioActualizarEmpleado formularioActualizarEmpleado;
-	
 	Graphics g;
 		
 }

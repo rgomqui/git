@@ -12,10 +12,12 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 import modelo.Empleado;
 import modelo.Uniformidad;
+import modelo.Vacaciones;
 import vista.FormularioEmpleadoNuevo;
 import vista.VentanaMenuPrincipal;
 
@@ -60,10 +62,10 @@ public class Conexion{
 		return con;	
 	}
 	
+
 	
 
 /*/ METODO PARA HACER LOGIN  rafa 0000/*/
-	
 	public boolean login(String user, String pass){
 		
 		try {
@@ -91,6 +93,8 @@ public class Conexion{
 		}
 	}	
 	
+	
+	/*/METODO PARA DEVOLVER AL COMBOBOX TODOS LOS EMPLEADOS AL CARGAR LA PESTAÑA EMPLEADO/*/
 	public void devolverEmpleados(JComboBox comboNombre) {
 		try {
 		con = getConnection();
@@ -131,16 +135,27 @@ public class Conexion{
 		
 		
 	}
+		
 	
-	public Empleado rellenaCampos(Integer codigo) {
-		
+	/*/METODO PARA RELLENAR LOS CAMPOS DE UNIFORMIDAD AL SELECCIONAR EMPLEADO EN EL JCOMBOBOX/*/
+	public Uniformidad devolverUniformidad(int codigoEmpleado) {
 		try {
-		con = getConnection();
-		ps = con.prepareStatement("select * from empleado where codigo = ?");
-		ps.setInt(1, codigo);
-		rs = ps.executeQuery();
-		
-		return(rs.next())?empleado:null;
+			con = getConnection();
+			
+			ps=con.prepareStatement("select * from uniformidad where codigo=?");
+			ps.setInt(1, codigoEmpleado);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				uniformidad = new Uniformidad();
+				uniformidad.setCodigo(codigoEmpleado);
+				uniformidad.setInferior(rs.getString("inferior"));
+				uniformidad.setSuperior(rs.getString("superior"));
+				uniformidad.setTallaPie(rs.getDouble("tallaPie"));
+				uniformidad.setTipo(rs.getString("tipo"));
+				uniformidad.setUltimaEntrega(rs.getDate("ultimaEntrega"));
+				return uniformidad;
+			}
+			return null;
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally{
@@ -156,7 +171,113 @@ public class Conexion{
 		}
 		return null;
 	}
+
+	public int devolverVacaciones(int codigoEmpleado) {
+		int i =0;
+		try {
+			con = getConnection();
+			
+			/*/dias de vacaciones pendientes/*/
+			ps = con.prepareStatement("select * from vacaciones where codigo=? AND tipo = 'vacaciones'");
+			ps.setInt(1, codigoEmpleado);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+			i = Days.daysBetween(new LocalDate(rs.getDate("fechaInicio")),new LocalDate(rs.getDate("fechaFin"))).getDays();
+			++i;  // suma uno a los dias, ya que cuenta uno menos.
+			}
+			ps = con.prepareStatement("select diasVacaciones from configuracion");
+			rs=ps.executeQuery();
+			if(rs.next()){
+				i =rs.getInt(1)-i; 
+			}
+			return i;
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally{
+			try{
+		
+			if(con!=null)con.close();
+			if(ps!=null)ps.close();
+			if(rs!=null)rs.close();	
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+		}
+		}
+		return i;
+	}
+
 	
+	/*/METODO PARA RELLENAR EL CAMPO CONVENIO AL SELECCIONAR EMPLEADO EN EL JCOMBOBOX/*/
+	public int devolverConvenio(int codigoEmpleado) {
+		int i =0;
+		try {
+			con = getConnection();
+			
+			/*/dias de vacaciones pendientes/*/
+			ps = con.prepareStatement("select * from vacaciones where codigo=? AND tipo = 'convenio'");
+			ps.setInt(1, codigoEmpleado);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+			i = Days.daysBetween(new LocalDate(rs.getDate("fechaInicio")),new LocalDate(rs.getDate("fechaFin"))).getDays();
+			++i;  // suma uno a los dias, ya que cuenta uno menos.
+			}
+			ps = con.prepareStatement("select diasConvenio from configuracion");
+			rs=ps.executeQuery();
+			if(rs.next()){
+				i =rs.getInt(1)-i; 
+			}
+			return i;
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally{
+			try{
+		
+			if(con!=null)con.close();
+			if(ps!=null)ps.close();
+			if(rs!=null)rs.close();	
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+		}
+		}
+		return i;
+	}
+	
+	/*/METODO PARA RELLENAR EL CAMPO COMPENSATORIOS AL SELECCIONAR EMPLEADO EN EL JCOMBOBOX/*/
+	public int devolverCompensatorios(int codigoEmpleado) {
+		int i =0;
+		try {
+			con = getConnection();
+			
+			/*/dias de vacaciones pendientes/*/
+			ps = con.prepareStatement("select * from vacaciones where codigo=? AND tipo = 'compensatorio' AND disfrutado = 0");
+			ps.setInt(1, codigoEmpleado);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+			i = rs.getInt("diasPorDisfrutar");
+			return i;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally{
+			try{
+		
+			if(con!=null)con.close();
+			if(ps!=null)ps.close();
+			if(rs!=null)rs.close();	
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+		}
+		}
+		return i;
+	}
+
+	
+	/*/METODO PARA RELLENAR LOS CAMPOS DE EMPLEADO AL SELECCIONARLO EN EL JCOMBOBOX/*/
 	public void devolverEmpleadosConBusqueda(JComboBox comboNombre, String texto) {
 		try {
 		con = getConnection();
@@ -202,8 +323,8 @@ public class Conexion{
 		
 	}
 	
-	/*/METODO PARA INSERTAR EMPLEADO/*/
 	
+	/*/METODO PARA INSERTAR EMPLEADO/*/
 	public boolean insertarEmpleado(Empleado empleado, Uniformidad uniformidad) {
 		System.out.println("entra en empleado");
 		try {
@@ -234,7 +355,8 @@ public class Conexion{
 			
 			
 			
-			/*/si devuelve un resultado se  retorna true, indicando que ha ingresado un resultado/*/
+			/*/SI DEVUELVE ALGUN RESULTADO, RETORNA TRUE INDICANDO QUE HA HABIDO UNA INSERCION/*/
+			
 			if(i>0) {
 				return true;
 			
@@ -259,8 +381,8 @@ public class Conexion{
 		return false;
 	}
 	
-	/*/METODO PARA CONFIRMAR INCLUIR REGISTRO CON FECHA DUPLICADA/*/
 	
+	/*/METODO PARA CONFIRMAR INCLUIR REGISTRO CON FECHA DUPLICADA/*/
 	public boolean fechaDuplicada(Integer codigo) {
 		
 		try {
@@ -296,8 +418,9 @@ public class Conexion{
 		}
 		return true;
 	}
-	/*/METODO PARA BORRAR UNA FILA/*/
 	
+	
+	/*/METODO PARA BORRAR UNA FILA/*/
 	public int borrado(String tabla, Integer clausula) {
 		
 		try {
@@ -336,7 +459,6 @@ public class Conexion{
 	
 	
 	/*/ METODO PARA INSERTAR UNIFORMIDAD/*/
-	
 	public void insertarUniformidad(Empleado empleado, Uniformidad uniformidad){
 		try {
 			 con = getConnection();
@@ -388,15 +510,18 @@ public class Conexion{
 		
 	}
 	
-	Empleado empleado;
-	ArrayList<Empleado> listaEmpleados;
-	LocalDate local = new LocalDate();
-	Color verdeOscuro = new Color(67,185,86);
-	Color rojo = new Color(227,36,27); 
-	Mensajes mensajes = new Mensajes();
-	FormularioEmpleadoNuevo form;
-	LocalDate localdate;
-	Connection con;
-	PreparedStatement ps;
-	ResultSet rs;
+	
+	private Vacaciones vacaciones;
+	private Uniformidad uniformidad;
+	private Empleado empleado;
+	private ArrayList<Empleado> listaEmpleados;
+	private LocalDate local = new LocalDate();
+	private Color verdeOscuro = new Color(67,185,86);
+	private Color rojo = new Color(227,36,27); 
+	private Mensajes mensajes = new Mensajes();
+	private FormularioEmpleadoNuevo form;
+	private LocalDate localdate;
+	private Connection con;
+	private PreparedStatement ps;
+	private ResultSet rs;
 }

@@ -31,7 +31,7 @@ public class FormularioEmpleadoNuevo extends JDialog {
 	private final JPanel panelFondo = new JPanel();
 
 		
-			public FormularioEmpleadoNuevo(){
+			public FormularioEmpleadoNuevo(JComboBox comboNombre){
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			setAlwaysOnTop(true);
 			setVisible(true);
@@ -42,6 +42,7 @@ public class FormularioEmpleadoNuevo extends JDialog {
 			panelFondo.setBorder(new EmptyBorder(5, 5, 5, 5));
 			panelFondo.setBackground(new Color(198,222,235));
 			panelFondo.setLayout(null);
+			this.comboNombre =  comboNombre;
 			getContentPane().add(panelFondo);{
 				componentesGraficos();
 			}		
@@ -264,11 +265,10 @@ public class FormularioEmpleadoNuevo extends JDialog {
 									Uniformidad uniformidad = new Uniformidad(txtTallaSuperior.getText(),txtTallaInferior.getText(),comboTipo.getSelectedItem().toString(),
 																				fecha,Double.parseDouble(tftTallaCalzado.getText()));								
 									
-									
-									System.out.println(empleado.toString());
 									try {
 										if(con.insertarEmpleado(empleado, uniformidad)) {
 											mensajes.mensajeVisorEmpNuevo(lblMensajeError,verdeOscuro,"** El empleado ha sido insertado correctamente.");
+											con.devolverEmpleados(comboNombre);
 										}else {
 											mensajes.mensajeVisorEmpNuevo(lblMensajeError,rojo, "** El empleado ya existe en la base de datos.");
 										}
@@ -276,10 +276,7 @@ public class FormularioEmpleadoNuevo extends JDialog {
 										
 										System.out.println(e1.getMessage() + " error empleado en formularionuevo");
 									}
-
-									System.out.println("ahora si llega");
-									
-										
+																			
 								}else {	
 									mensajes.mensajeVisorEmpNuevo(lblMensajeError,Color.red, "** Se ha cancelado el registro del nuevo empleado.");
 								}
@@ -345,7 +342,7 @@ public class FormularioEmpleadoNuevo extends JDialog {
 		private JLabel lblSalir;
 		private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf, txtTallaSuperior, txtTallaInferior, txtTallaCalzado;
 		private JButton btnInsertar, btnSalir;
-		private JComboBox comboTipo;
+		private JComboBox comboTipo, comboNombre;
 	}
 
 

@@ -17,40 +17,14 @@ public class Empleado {
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
+	/*/SOBREESCRITURA DEL METODO TOSTRING/*/
 	@Override
 	public String toString() {
 		return " " + apellido1+ " " + apellido2 + ", " + nombre +" ";
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-	private int codigo;
-	private String nombre, apellido1, apellido2,dni, telefono;
 	
 	
-	
-	//metodos de acceso
+	/*/METODOS DE ACCESO/*/
 	public int getCodigo() {
 		return codigo;
 	}
@@ -87,5 +61,10 @@ public class Empleado {
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
+	
+	
+	/*/CAMPOS DE CLASE/*/
+	private int codigo;
+	private String nombre, apellido1, apellido2,dni, telefono;
 		
 }
