@@ -2,24 +2,22 @@ package controlador;
 
 
 import java.awt.Color;
-import java.awt.Component;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Iterator;
-
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
+import modelo.Configuracion;
 import modelo.Empleado;
 import modelo.Uniformidad;
 import modelo.Vacaciones;
 import vista.FormularioEmpleadoNuevo;
-import vista.VentanaMenuPrincipal;
+import java.text.*;
+
+
 
 public class Conexion{
 	
@@ -55,11 +53,13 @@ public class Conexion{
 			
 		}	
 		if(con != null) {
-			System.out.println("conexion establecida");
+			//System.out.println("conexion establecida");
 		}else {
 			System.out.println("error al conectar");
 		}
+		
 		return con;	
+		
 	}
 	
 
@@ -100,7 +100,6 @@ public class Conexion{
 		con = getConnection();
 		ps = con.prepareStatement("select * from empleado");
 		rs = ps.executeQuery();
-		System.out.println("si que cnecta");
 		listaEmpleados = new ArrayList(); 
 		
 		while(rs.next()) {
@@ -172,108 +171,118 @@ public class Conexion{
 		return null;
 	}
 
-	public int devolverVacaciones(int codigoEmpleado) {
-		int i =0;
+	/*/ METODO PARA DEVOLVER DIAS DE DESCANSO PENDIENTES DE DISFRUTAR/*/
+	public void devolverVacaciones(int codigoEmpleado, JTextField txtCompensatorio, JTextField txtConvenio, JTextField txtVacaciones, JTextField txtPermiso) {
+		
+	diasPendienteVacaciones =0;
+	diasPendienteConvenio = 0;
+	diasPendientecompensatorio = 0;
+	diasPendientePermiso = 0;
+	
 		try {
 			con = getConnection();
 			
-			/*/dias de vacaciones pendientes/*/
-			ps = con.prepareStatement("select * from vacaciones where codigo=? AND tipo = 'vacaciones'");
+			/* hacemos una consulta de todos los descansos del trabajador*/
+			ps = con.prepareStatement("select * from vacaciones where codigo=?");
 			ps.setInt(1, codigoEmpleado);
 			rs = ps.executeQuery();
-			if(rs.next()) {
-			i = Days.daysBetween(new LocalDate(rs.getDate("fechaInicio")),new LocalDate(rs.getDate("fechaFin"))).getDays();
-			++i;  // suma uno a los dias, ya que cuenta uno menos.
+			
+			
+			while(rs.next()) {
+				Date fechaDevengo = rs.getDate("fechaDevengo"); // guardamos la fecha de devengo para ver a que año corresponde el descanso
+				listaVacaciones = new ArrayList();
+				vacaciones = new Vacaciones();
+			
+			//if(fechaDevengo !=null && fechaDevengo.after(fechaEneroActual.parse(unoEneroAñoActual)) &&  fechaDevengo.before(fechaEneroAñoSiguiente.parse(unoEneroAñoSiguiente)))System.out.println("Es de este año");
+				vacaciones.setCodigo(rs.getInt("codigo"));
+				vacaciones.setId(rs.getInt("id"));
+				vacaciones.setDiasPorDisfrutar(rs.getInt("diasPorDisfrutar"));
+				vacaciones.setDisfrutado(rs.getBoolean("disfrutado"));
+				vacaciones.setFechaDevengo((rs.getDate("fechaDevengo")==null)?null:(rs.getDate("fechaDevengo")));
+			
+				if(rs.getBoolean("disfrutado")) {
+					vacaciones.setFechaInicio(rs.getDate("fechaInicio"));
+					vacaciones.setFechaFin(rs.getDate("fechaFin"));
+				}
+			vacaciones.setMesCompleto(rs.getBoolean("mesCompleto"));
+			vacaciones.setObservaciones(rs.getString("observaciones"));
+			vacaciones.setTipo(rs.getString("tipo"));
+			
+			listaVacaciones.add(vacaciones);  // guardamos en el arraylist todos los resultados de vacaciones del empleado buscado.
+			
 			}
-			ps = con.prepareStatement("select diasVacaciones from configuracion");
+			
+			for(Vacaciones v:listaVacaciones) {
+				if(v.getTipo().equals("vacaciones")) {
+					diasPendienteVacaciones = Days.daysBetween(new LocalDate(v.getFechaInicio()), new LocalDate(v.getFechaFin())).getDays();
+					++diasPendienteVacaciones;
+				}
+				if(v.getTipo().equals("convenio")) {
+					diasPendienteConvenio+=diasPendienteConvenio;
+				}
+				if(v.getTipo().equals("compensatorio")) {
+					diasPendientecompensatorio += v.getDiasPorDisfrutar();
+				}
+				if(v.getTipo().equals("permiso")) {
+					diasPendientePermiso += v.getDiasPorDisfrutar();
+				}
+	
+			}
+			
+			recuperaConfig();
+			diasPendienteVacaciones = configuracion.getDiasVacaciones()-diasPendienteVacaciones;
+			diasPendienteConvenio = configuracion.getDiasConvenio()-diasPendienteConvenio;
+			
+			txtConvenio.setText(String.valueOf(diasPendienteConvenio));
+			txtCompensatorio.setText(String.valueOf(diasPendientecompensatorio));
+			txtVacaciones.setText(String.valueOf(diasPendienteVacaciones));
+			txtPermiso.setText(String.valueOf(diasPendientePermiso));
+				
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+			
+		}finally{
+			try{
+		
+			if(con!=null)con.close();
+			if(ps!=null)ps.close();
+			if(rs!=null)rs.close();	
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+		}
+		}
+	}
+	
+	/*/METODO PARA RESCATAR LA CONFIGURACION DE LA BASE DE DATOS/*/
+	
+	public void recuperaConfig() {
+		try {
+			configuracion = new Configuracion();
+			/* rescatamos los dias predefinidos que estan guardados en la base de datos*/
+			ps = con.prepareStatement("select * from configuracion"); 
 			rs=ps.executeQuery();
 			if(rs.next()){
-				i =rs.getInt(1)-i; 
+				configuracion.setDiasVacaciones(rs.getInt("diasVacaciones"));
+				configuracion.setDiasConvenio(rs.getInt("diasConvenio"));
 			}
-			return i;
 			
 		}catch(Exception e) {
+		
 			e.printStackTrace();
+		
 		}finally{
 			try{
-		
-			if(con!=null)con.close();
-			if(ps!=null)ps.close();
-			if(rs!=null)rs.close();	
-		}catch(Exception e) {
-			
-			e.printStackTrace();
-		}
-		}
-		return i;
-	}
-
 	
-	/*/METODO PARA RELLENAR EL CAMPO CONVENIO AL SELECCIONAR EMPLEADO EN EL JCOMBOBOX/*/
-	public int devolverConvenio(int codigoEmpleado) {
-		int i =0;
-		try {
-			con = getConnection();
-			
-			/*/dias de vacaciones pendientes/*/
-			ps = con.prepareStatement("select * from vacaciones where codigo=? AND tipo = 'convenio'");
-			ps.setInt(1, codigoEmpleado);
-			rs = ps.executeQuery();
-			if(rs.next()) {
-			i = Days.daysBetween(new LocalDate(rs.getDate("fechaInicio")),new LocalDate(rs.getDate("fechaFin"))).getDays();
-			++i;  // suma uno a los dias, ya que cuenta uno menos.
-			}
-			ps = con.prepareStatement("select diasConvenio from configuracion");
-			rs=ps.executeQuery();
-			if(rs.next()){
-				i =rs.getInt(1)-i; 
-			}
-			return i;
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-		}finally{
-			try{
+				if(con!=null)con.close();
+				if(ps!=null)ps.close();
+				if(rs!=null)rs.close();	
+			}catch(Exception e) {
 		
-			if(con!=null)con.close();
-			if(ps!=null)ps.close();
-			if(rs!=null)rs.close();	
-		}catch(Exception e) {
-			
-			e.printStackTrace();
-		}
-		}
-		return i;
-	}
-	
-	/*/METODO PARA RELLENAR EL CAMPO COMPENSATORIOS AL SELECCIONAR EMPLEADO EN EL JCOMBOBOX/*/
-	public int devolverCompensatorios(int codigoEmpleado) {
-		int i =0;
-		try {
-			con = getConnection();
-			
-			/*/dias de vacaciones pendientes/*/
-			ps = con.prepareStatement("select * from vacaciones where codigo=? AND tipo = 'compensatorio' AND disfrutado = 0");
-			ps.setInt(1, codigoEmpleado);
-			rs = ps.executeQuery();
-			if(rs.next()) {
-			i = rs.getInt("diasPorDisfrutar");
-			return i;
+				e.printStackTrace();
 			}
-		}catch(Exception e) {
-			e.printStackTrace();
-		}finally{
-			try{
-		
-			if(con!=null)con.close();
-			if(ps!=null)ps.close();
-			if(rs!=null)rs.close();	
-		}catch(Exception e) {
-			
-			e.printStackTrace();
 		}
-		}
-		return i;
 	}
 
 	
@@ -510,11 +519,20 @@ public class Conexion{
 		
 	}
 	
-	
+	private int diasPendienteVacaciones;
+	private int diasPendienteConvenio;
+	private int diasPendientecompensatorio;
+	private int diasPendientePermiso;
+	private String unoEneroAñoActual = (new LocalDate().now().getYear()-1)+"-12-31";
+	private String unoEneroAñoSiguiente =  (new LocalDate().now().getYear()+1)+"-01-01";
+	private SimpleDateFormat fechaEneroActual = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat fechaEneroAñoSiguiente= new SimpleDateFormat("yyyy-MM-dd");
 	private Vacaciones vacaciones;
+	private Configuracion configuracion;
 	private Uniformidad uniformidad;
 	private Empleado empleado;
 	private ArrayList<Empleado> listaEmpleados;
+	private ArrayList<Vacaciones> listaVacaciones;
 	private LocalDate local = new LocalDate();
 	private Color verdeOscuro = new Color(67,185,86);
 	private Color rojo = new Color(227,36,27); 

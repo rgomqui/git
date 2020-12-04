@@ -2,11 +2,11 @@ package modelo;
 
 public class Configuracion {
 	
-	private int diasVacaciones, diasDescanso;
+	private int diasVacaciones, diasConvenio;
 	
-	Configuracion(){
+	public Configuracion(){
 		diasVacaciones = 31;
-		diasDescanso = 9;
+		diasConvenio = 9;
 	}
 
 	public int getDiasVacaciones() {
@@ -17,12 +17,12 @@ public class Configuracion {
 		this.diasVacaciones = diasVacaciones;
 	}
 
-	public int getDiasDescanso() {
-		return diasDescanso;
+	public int getDiasConvenio() {
+		return diasConvenio;
 	}
 
-	public void setDiasDescanso(int diasDescanso) {
-		this.diasDescanso = diasDescanso;
+	public void setDiasConvenio(int diasConvenio) {
+		this.diasConvenio = diasConvenio;
 	}
 
 }

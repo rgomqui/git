@@ -282,7 +282,7 @@ public class PanelEmpleado extends JPanel{
 			public void itemStateChanged(ItemEvent arg0) {
 				
 				Empleado empleadoSeleccionado =(Empleado) comboNombre.getSelectedItem();
-				if(arg0!=null && empleadoSeleccionado!=null) {
+				if(arg0.getSource()==comboNombre && empleadoSeleccionado!=null) {
 				System.out.println(empleadoSeleccionado);
 				txtCod.setText(String.valueOf(empleadoSeleccionado.getCodigo()));
 				txtNombre.setText(empleadoSeleccionado.getNombre());
@@ -304,10 +304,9 @@ public class PanelEmpleado extends JPanel{
 					txtUltimaEntrega.setText("");
 					txtTipoCalzado.setText("");
 				}
-				//Vacaciones vacaciones = conexion.devolverVacaciones(empleadoSeleccionado.getCodigo());
-				txtVacaciones.setText(String.valueOf(conexion.devolverVacaciones(empleadoSeleccionado.getCodigo())));
-				txtConvenio.setText(String.valueOf(conexion.devolverConvenio(empleadoSeleccionado.getCodigo())));
-				txtCompensatorio.setText(String.valueOf(conexion.devolverCompensatorios(empleadoSeleccionado.getCodigo())));
+				
+				//llamamos al metodo con consulta la base de datos y rellena las cajas de texto con los dias pendiente de descansar
+				conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(),txtCompensatorio,txtConvenio,txtVacaciones,txtPermisos);
 				}
 			}
 		});
