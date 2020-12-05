@@ -5,14 +5,20 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.MaskFormatter;
+
+import modelo.Empleado;
 
 
 
@@ -21,7 +27,7 @@ public class FormularioActualizarEmpleado extends JDialog {
 	private final JPanel panelFondo = new JPanel();
 
 		
-			public FormularioActualizarEmpleado(){
+			public FormularioActualizarEmpleado(Empleado empleado){
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			setAlwaysOnTop(true);
 			setVisible(true);
@@ -34,7 +40,13 @@ public class FormularioActualizarEmpleado extends JDialog {
 			panelFondo.setLayout(null);
 			getContentPane().add(panelFondo);{
 				componentesGraficos();
-			}		
+			}
+			txtCod.setText(String.valueOf(empleado.getCodigo()));
+			txtNombre.setText(empleado.getNombre());
+			txtApe1.setText(empleado.getApellido1());
+			txtApe2.setText(empleado.getApellido2());
+			txtDni.setText(empleado.getDni());
+			txtTlf.setText(empleado.getTelefono());
 			}
 	
 		
@@ -142,10 +154,9 @@ public class FormularioActualizarEmpleado extends JDialog {
 					lblTallaSuperior.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTallaSuperior);
 					
-					txtTallaSuperior = new JTextField();
-					txtTallaSuperior.setBounds(460, 68, 30, 20);
-					txtTallaSuperior.setEditable(false);
-					panelFondo.add(txtTallaSuperior);
+					comboTallaSuperior = new JComboBox(tallas);
+					comboTallaSuperior.setBounds(460, 68, 100, 20);
+					panelFondo.add(comboTallaSuperior);
 					
 					
 					//TALLA INFERIOR
@@ -156,10 +167,9 @@ public class FormularioActualizarEmpleado extends JDialog {
 					lblTallaInferior.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTallaInferior);
 					
-					txtTallaInferior = new JTextField();
-					txtTallaInferior.setBounds(460, 98, 30, 20);
-					txtTallaInferior.setEditable(false);
-					panelFondo.add(txtTallaInferior);
+					comboTallaInferior = new JComboBox(tallas);
+					comboTallaInferior.setBounds(460, 98, 100, 20);
+					panelFondo.add(comboTallaInferior);
 					
 					
 					//TALLA DE CALZADO
@@ -170,11 +180,12 @@ public class FormularioActualizarEmpleado extends JDialog {
 					lblTallaCalzado.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTallaCalzado);
 					
-					txtTallaCalzado = new JTextField();
-					txtTallaCalzado.setBounds(460, 128, 30, 20);
-					txtTallaCalzado.setEditable(false);
-					panelFondo.add(txtTallaCalzado);
 					
+						comboTallaCalzado = new JComboBox(tallaPie);
+						comboTallaCalzado.setBounds(460, 128, 100, 20);
+						panelFondo.add(comboTallaCalzado);
+
+									
 					
 					//TIPO DE CALZADO
 					
@@ -184,25 +195,10 @@ public class FormularioActualizarEmpleado extends JDialog {
 					lblTipoCalzado.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTipoCalzado);
 					
-					txtTipoCalzado = new JTextField();
-					txtTipoCalzado.setBounds(460, 158, 30, 20);
-					txtTipoCalzado.setEditable(false);
-					panelFondo.add(txtTipoCalzado);
-					
-					
-					//FECHA DE ULTIMA ENTREGA
-					
-					lblTallaUltimaEntrega = new JLabel("Ultima entrega:");
-					lblTallaUltimaEntrega.setFont(fuente);
-					lblTallaUltimaEntrega.setBounds(360,208,100,20);
-					lblTallaUltimaEntrega.setHorizontalAlignment(JLabel.RIGHT);
-					panelFondo.add(lblTallaUltimaEntrega);
-					
-					txtUltimaEntrega = new JTextField();
-					txtUltimaEntrega.setBounds(460, 208, 100, 20);
-					txtUltimaEntrega.setEditable(false);
-					panelFondo.add(txtUltimaEntrega);
-			
+					comboTipo = new JComboBox(new String[] {"Cerrado", "Abierto", "Botas"});
+					comboTipo.setBounds(460, 158, 100, 20);
+					panelFondo.add(comboTipo);
+						
 					
 					//BOTONES DE ACCION
 					
@@ -250,12 +246,15 @@ public class FormularioActualizarEmpleado extends JDialog {
 			
 		}
 		
-		Font fuente = new Font("arial", 1, 13);
+		private String [] tallaPie = new String[] {"31","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49", "50"};
+		private String[] tallas = new  String[] {"XXS", "XS", "S", "M", "L","XL","XXL","3XL", "4XL", "5XL"};
+		private Font fuente = new Font("arial", 1, 13);
 		private JLabel lblNombre,lblApe1, lblApe2, lblDni, lblTlf, lblTitulo, lblTallaSuperior, lblTallaInferior,
-		lblTallaCalzado, lblTipoCalzado, lblTallaUltimaEntrega,lblCod,lblInsertar, lblSalir;
+						lblTallaCalzado, lblTipoCalzado, lblTallaUltimaEntrega,lblCod,lblInsertar, lblSalir;
 		private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf, txtTallaSuperior, txtTallaInferior, txtTallaCalzado, txtTipoCalzado, txtUltimaEntrega,
-		txtCod;
+							txtCod;
 		public JButton btnInsertar, btnSalir;
+		private JComboBox comboTipo, comboNombre, comboTallaInferior, comboTallaSuperior, comboTallaCalzado;
 	}
 
 

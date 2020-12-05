@@ -28,7 +28,7 @@ public class PanelEmpleado extends JPanel{
 		cuadro4();
 		
 		conexion.devolverEmpleados(comboNombre);
-		
+		empleadoSeleccionado =(Empleado) comboNombre.getSelectedItem();
 		
 	}
 	
@@ -225,15 +225,47 @@ public class PanelEmpleado extends JPanel{
 		
 		lblTallaUltimaEntrega = new JLabel("Ultima entrega:");
 		lblTallaUltimaEntrega.setFont(fuente);
-		lblTallaUltimaEntrega.setBounds(360,190,100,20);
+		lblTallaUltimaEntrega.setBounds(360,170,100,20);
 		lblTallaUltimaEntrega.setHorizontalAlignment(JLabel.RIGHT);
 		add(lblTallaUltimaEntrega);
 		
 		txtUltimaEntrega = new JTextField();
-		txtUltimaEntrega.setBounds(460, 190, 100, 20);
+		txtUltimaEntrega.setBounds(460, 170, 100, 20);
 		txtUltimaEntrega.setEditable(false);
 		add(txtUltimaEntrega);
 		
+		//BOTON PARA AÑADIR ENTREGA DE UNIFORMIDAD Y CONSULTAR LAS ULTIMAS ENTREGAS
+		btnConsultaUniformidad = new JButton();
+		btnConsultaUniformidad.setBounds(530,195,40,40);
+		lblConsultaUniformidad1 = new JLabel("ENTREGAR UNIFORMIDAD - ");
+		lblConsultaUniformidad1.setFont(new Font("arial", 1, 12));
+		lblConsultaUniformidad1.setBounds(360, 200, 180, 30);
+		lblConsultaUniformidad1.setHorizontalAlignment(JLabel.CENTER);
+		//lblConsultaUniformidad2 = new JLabel("DATOS DE UNIFORMIDAD");
+		//lblConsultaUniformidad2.setFont(new Font("arial", 1, 11));
+		//lblConsultaUniformidad2.setBounds(430, 210, 150, 30);
+		//lblConsultaUniformidad2.setHorizontalAlignment(JLabel.CENTER);
+		try {
+		Image icono = new ImageIcon("src/img/anadirDescanso.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+		btnConsultaUniformidad.setIcon(new ImageIcon(icono));
+		btnConsultaUniformidad.setContentAreaFilled(false);
+		btnConsultaUniformidad.setBorderPainted(false);
+		}catch ( Exception e){
+			System.out.println("Error al cargar la imagen " + e.getMessage());
+		}	
+		
+		btnConsultaUniformidad.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {	
+				
+				
+			}
+		});
+		
+		add(lblConsultaUniformidad1);
+		//add(lblConsultaUniformidad2);
+		add(btnConsultaUniformidad);
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -281,7 +313,7 @@ public class PanelEmpleado extends JPanel{
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
 				
-				Empleado empleadoSeleccionado =(Empleado) comboNombre.getSelectedItem();
+				empleadoSeleccionado =(Empleado) comboNombre.getSelectedItem();
 				if(arg0.getSource()==comboNombre && empleadoSeleccionado!=null) {
 				System.out.println(empleadoSeleccionado);
 				txtCod.setText(String.valueOf(empleadoSeleccionado.getCodigo()));
@@ -362,7 +394,7 @@ public class PanelEmpleado extends JPanel{
 				@Override
 				public void actionPerformed(ActionEvent e) {	
 					vMenu = new VentanaMenuPrincipal();				
-					formularioActualizarEmpleado = new FormularioActualizarEmpleado();
+					formularioActualizarEmpleado = new FormularioActualizarEmpleado(empleadoSeleccionado);
 				}
 			});
 			
@@ -479,16 +511,16 @@ public class PanelEmpleado extends JPanel{
 		
 	}
 	
-
-	Conexion conexion = new Conexion();
-	Mensajes mensajes =  new Mensajes();
-	Font fuente = new Font("arial", 1, 13);
+	private Empleado empleadoSeleccionado;
+	private Conexion conexion = new Conexion();
+	private Mensajes mensajes =  new Mensajes();
+	private Font fuente = new Font("arial", 1, 13);
 	private JLabel lblNombre, titulo, lblApe1, lblApe2, lblDni, lblTlf, lblTituloUniformidad, lblTituloDatos, lblTallaSuperior, lblTallaInferior,
 	lblTallaCalzado, lblTipoCalzado, lblTallaUltimaEntrega, lblTituloVacaciones, lblVacaciones, lblPermisos, lblConvenio, lblCompensatorio,
-	lblCod, lblTituloBuscar, lblBuscarCod, lblBuscarNombre, lblInsertar, lblEliminar, lblActualizar;
+	lblCod, lblTituloBuscar, lblBuscarCod, lblBuscarNombre, lblInsertar, lblEliminar, lblActualizar, lblConsultaUniformidad1, lblConsultaUniformidad2;
 	private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf, txtTallaSuperior, txtTallaInferior, txtTallaCalzado, txtTipoCalzado;
 	public JTextField txtUltimaEntrega, txtCod, txtVacaciones, txtPermisos, txtConvenio, txtCompensatorio, txtBuscarNombre;
-	public JButton btnInsertar, btnEliminar, btnActualizar, btnBuscarNombre;
+	public JButton btnInsertar, btnEliminar, btnActualizar, btnBuscarNombre, btnConsultaUniformidad;
 	private FormularioEmpleadoNuevo formularioEmpleadoNuevo;
 	public JComboBox<Empleado> comboNombre;
 	private VentanaMenuPrincipal vMenu;

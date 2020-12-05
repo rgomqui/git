@@ -22,7 +22,7 @@ import org.joda.time.LocalTime;
 import controlador.Conexion;
 import controlador.Mensajes;
 import modelo.Empleado;
-import modelo.Uniformidad;
+
 
 
 
@@ -137,9 +137,9 @@ public class FormularioEmpleadoNuevo extends JDialog {
 					lblTallaSuperior.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTallaSuperior);
 					
-					txtTallaSuperior = new JTextField();
-					txtTallaSuperior.setBounds(460, 68, 30, 20);
-					panelFondo.add(txtTallaSuperior);
+					comboTallaSuperior = new JComboBox(tallas);
+					comboTallaSuperior.setBounds(460, 68, 100, 20);
+					panelFondo.add(comboTallaSuperior);
 					
 					
 					//TALLA INFERIOR
@@ -150,9 +150,9 @@ public class FormularioEmpleadoNuevo extends JDialog {
 					lblTallaInferior.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTallaInferior);
 					
-					txtTallaInferior = new JTextField();
-					txtTallaInferior.setBounds(460, 98, 30, 20);
-					panelFondo.add(txtTallaInferior);
+					comboTallaInferior = new JComboBox(tallas);
+					comboTallaInferior.setBounds(460, 98, 100, 20);
+					panelFondo.add(comboTallaInferior);
 					
 					
 					//TALLA DE CALZADO
@@ -164,25 +164,11 @@ public class FormularioEmpleadoNuevo extends JDialog {
 					panelFondo.add(lblTallaCalzado);
 					
 					
-					try {
-						MaskFormatter mascaraTallaCalzado = new MaskFormatter("##.#");
-						mascaraTallaCalzado.setPlaceholder("_");
-						tftTallaCalzado = new JFormattedTextField(mascaraTallaCalzado);
-						tftTallaCalzado.setBounds(460, 128, 30, 20);
-						panelFondo.add(tftTallaCalzado);
-					} catch (ParseException e2) {
-						// TODO Auto-generated catch block
-						e2.printStackTrace();
-					}
-					
-					/*
-					txtTallaCalzado = new JTextField();
-					txtTallaCalzado.setBounds(460, 128, 30, 20);
-					panelFondo.add(txtTallaCalzado);
-					*/
-					
-					
-					
+					comboTallaCalzado= new JComboBox(tallaPie);
+					comboTallaCalzado.setBounds(460, 128, 100, 20);
+					panelFondo.add(comboTallaCalzado);
+						
+						
 					//TIPO DE CALZADO
 					
 					lblTipoCalzado = new JLabel("Tipo Calzado:");
@@ -232,9 +218,6 @@ public class FormularioEmpleadoNuevo extends JDialog {
 					txtApe2.setText("a");
 					txtDni.setText("a");
 					txtTlf.setText("a");
-					txtTallaInferior.setText("LM");
-					txtTallaSuperior.setText("LM");
-					tftTallaCalzado.setText("27.5");
 					
 					
 					
@@ -261,22 +244,12 @@ public class FormularioEmpleadoNuevo extends JDialog {
 									
 									local = new LocalDate();
 									Date fecha =  new Date(local.toDate().getTime());
-									Empleado empleado = new Empleado(txtNombre.getText(),txtApe1.getText(),txtApe2.getText(),txtDni.getText(),txtTlf.getText());
-									Uniformidad uniformidad = new Uniformidad(txtTallaSuperior.getText(),txtTallaInferior.getText(),comboTipo.getSelectedItem().toString(),
-																				fecha,Double.parseDouble(tftTallaCalzado.getText()));								
+									Empleado empleado = new Empleado(Integer.parseInt(tftTallaCalzado.getText()),txtNombre.getText(),txtApe1.getText(),txtApe2.getText(),txtDni.getText(),txtTlf.getText(),
+											 comboTallaSuperior.getSelectedItem().toString(),comboTallaInferior.getSelectedItem().toString(),comboTipo.getSelectedItem().toString(),fecha);						
 									
-									try {
-										if(con.insertarEmpleado(empleado, uniformidad)) {
-											mensajes.mensajeVisorEmpNuevo(lblMensajeError,verdeOscuro,"** El empleado ha sido insertado correctamente.");
-											con.devolverEmpleados(comboNombre);
-										}else {
-											mensajes.mensajeVisorEmpNuevo(lblMensajeError,rojo, "** El empleado ya existe en la base de datos.");
-										}
-									} catch (Exception e1) {
-										
-										System.out.println(e1.getMessage() + " error empleado en formularionuevo");
-									}
-																			
+							
+										con.insertarEmpleado(lblMensajeError, comboNombre, empleado);
+											
 								}else {	
 									mensajes.mensajeVisorEmpNuevo(lblMensajeError,Color.red, "** Se ha cancelado el registro del nuevo empleado.");
 								}
@@ -333,6 +306,9 @@ public class FormularioEmpleadoNuevo extends JDialog {
 		Color verdeOscuro = new Color(67,185,86);
 		Color rojo = new Color(227,36,27); 
 		
+		
+		private String [] tallaPie = new String[] {"31","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49", "50"};
+		private String[] tallas = new  String[] {"XXS", "XS", "S", "M", "L","XL","XXL","3XL", "4XL", "5XL"};
 		private JFormattedTextField tftTallaCalzado;
 		private String s;
 		private Font fuente = new Font("arial", 1, 13);
@@ -342,7 +318,7 @@ public class FormularioEmpleadoNuevo extends JDialog {
 		private JLabel lblSalir;
 		private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf, txtTallaSuperior, txtTallaInferior, txtTallaCalzado;
 		private JButton btnInsertar, btnSalir;
-		private JComboBox comboTipo, comboNombre;
+		private JComboBox comboTipo, comboNombre, comboTallaInferior, comboTallaSuperior, comboTallaCalzado;
 	}
 
 

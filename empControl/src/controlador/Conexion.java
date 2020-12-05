@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.sql.*;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import org.joda.time.Days;
@@ -334,7 +335,7 @@ public class Conexion{
 	
 	
 	/*/METODO PARA INSERTAR EMPLEADO/*/
-	public boolean insertarEmpleado(Empleado empleado, Uniformidad uniformidad) {
+	public void insertarEmpleado(JLabel visor, JComboBox comboNombre, Empleado empleado) {
 		System.out.println("entra en empleado");
 		try {
 			
@@ -348,17 +349,21 @@ public class Conexion{
 			System.out.println(b + " existe o no el dni");
 			if(!b) {
 				System.out.println("punto de control");
-			ps = con.prepareStatement("INSERT INTO empleado (nombre, apellido1, apellido2, telefono, dni) VALUES (?,?,?,?,?)");
+			ps = con.prepareStatement("INSERT INTO empleado (nombre, apellido1, apellido2, telefono, dni, tallaSuperior, tallaInferior, tallaPie, fechaRegistro) VALUES (?,?,?,?,?,?,?,?,?)");
+			
 			
 			ps.setString(1, empleado.getNombre());
 			ps.setString(2, empleado.getApellido1());
 			ps.setString(3, empleado.getApellido2());
 			ps.setString(4, empleado.getTelefono());
 			ps.setString(5, empleado.getDni());
+			ps.setString(6, empleado.getTallaSuperior());
+			ps.setString(7, empleado.getTallaInferior());
+			ps.setInt(8, empleado.getTallaPie());
+			ps.setDate(9, empleado.getFechaRegistro());
 			
 			i = ps.executeUpdate();
 			
-			insertarUniformidad(empleado, uniformidad);
 			
 			}
 			
@@ -367,11 +372,11 @@ public class Conexion{
 			/*/SI DEVUELVE ALGUN RESULTADO, RETORNA TRUE INDICANDO QUE HA HABIDO UNA INSERCION/*/
 			
 			if(i>0) {
-				return true;
-			
-				
+				mensajes.mensajeVisorEmpNuevo(visor, mensajes.verdeOscuro,"** El empleado ha sido insertado correctamente.");
+				devolverEmpleados(comboNombre);
+
 			}else {
-				return false;
+				mensajes.mensajeVisorEmpNuevo(visor, mensajes.rojo, "** El empleado ya existe en la base de datos.");
 				
 			}
 			
@@ -387,12 +392,11 @@ public class Conexion{
 				System.out.println(e.getMessage());
 			}
 		}
-		return false;
 	}
 	
 	
 	/*/METODO PARA CONFIRMAR INCLUIR REGISTRO CON FECHA DUPLICADA/*/
-	public boolean fechaDuplicada(Integer codigo) {
+	public boolean fechaDuplicada(int codigo) {
 		
 		try {
 			con = getConnection();
@@ -440,27 +444,27 @@ public class Conexion{
 			rs = ps.executeQuery();
 			if(rs.next()) {
 				System.out.println("hay registros");
-			ps=con.prepareStatement("delete from "+tabla+" where codigo = ?");
-			ps.setInt(1, clausula);
-			System.out.println(ps.toString());
-			i = ps.executeUpdate();
-			return(i>0)?0:1;
+				ps=con.prepareStatement("delete from "+tabla+" where codigo = ?");
+				ps.setInt(1, clausula);
+				System.out.println(ps.toString());
+				i = ps.executeUpdate();
+				return(i>0)?0:1;
 			}else {
 				return -1;
 			}
-			
+
 		}catch(Exception e) {
-			
+
 			System.out.println(e.getMessage() + " error en el delete");
-			
+
 		}finally {
 			try{
 				if(con!=null)con.close();
 				if(ps!=null)ps.close();
 				if(rs!=null)rs.close();
-				
+
 			}catch(Exception e) {
-				
+
 			}
 		}
 		return -1;		
@@ -468,55 +472,61 @@ public class Conexion{
 	
 	
 	/*/ METODO PARA INSERTAR UNIFORMIDAD/*/
-	public void insertarUniformidad(Empleado empleado, Uniformidad uniformidad){
+	public void insertarUniformidad(JLabel visor, Empleado empleado, Uniformidad uniformidad){
 		try {
-			 con = getConnection();
-			 ps = con.prepareStatement("select codigo from empleado where dni =?");
-			 ps.setString(1,empleado.getDni());
-			 rs = ps.executeQuery();
-				
-			if(rs.next()) {
-					Integer codigo = rs.getInt(1);
-					System.out.println("codigo del empleado a ingresar la uniformidad: " + codigo);	
-					boolean b = fechaDuplicada(codigo);					
+			if(fechaDuplicada(empleado.getCodigo())) {
+				con = getConnection();
+				ps = con.prepareStatement("select codigo from empleado where dni =?");
+				ps.setString(1,empleado.getDni());
+				rs = ps.executeQuery();
+
+				if(rs.next()) {
+					uniformidad.setCodigo(rs.getInt("codigo"));
+					System.out.println(uniformidad.toString());	
+					boolean b = fechaDuplicada(uniformidad.getCodigo());					
 					System.out.println("booleano de entrada al if para ingresar uniformidad " + b);
 					if(b) {
-						System.out.println(uniformidad.toString());
+						con = getConnection();
 						ps = con.prepareStatement("insert into uniformidad (codigo, superior, inferior, tallaPie, tipo, ultimaEntrega) values (?, ?, ?, ?, ?, ?)");
-						System.out.println("codigo de empleado: " + codigo);
-						ps.setInt(1, codigo);
+						ps.setInt(1, uniformidad.getCodigo());
 						ps.setString(2, uniformidad.getSuperior());
 						ps.setString(3, uniformidad.getInferior());
 						ps.setDouble(4, uniformidad.getTallaPie());
 						ps.setString(5, uniformidad.getTipo());
 						ps.setDate(6, uniformidad.getUltimaEntrega());
-						
-						rs = ps.executeQuery();
-				
-						if(rs.next()) {
-							mensajes.mensajeVisorEmpNuevo(form.lblMensajeError,verdeOscuro, "** Uniformidad insertada correctamente para el empleado " + codigo);
+
+						int i = ps.executeUpdate();
+						System.out.println("punto de control uniformidad3");
+
+						if(i == 1) {
+							System.out.println("** Uniformidad insertada correctamente para el empleado ");
+							mensajes.mensajeVisorEmpNuevo(visor, mensajes.verdeOscuro, "**Uniformidad insertada correctamente");
 						}else {
-							mensajes.mensajeVisorEmpNuevo(form.lblMensajeError,Color.red, "** No se ha podido insertar la uniformidad para el empleado " + codigo);
+							System.out.println("** No se ha podido insertar la uniformidad para el empleado ");
+							mensajes.mensajeVisorEmpNuevo(visor, mensajes.rojo, "**Uniformidad no insertada");
 						}
-				}else {
-					mensajes.mensajeVisorEmpNuevo(form.lblMensajeError,Color.red,"Se ha denegado duplicar fechas de entrega" );
+					}else {
+						System.out.println("Se ha denegado duplicar fechas de entrega");
+						mensajes.mensajeVisorEmpNuevo(visor, mensajes.rojo, "**Se ha denegado duplicar las fechas de entrega");
+					}
+					System.out.println("finally de uniformidad");
 				}
-			}	
-			}catch(Exception e) {
-				e.getMessage();
-			}finally {
-				try{
-					if(con!=null)con.close();
-					if(ps!=null)ps.close();
-					if(rs!=null)rs.close();	
-				}catch(Exception e) {
-					
-					e.printStackTrace();
-				}
-				System.out.println("finally de uniformidad");
 			}
-		
-		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try{
+				if(con!=null)con.close();
+				if(ps!=null)ps.close();
+				if(rs!=null)rs.close();	
+			}catch(Exception e) {
+
+				e.printStackTrace();
+			}
+
+		}
+
+
 	}
 	
 	private int diasPendienteVacaciones;
@@ -534,8 +544,6 @@ public class Conexion{
 	private ArrayList<Empleado> listaEmpleados;
 	private ArrayList<Vacaciones> listaVacaciones;
 	private LocalDate local = new LocalDate();
-	private Color verdeOscuro = new Color(67,185,86);
-	private Color rojo = new Color(227,36,27); 
 	private Mensajes mensajes = new Mensajes();
 	private FormularioEmpleadoNuevo form;
 	private LocalDate localdate;

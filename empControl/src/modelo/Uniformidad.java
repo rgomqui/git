@@ -25,7 +25,7 @@ public class Uniformidad {
 		return "Uniformidad [id=" + id + ", codigo=" + codigo + ", superior=" + superior + ", inferior=" + inferior
 				+ ", tipo=" + tipo + ", ultimaEntrega=" + ultimaEntrega + ", tallaPie=" + tallaPie + "]";
 	}
-	Integer id, codigo;
+	int id, codigo;
 	String superior, inferior, tipo;
 	Date ultimaEntrega;
 	Double tallaPie;
