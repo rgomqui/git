@@ -41,12 +41,15 @@ public class FormularioActualizarEmpleado extends JDialog {
 			getContentPane().add(panelFondo);{
 				componentesGraficos();
 			}
+			System.out.println(empleado.getTallaInferior());
 			txtCod.setText(String.valueOf(empleado.getCodigo()));
 			txtNombre.setText(empleado.getNombre());
 			txtApe1.setText(empleado.getApellido1());
 			txtApe2.setText(empleado.getApellido2());
 			txtDni.setText(empleado.getDni());
 			txtTlf.setText(empleado.getTelefono());
+			comboTallaSuperior.setSelectedItem(empleado.getTallaSuperior());
+			
 			}
 	
 		
@@ -84,7 +87,6 @@ public class FormularioActualizarEmpleado extends JDialog {
 					
 					txtNombre = new JTextField();
 					txtNombre.setBounds(100, 98, 200, 20);
-					txtNombre.setEditable(false);
 					panelFondo.add(txtNombre);
 					
 					
@@ -98,7 +100,6 @@ public class FormularioActualizarEmpleado extends JDialog {
 					
 					txtApe1 = new JTextField();
 					txtApe1.setBounds(100, 128, 200, 20);
-					txtApe1.setEditable(false);
 					panelFondo.add(txtApe1);
 					
 					
@@ -112,7 +113,6 @@ public class FormularioActualizarEmpleado extends JDialog {
 					
 					txtApe2 = new JTextField();
 					txtApe2.setBounds(100, 158, 200, 20);
-					txtApe2.setEditable(false);
 					panelFondo.add(txtApe2);
 					
 					
@@ -126,7 +126,6 @@ public class FormularioActualizarEmpleado extends JDialog {
 					
 					txtTlf = new JTextField();
 					txtTlf.setBounds(100, 188, 200, 20);
-					txtTlf.setEditable(false);
 					panelFondo.add(txtTlf);
 					
 					
@@ -140,7 +139,6 @@ public class FormularioActualizarEmpleado extends JDialog {
 					
 					txtDni = new JTextField();
 					txtDni.setBounds(100, 218, 200, 20);
-					txtDni.setEditable(false);
 					panelFondo.add(txtDni);
 					
 					

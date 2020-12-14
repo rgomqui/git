@@ -96,13 +96,21 @@ public class Conexion{
 	
 	
 	/*/METODO PARA DEVOLVER AL COMBOBOX TODOS LOS EMPLEADOS AL CARGAR LA PESTAÑA EMPLEADO/*/
-	public void devolverEmpleados(JComboBox comboNombre) {
+	public void devolverEmpleados(JComboBox comboNombre, String texto) {
 		try {
-		con = getConnection();
-		ps = con.prepareStatement("select * from empleado");
-		rs = ps.executeQuery();
-		listaEmpleados = new ArrayList(); 
-		
+			listaEmpleados = new ArrayList();
+			if(texto != "") {
+				con = getConnection();
+				ps = con.prepareStatement("select * from empleado where nombre LIKE ?  or apellido1 LIKE ? or apellido2 LIKE ?");
+				ps.setString(1, "%"+texto+"%");
+				ps.setString(2, "%"+texto+"%");
+				ps.setString(3, "%"+texto+"%");
+				rs = ps.executeQuery(); 
+			}else {
+				con = getConnection();
+				ps = con.prepareStatement("select * from empleado");
+				rs = ps.executeQuery();
+			}
 		while(rs.next()) {
 			empleado = new Empleado();
 			empleado.setCodigo(rs.getInt("codigo"));
@@ -111,10 +119,14 @@ public class Conexion{
 			empleado.setApellido2(rs.getString("apellido2"));
 			empleado.setTelefono(rs.getString("telefono"));
 			empleado.setDni(rs.getString("dni"));
+			empleado.setTallaSuperior(rs.getString("tallaSuperior"));
+			empleado.setTallaInferior(rs.getString("tallaInferior"));
+			empleado.setTallaPie(rs.getString("tallaPie"));
+			empleado.setTipoCalzado(rs.getString("tipoCalzado"));
 			
 			listaEmpleados.add(empleado);	
 		}
-				
+			comboNombre.removeAllItems();
 			for(Empleado e:listaEmpleados)	{
 				comboNombre.addItem(e);
 			}
@@ -128,7 +140,7 @@ public class Conexion{
 			if(ps!=null)ps.close();
 			if(rs!=null)rs.close();	
 		}catch(Exception e) {
-			
+			System.out.println("da error");
 			e.printStackTrace();
 		}
 		}
@@ -251,7 +263,8 @@ public class Conexion{
 			if(rs!=null)rs.close();	
 		}catch(Exception e) {
 			
-			e.printStackTrace();
+			System.out.println("No hay vacaciones para mostrar");
+			//e.printStackTrace();
 		}
 		}
 	}
@@ -287,51 +300,6 @@ public class Conexion{
 	}
 
 	
-	/*/METODO PARA RELLENAR LOS CAMPOS DE EMPLEADO AL SELECCIONARLO EN EL JCOMBOBOX/*/
-	public void devolverEmpleadosConBusqueda(JComboBox comboNombre, String texto) {
-		try {
-		con = getConnection();
-		
-		ps = con.prepareStatement("select * from empleado where nombre LIKE ?  or apellido1 LIKE ? or apellido2 LIKE ?");
-		ps.setString(1, "%"+texto+"%");
-		ps.setString(2, "%"+texto+"%");
-		ps.setString(3, "%"+texto+"%");
-		rs = ps.executeQuery();
-		listaEmpleados = new ArrayList(); 
-		
-		while(rs.next()) {
-			empleado = new Empleado();
-			empleado.setCodigo(rs.getInt("codigo"));
-			empleado.setNombre(rs.getString("nombre"));
-			empleado.setApellido1(rs.getString("apellido1"));
-			empleado.setApellido2(rs.getString("apellido2"));
-			empleado.setTelefono(rs.getString("telefono"));
-			empleado.setDni(rs.getString("dni"));
-			
-			System.out.println(empleado);
-			listaEmpleados.add(empleado);	
-		}
-		comboNombre.removeAllItems();
-			for(Empleado e:listaEmpleados)	{
-				comboNombre.addItem(e);
-			}
-		
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-		}finally{
-			try{
-		
-			if(con!=null)con.close();
-			if(ps!=null)ps.close();
-			if(rs!=null)rs.close();	
-		}catch(Exception e) {
-			
-			e.printStackTrace();
-		}
-		}
-		
-		
-	}
 	
 	
 	/*/METODO PARA INSERTAR EMPLEADO/*/
@@ -359,7 +327,7 @@ public class Conexion{
 			ps.setString(5, empleado.getDni());
 			ps.setString(6, empleado.getTallaSuperior());
 			ps.setString(7, empleado.getTallaInferior());
-			ps.setInt(8, empleado.getTallaPie());
+			ps.setString(8, empleado.getTallaPie());
 			ps.setDate(9, empleado.getFechaRegistro());
 			
 			i = ps.executeUpdate();
@@ -373,7 +341,7 @@ public class Conexion{
 			
 			if(i>0) {
 				mensajes.mensajeVisorEmpNuevo(visor, mensajes.verdeOscuro,"** El empleado ha sido insertado correctamente.");
-				devolverEmpleados(comboNombre);
+				devolverEmpleados(comboNombre, "");
 
 			}else {
 				mensajes.mensajeVisorEmpNuevo(visor, mensajes.rojo, "** El empleado ya existe en la base de datos.");

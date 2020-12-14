@@ -242,11 +242,13 @@ public class FormularioEmpleadoNuevo extends JDialog {
 								/*/ SI SE PULSA LA OPCION "SI" EN LA VENTANA EMERGENTE, SE ENTRA EN ESTE IF Y SE DA DE ALTA EL REGISTRO EN LA BASE DE DATOS/*/
 								if(i==0){	
 									
+									
 									local = new LocalDate();
 									Date fecha =  new Date(local.toDate().getTime());
-									Empleado empleado = new Empleado(Integer.parseInt(tftTallaCalzado.getText()),txtNombre.getText(),txtApe1.getText(),txtApe2.getText(),txtDni.getText(),txtTlf.getText(),
-											 comboTallaSuperior.getSelectedItem().toString(),comboTallaInferior.getSelectedItem().toString(),comboTipo.getSelectedItem().toString(),fecha);						
+									Empleado empleado = new Empleado(comboTallaCalzado.getSelectedItem().toString(),txtNombre.getText(),txtApe1.getText(),txtApe2.getText(),txtDni.getText(),txtTlf.getText(),
+											 comboTallaSuperior.getSelectedItem().toString(),comboTallaInferior.getSelectedItem().toString(),comboTipo.getSelectedItem().toString(),fecha);	
 									
+									System.out.println("control");
 							
 										con.insertarEmpleado(lblMensajeError, comboNombre, empleado);
 											

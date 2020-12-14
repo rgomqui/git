@@ -10,7 +10,7 @@ public class Empleado {
 	}
 	
 
-	public Empleado(int tallaPie, String nombre, String apellido1, String apellido2, String dni,
+	public Empleado(String tallaPie, String nombre, String apellido1, String apellido2, String dni,
 			String telefono, String tallaSuperior, String tallaInferior, String tipoCalzado, Date fechaRegistro) {
 		super();
 		this.tipoCalzado = tipoCalzado;
@@ -37,12 +37,12 @@ public class Empleado {
 	}
 
 
-	public int getTallaPie() {
+	public String getTallaPie() {
 		return tallaPie;
 	}
 
 
-	public void setTallaPie(int tallaPie) {
+	public void setTallaPie(String tallaPie) {
 		this.tallaPie = tallaPie;
 	}
 
@@ -145,8 +145,8 @@ public class Empleado {
 	
 	
 	/*/CAMPOS DE CLASE/*/
-	private int codigo, tallaPie;
-	private String nombre, apellido1, apellido2, dni, telefono, tallaSuperior, tallaInferior, tipoCalzado;
+	private int codigo;
+	private String nombre, apellido1, apellido2, dni, telefono, tallaSuperior, tallaInferior, tipoCalzado, tallaPie;
 	private Date fechaRegistro;
 		
 }
