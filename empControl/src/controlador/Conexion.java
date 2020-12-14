@@ -4,6 +4,8 @@ package controlador;
 import java.awt.Color;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -300,7 +302,15 @@ public class Conexion{
 	}
 
 	
-	
+	/*/METODO LLENAR COMBOBOX/*/
+	public void llenarComboBox (JComboBox combo, String talla, String[] tallas) {
+		/*for(String s:tallas) {
+			if(s.equals(talla)) {
+				combo.setSelectedIndex(5);
+			}
+		}
+		*/
+	}
 	
 	/*/METODO PARA INSERTAR EMPLEADO/*/
 	public void insertarEmpleado(JLabel visor, JComboBox comboNombre, Empleado empleado) {
