@@ -29,6 +29,7 @@ public class FormularioActualizarEmpleado extends JDialog {
 
 		
 			public FormularioActualizarEmpleado(Empleado empleado){
+				this.empleado = empleado;
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			setAlwaysOnTop(true);
 			setVisible(true);
@@ -41,28 +42,8 @@ public class FormularioActualizarEmpleado extends JDialog {
 			panelFondo.setLayout(null);
 			getContentPane().add(panelFondo);{
 				componentesGraficos();
+				rellenarCampos();
 			}
-			System.out.println(empleado.getTallaInferior());
-			txtCod.setText(String.valueOf(empleado.getCodigo()));
-			txtNombre.setText(empleado.getNombre());
-			txtApe1.setText(empleado.getApellido1());
-			txtApe2.setText(empleado.getApellido2());
-			txtDni.setText(empleado.getDni());
-			txtTlf.setText(empleado.getTelefono());
-			
-			//rellenamos los combo con las tallas que previamente tenia el empleado en la base de datos//
-			//y refrescamos el objeto para que se muestre//
-			comboTallaSuperior.setSelectedItem(empleado.getTallaSuperior());
-			comboTallaSuperior.updateUI();
-			comboTallaInferior.setSelectedItem(empleado.getTallaInferior());
-			comboTallaInferior.updateUI();
-			comboTallaCalzado.setSelectedItem(empleado.getTallaPie());
-			comboTallaCalzado.updateUI();
-			comboTipo.setSelectedItem(empleado.getTipoCalzado());
-			comboTipo.updateUI();
-			
-			//conexion.llenarComboBox(comboTallaSuperior, empleado.getTallaSuperior(), tallas);
-			
 			}
 	
 		
@@ -165,7 +146,7 @@ public class FormularioActualizarEmpleado extends JDialog {
 					lblTallaSuperior.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTallaSuperior);
 					
-					comboTallaSuperior = new JComboBox(tallas);
+					comboTallaSuperior = new JComboBox(tallaSuperior);
 					comboTallaSuperior.setBounds(460, 68, 100, 20);
 					panelFondo.add(comboTallaSuperior);
 					
@@ -178,7 +159,7 @@ public class FormularioActualizarEmpleado extends JDialog {
 					lblTallaInferior.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTallaInferior);
 					
-					comboTallaInferior = new JComboBox(tallas);
+					comboTallaInferior = new JComboBox(tallaInferior);
 					comboTallaInferior.setBounds(460, 98, 100, 20);
 					panelFondo.add(comboTallaInferior);
 					
@@ -227,6 +208,21 @@ public class FormularioActualizarEmpleado extends JDialog {
 						System.out.println("Error al cargar la imagen " + e.getMessage());
 					}	
 					
+					btnInsertar.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent arg0) {
+							try {	
+							conexion.actualizarEmpleado();
+							System.out.println(empleado);
+							//rellenarCampos();
+							}catch(Exception e) {
+							System.out.println("error boton actualizar");	
+							}
+							
+						}
+					});
+					
 					panelFondo.add(lblInsertar);
 					panelFondo.add(btnInsertar);
 					
@@ -257,17 +253,37 @@ public class FormularioActualizarEmpleado extends JDialog {
 			
 		}
 		
+		private void rellenarCampos() {
+			txtCod.setText(String.valueOf(empleado.getCodigo()));
+			txtNombre.setText(empleado.getNombre());
+			txtApe1.setText(empleado.getApellido1());
+			txtApe2.setText(empleado.getApellido2());
+			txtDni.setText(empleado.getDni());
+			txtTlf.setText(empleado.getTelefono());
+			
+			//rellenamos los combo con las tallas que previamente tenia el empleado en la base de datos//
+			//y refrescamos el objeto para que se muestre//
+			comboTallaSuperior.setSelectedItem(empleado.getTallaSuperior());
+			comboTallaSuperior.updateUI();
+			comboTallaInferior.setSelectedItem(empleado.getTallaInferior());
+			comboTallaInferior.updateUI();
+			comboTallaCalzado.setSelectedItem(empleado.getTallaPie());
+			comboTallaCalzado.updateUI();
+			comboTipo.setSelectedItem(empleado.getTipoCalzado());
+			comboTipo.updateUI();
+		}
+		
+		private Empleado empleado;
 		private Conexion conexion;
 		private String [] tallaPie = new String[] {"31","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49", "50"};
-		private String[] tallas = new  String[] {"XXS", "XS", "S", "M", "L","XL","XXL","3XL", "4XL", "5XL","32/34", "36/38", "40/42", "44/46", "48/50", "52/54", "56/58","60/62"};
-		private String[] tipoCalzado = new  String[] {"CERRADO", "ABIERTO", "BOTAS"}; 
+		private String [] tallaInferior = new  String[] {"XXS", "XS", "S", "M", "L","XL","XXL","3XL", "4XL", "5XL","32/34", "36/38", "40/42", "44/46", "48/50", "52/54", "56/58","60/62"};
+		private String [] tallaSuperior = new  String[] {"XXS", "XS", "S", "M", "L","XL","XXL","3XL", "4XL", "5XL"};
+		private String [] tipoCalzado = new  String[] {"CERRADO", "ABIERTO", "BOTAS"}; 
 		private Font fuente = new Font("arial", 1, 13);
-		private JLabel lblNombre,lblApe1, lblApe2, lblDni, lblTlf, lblTitulo, lblTallaSuperior, lblTallaInferior,
-						lblTallaCalzado, lblTipoCalzado, lblTallaUltimaEntrega,lblCod,lblInsertar, lblSalir;
-		private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf, txtTallaSuperior, txtTallaInferior, txtTallaCalzado, txtTipoCalzado, txtUltimaEntrega,
-							txtCod;
+		private JLabel lblNombre,lblApe1, lblApe2, lblDni, lblTlf, lblTitulo, lblTallaSuperior, lblTallaInferior,lblTallaCalzado, lblTipoCalzado,lblCod,lblInsertar, lblSalir;
+		private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf,txtCod;
 		public JButton btnInsertar, btnSalir;
-		private JComboBox comboTipo, comboNombre, comboTallaInferior, comboTallaSuperior, comboTallaCalzado;
+		private JComboBox comboTipo, comboTallaInferior, comboTallaSuperior, comboTallaCalzado;
 	}
 
 

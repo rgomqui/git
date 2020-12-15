@@ -5,8 +5,6 @@ public class Configuracion {
 	private int diasVacaciones, diasConvenio;
 	
 	public Configuracion(){
-		diasVacaciones = 31;
-		diasConvenio = 9;
 	}
 
 	public int getDiasVacaciones() {

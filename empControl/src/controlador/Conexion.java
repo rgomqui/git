@@ -2,6 +2,7 @@ package controlador;
 
 
 import java.awt.Color;
+import java.awt.Component;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -97,7 +98,7 @@ public class Conexion{
 	}	
 	
 	
-	/*/METODO PARA DEVOLVER AL COMBOBOX TODOS LOS EMPLEADOS AL CARGAR LA PESTAÑA EMPLEADO/*/
+	/*/METODO PARA RELLENAR JCOMBOBOX DE BUSQUEDA DE EMPLEADOS/*/
 	public void devolverEmpleados(JComboBox comboNombre, String texto) {
 		try {
 			listaEmpleados = new ArrayList();
@@ -244,7 +245,7 @@ public class Conexion{
 	
 			}
 			
-			recuperaConfig();
+			configuracion = recuperaConfig();
 			diasPendienteVacaciones = configuracion.getDiasVacaciones()-diasPendienteVacaciones;
 			diasPendienteConvenio = configuracion.getDiasConvenio()-diasPendienteConvenio;
 			
@@ -254,8 +255,8 @@ public class Conexion{
 			txtPermiso.setText(String.valueOf(diasPendientePermiso));
 				
 		}catch(Exception e) {
-			
-			e.printStackTrace();
+			System.out.println("No hay vacaciones para mostrar");
+			//e.printStackTrace();
 			
 		}finally{
 			try{
@@ -265,7 +266,7 @@ public class Conexion{
 			if(rs!=null)rs.close();	
 		}catch(Exception e) {
 			
-			System.out.println("No hay vacaciones para mostrar");
+			
 			//e.printStackTrace();
 		}
 		}
@@ -273,20 +274,22 @@ public class Conexion{
 	
 	/*/METODO PARA RESCATAR LA CONFIGURACION DE LA BASE DE DATOS/*/
 	
-	public void recuperaConfig() {
+	public Configuracion recuperaConfig() {
+		
+		Configuracion configuracion2 = new Configuracion();
 		try {
-			configuracion = new Configuracion();
+			con = getConnection();
 			/* rescatamos los dias predefinidos que estan guardados en la base de datos*/
 			ps = con.prepareStatement("select * from configuracion"); 
 			rs=ps.executeQuery();
 			if(rs.next()){
-				configuracion.setDiasVacaciones(rs.getInt("diasVacaciones"));
-				configuracion.setDiasConvenio(rs.getInt("diasConvenio"));
+				configuracion2.setDiasVacaciones(rs.getInt("diasVacaciones"));
+				configuracion2.setDiasConvenio(rs.getInt("diasConvenio"));
 			}
-			
+			 return configuracion2;
 		}catch(Exception e) {
 		
-			e.printStackTrace();
+			System.out.println("error recuperando configuracion");
 		
 		}finally{
 			try{
@@ -299,22 +302,60 @@ public class Conexion{
 				e.printStackTrace();
 			}
 		}
+		return configuracion2;
 	}
-
 	
-	/*/METODO LLENAR COMBOBOX/*/
-	public void llenarComboBox (JComboBox combo, String talla, String[] tallas) {
-		/*for(String s:tallas) {
-			if(s.equals(talla)) {
-				combo.setSelectedIndex(5);
+	public void updateConfig(Configuracion configuracion, Component parent) {
+		
+		try {
+			con = getConnection();
+			int i = -2;
+			
+			/* actualizamos en la base de datos los dias de vacaciones y convenio*/
+			ps = con.prepareStatement("update configuracion set diasVacaciones = ?, diasConvenio = ?");
+			System.out.println(configuracion.getDiasConvenio() + " estos son dias de convenio dentro de conexion");
+			ps.setInt(1, configuracion.getDiasVacaciones());
+			ps.setInt(2, configuracion.getDiasConvenio());
+			
+			int pregunta = -1;
+			
+			pregunta = mensajes.mensajePregunta(parent, "¿Esta seguro de querer cambiar la configuración actual?", "Confirmacion de cambios");
+			System.out.println(pregunta);
+			if(pregunta ==0) {
+			i = ps.executeUpdate();
+			
+				if(i > 0) {
+					mensajes.mensajeInfo(parent, "Configuración actualizada correctamente", "Actualización correcta");
+				}else {
+					mensajes.mensajeInfo(parent, "No se han podido guardar los cambios de la configuracion", "Actualización incorrecta");
+				}
+			
+			}else {
+				
+				mensajes.mensajeInfo(parent, "Cambios en la configuracion cancelados", "Actualización incorrecta");
+			}
+			
+		}catch(Exception e) {
+		
+			System.out.println("error actualizando configuracion");
+		
+		}finally{
+			try{
+	
+				if(con!=null)con.close();
+				if(ps!=null)ps.close();
+				if(rs!=null)rs.close();	
+			}catch(Exception e) {
+		
+				e.printStackTrace();
 			}
 		}
-		*/
+		
 	}
-	
+
+
 	/*/METODO PARA INSERTAR EMPLEADO/*/
 	public void insertarEmpleado(JLabel visor, JComboBox comboNombre, Empleado empleado) {
-		System.out.println("entra en empleado");
 		try {
 			
 			Integer i = -1;
@@ -327,7 +368,7 @@ public class Conexion{
 			System.out.println(b + " existe o no el dni");
 			if(!b) {
 				System.out.println("punto de control");
-			ps = con.prepareStatement("INSERT INTO empleado (nombre, apellido1, apellido2, telefono, dni, tallaSuperior, tallaInferior, tallaPie, fechaRegistro) VALUES (?,?,?,?,?,?,?,?,?)");
+			ps = con.prepareStatement("INSERT INTO empleado (nombre, apellido1, apellido2, telefono, dni, tallaSuperior, tallaInferior, tallaPie, tipoCalzado, fechaRegistro) VALUES (?,?,?,?,?,?,?,?,?,?)");
 			
 			
 			ps.setString(1, empleado.getNombre());
@@ -338,7 +379,8 @@ public class Conexion{
 			ps.setString(6, empleado.getTallaSuperior());
 			ps.setString(7, empleado.getTallaInferior());
 			ps.setString(8, empleado.getTallaPie());
-			ps.setDate(9, empleado.getFechaRegistro());
+			ps.setString(9, empleado.getTipoCalzado());
+			ps.setDate(10, empleado.getFechaRegistro());
 			
 			i = ps.executeUpdate();
 			
@@ -448,6 +490,47 @@ public class Conexion{
 		return -1;		
 	}
 	
+	/*/METODO PARA ACTUALIZAR EMPLEADO/*/
+	
+	public void actualizarEmpleado() {
+		System.out.println(" Error actualizando empleado");
+		try {
+			
+			int i = -1;
+			ps = con.prepareStatement("UPDATE empleado SET nombre = ?, apellido1 = ?, apellido2 = ?, telefono = ?, dni = ?, tallaSuperior = ?, tallaInferior = ?, tallaPie = ?, tipoCalzado = ? WHERE codigo = ?");			
+			ps.setString(1, empleado.getNombre());
+			ps.setString(2, empleado.getApellido1());
+			ps.setString(3, empleado.getApellido2());
+			ps.setString(4, empleado.getTelefono());
+			ps.setString(5, empleado.getDni());
+			ps.setString(6, empleado.getTallaSuperior());
+			ps.setString(7, empleado.getTallaInferior());
+			ps.setString(8, empleado.getTallaPie());
+			ps.setString(9, empleado.getTipoCalzado());
+			ps.setInt(10, empleado.getCodigo());
+			i = ps.executeUpdate();
+			
+
+			
+			if(i>0) {
+			}else {
+				
+			}
+			
+		}catch(SQLException ex) {
+			System.out.println(ex.getSQLState());
+		}finally {
+			try{
+				if(con!=null)con.close();
+				if(ps!=null)ps.close();
+				if(rs!=null)rs.close();	
+			}catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		
+		
+	}
 	
 	/*/ METODO PARA INSERTAR UNIFORMIDAD/*/
 	public void insertarUniformidad(JLabel visor, Empleado empleado, Uniformidad uniformidad){
@@ -516,7 +599,7 @@ public class Conexion{
 	private SimpleDateFormat fechaEneroActual = new SimpleDateFormat("yyyy-MM-dd");
 	private SimpleDateFormat fechaEneroAñoSiguiente= new SimpleDateFormat("yyyy-MM-dd");
 	private Vacaciones vacaciones;
-	private Configuracion configuracion;
+	private Configuracion configuracion= new Configuracion();
 	private Uniformidad uniformidad;
 	private Empleado empleado;
 	private ArrayList<Empleado> listaEmpleados;

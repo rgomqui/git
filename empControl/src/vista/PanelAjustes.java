@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -11,7 +13,11 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import controlador.Conexion;
+import modelo.Configuracion;
 
 public class PanelAjustes extends JPanel {
 	
@@ -20,18 +26,22 @@ public class PanelAjustes extends JPanel {
 		setBackground(new Color(198,222,235));
 		setLayout(null);
 		iniciarComponentes();
+
 	}
 	
 	private void iniciarComponentes() {
 		
+		
+		configuracion = conexion.recuperaConfig();
+		
+		
 		/*/MODELO PARA RELLENAR JCOMBOBOX DE DIAS/*/
 		
-		DefaultComboBoxModel modeloCombo = new DefaultComboBoxModel();
-		for(int i = 0 ;i<=60;i++) {
-			modeloCombo.addElement(i);
+		
+		for(int i = 0 ;i<=39;i++) {
+			dias[i]=String.valueOf(i);			
+		
 		}
-		
-		
 		
 		/*/TIULO DEL PANEL AJUSTES/*/
 		
@@ -50,8 +60,7 @@ public class PanelAjustes extends JPanel {
 		lblDiasVacaciones.setHorizontalAlignment(SwingConstants.RIGHT);
 		add(lblDiasVacaciones);
 		
-		comboDiasVacaciones = new JComboBox();
-		comboDiasVacaciones.setModel(modeloCombo);
+		comboDiasVacaciones = new JComboBox(dias);
 		comboDiasVacaciones.setBounds(260, 90, 50, 20);
 		add(comboDiasVacaciones);
 		
@@ -63,8 +72,7 @@ public class PanelAjustes extends JPanel {
 		lblDiasConvenio.setHorizontalAlignment(SwingConstants.RIGHT);
 		add(lblDiasConvenio);
 		
-		comboDiasConvenio = new JComboBox();
-		comboDiasConvenio.setModel(modeloCombo);
+		comboDiasConvenio = new JComboBox(dias);
 		comboDiasConvenio.setBounds(260, 140, 50, 20);
 		add(comboDiasConvenio);
 		
@@ -81,12 +89,22 @@ public class PanelAjustes extends JPanel {
 		lblActualDiasVacaciones.setBounds(50,290,150,20);
 		lblActualDiasVacaciones.setFont(fuenteNormal);
 		lblActualDiasVacaciones.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		txtVacaciones = new JTextField();
+		txtVacaciones.setBounds(200, 290, 30, 20);
+		txtVacaciones.setText(String.valueOf(configuracion.getDiasVacaciones()));
+		add(txtVacaciones);
 		add(lblActualDiasVacaciones);
 		
 		lblActualDiasConvenio = new JLabel("Dias de Convenio: ");
 		lblActualDiasConvenio.setBounds(50,340,150,20);
 		lblActualDiasConvenio.setFont(fuenteNormal);
 		lblActualDiasConvenio.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		txtConvenio = new JTextField();
+		txtConvenio.setBounds(200, 340, 30, 20);
+		txtConvenio.setText(String.valueOf(configuracion.getDiasConvenio()));
+		add(txtConvenio);
 		add(lblActualDiasConvenio);
 		
 		//BOTON ACEPTAR CAMBIOS
@@ -105,8 +123,21 @@ public class PanelAjustes extends JPanel {
 			System.out.println("Error al cargar la imagen " + e.getMessage());
 		}	
 		
+		btnAceptar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				configuracion.setDiasConvenio(Integer.valueOf(comboDiasConvenio.getSelectedItem().toString()));
+				configuracion.setDiasVacaciones(Integer.valueOf(comboDiasVacaciones.getSelectedItem().toString()));
+				conexion.updateConfig(configuracion, getRootPane());
+				configuracion = conexion.recuperaConfig();
+				actualizaCampos();
+			}
+		});
 		add(lblAceptar);
 		add(btnAceptar);
+		
+		actualizaCampos();
 		
 	}
 	
@@ -120,7 +151,20 @@ public class PanelAjustes extends JPanel {
 		g.fillRoundRect(10, 10, 600, 440,10,10);
 		
 	}
+	private void actualizaCampos() {
+		comboDiasConvenio.setSelectedItem(String.valueOf(configuracion.getDiasConvenio()));
+		comboDiasConvenio.updateUI();
+		comboDiasVacaciones.setSelectedItem(String.valueOf(configuracion.getDiasVacaciones()));
+		comboDiasVacaciones.updateUI();
+		txtVacaciones.setText(String.valueOf(configuracion.getDiasVacaciones()));
+		txtConvenio.setText(String.valueOf(configuracion.getDiasConvenio()));
+		
+	}
 	
+	private String[] dias = new String[40];
+	private Configuracion configuracion = new Configuracion();
+	private Conexion conexion = new Conexion();
+	private JTextField txtVacaciones, txtConvenio;
 	private Font fuenteNormal= new Font("Arial",1,14), fuenteTitulo = new Font("Arial", 1, 16);
 	private JLabel lblDiasVacaciones, lblDiasConvenio, lblTitulo, lblEnviar, lblActual,lblAceptar;
 	private JComboBox comboDiasVacaciones, comboDiasConvenio;

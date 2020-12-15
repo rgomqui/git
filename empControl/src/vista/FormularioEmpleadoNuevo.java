@@ -137,7 +137,7 @@ public class FormularioEmpleadoNuevo extends JDialog {
 					lblTallaSuperior.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTallaSuperior);
 					
-					comboTallaSuperior = new JComboBox(tallas);
+					comboTallaSuperior = new JComboBox(tallaSuperior);
 					comboTallaSuperior.setBounds(460, 68, 100, 20);
 					panelFondo.add(comboTallaSuperior);
 					
@@ -150,7 +150,7 @@ public class FormularioEmpleadoNuevo extends JDialog {
 					lblTallaInferior.setHorizontalAlignment(JLabel.RIGHT);
 					panelFondo.add(lblTallaInferior);
 					
-					comboTallaInferior = new JComboBox(tallas);
+					comboTallaInferior = new JComboBox(tallaInferior);
 					comboTallaInferior.setBounds(460, 98, 100, 20);
 					panelFondo.add(comboTallaInferior);
 					
@@ -310,7 +310,8 @@ public class FormularioEmpleadoNuevo extends JDialog {
 		
 		
 		private String [] tallaPie = new String[] {"31","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49", "50"};
-		private String[] tallas = new  String[] {"XXS", "XS", "S", "M", "L","XL","XXL","3XL", "4XL", "5XL", "32/34", "36/38", "40/42", "44/46", "48/50", "52/54", "56/58","60/62"};
+		private String[] tallaInferior = new  String[] {"XXS", "XS", "S", "M", "L","XL","XXL","3XL", "4XL", "5XL","32/34", "36/38", "40/42", "44/46", "48/50", "52/54", "56/58","60/62"};
+		private String[] tallaSuperior = new  String[] {"XXS", "XS", "S", "M", "L","XL","XXL","3XL", "4XL", "5XL"};
 		private String[] tipoCalzado = new  String[] {"CERRADO", "ABIERTO", "BOTAS"}; 
 		private JFormattedTextField tftTallaCalzado;
 		private String s;

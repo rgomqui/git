@@ -173,7 +173,7 @@ public class PanelEmpleado extends JPanel{
 		add(lblTallaSuperior);
 		
 		txtTallaSuperior = new JTextField();
-		txtTallaSuperior.setBounds(460, 50, 30, 20);
+		txtTallaSuperior.setBounds(460, 50, 45, 20);
 		txtTallaSuperior.setEditable(false);
 		add(txtTallaSuperior);
 		
