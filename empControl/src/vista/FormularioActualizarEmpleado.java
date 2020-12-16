@@ -28,7 +28,8 @@ public class FormularioActualizarEmpleado extends JDialog {
 	private final JPanel panelFondo = new JPanel();
 
 		
-			public FormularioActualizarEmpleado(Empleado empleado){
+			public FormularioActualizarEmpleado(Empleado empleado, JComboBox comboNombre){
+				this.comboNombre = comboNombre;
 				this.empleado = empleado;
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			setAlwaysOnTop(true);
@@ -213,11 +214,24 @@ public class FormularioActualizarEmpleado extends JDialog {
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
 							try {	
-							conexion.actualizarEmpleado();
-							System.out.println(empleado);
-							//rellenarCampos();
+								System.out.println(empleado);
+								empleado.setCodigo(Integer.valueOf(txtCod.getText().toString()));
+								empleado.setNombre(txtNombre.getText().toString());
+								empleado.setApellido1(txtApe1.getText().toString());
+								empleado.setApellido2(txtApe2.getText().toString());
+								empleado.setDni(txtDni.getText().toString());
+								empleado.setTelefono(txtTlf.getText().toString());
+								empleado.setTallaInferior(comboTallaInferior.getSelectedItem().toString());
+								empleado.setTallaSuperior(comboTallaSuperior.getSelectedItem().toString());
+								empleado.setTallaPie(comboTallaCalzado.getSelectedItem().toString());
+								empleado.setTipoCalzado(comboTipo.getSelectedItem().toString());
+								conexion.actualizarEmpleado(empleado, getRootPane());
+								conexion.devolverEmpleados(comboNombre, "");
+								dispose();
+								
+							
 							}catch(Exception e) {
-							System.out.println("error boton actualizar");	
+							System.out.println("error boton actualizar" + e.getCause().toString());	
 							}
 							
 						}
@@ -274,7 +288,7 @@ public class FormularioActualizarEmpleado extends JDialog {
 		}
 		
 		private Empleado empleado;
-		private Conexion conexion;
+		private Conexion conexion = new Conexion();
 		private String [] tallaPie = new String[] {"31","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49", "50"};
 		private String [] tallaInferior = new  String[] {"XXS", "XS", "S", "M", "L","XL","XXL","3XL", "4XL", "5XL","32/34", "36/38", "40/42", "44/46", "48/50", "52/54", "56/58","60/62"};
 		private String [] tallaSuperior = new  String[] {"XXS", "XS", "S", "M", "L","XL","XXL","3XL", "4XL", "5XL"};
@@ -283,7 +297,7 @@ public class FormularioActualizarEmpleado extends JDialog {
 		private JLabel lblNombre,lblApe1, lblApe2, lblDni, lblTlf, lblTitulo, lblTallaSuperior, lblTallaInferior,lblTallaCalzado, lblTipoCalzado,lblCod,lblInsertar, lblSalir;
 		private JTextField txtNombre, txtApe1, txtApe2, txtDni, txtTlf,txtCod;
 		public JButton btnInsertar, btnSalir;
-		private JComboBox comboTipo, comboTallaInferior, comboTallaSuperior, comboTallaCalzado;
+		private JComboBox comboTipo, comboTallaInferior, comboTallaSuperior, comboTallaCalzado, comboNombre;
 	}
 
 

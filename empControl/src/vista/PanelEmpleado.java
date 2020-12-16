@@ -3,6 +3,8 @@ package vista;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -377,7 +379,7 @@ public class PanelEmpleado extends JPanel{
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {			
-					formularioActualizarEmpleado = new FormularioActualizarEmpleado(empleadoSeleccionado);
+					formularioActualizarEmpleado = new FormularioActualizarEmpleado(empleadoSeleccionado, comboNombre);
 				}
 			});
 			
@@ -490,7 +492,6 @@ public class PanelEmpleado extends JPanel{
 		txtCompensatorio.setBounds(460, 380,30, 20);
 		txtCompensatorio.setEditable(false);
 		add(txtCompensatorio);
-		
 		
 	}
 	

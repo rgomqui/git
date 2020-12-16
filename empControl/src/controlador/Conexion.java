@@ -305,6 +305,8 @@ public class Conexion{
 		return configuracion2;
 	}
 	
+	
+	/*/ METODO PARA ACTUALIZAR LA CONFIGURACION EN LA BASE DE DATOS/*/
 	public void updateConfig(Configuracion configuracion, Component parent) {
 		
 		try {
@@ -492,44 +494,47 @@ public class Conexion{
 	
 	/*/METODO PARA ACTUALIZAR EMPLEADO/*/
 	
-	public void actualizarEmpleado() {
-		System.out.println(" Error actualizando empleado");
-		try {
-			
-			int i = -1;
-			ps = con.prepareStatement("UPDATE empleado SET nombre = ?, apellido1 = ?, apellido2 = ?, telefono = ?, dni = ?, tallaSuperior = ?, tallaInferior = ?, tallaPie = ?, tipoCalzado = ? WHERE codigo = ?");			
-			ps.setString(1, empleado.getNombre());
-			ps.setString(2, empleado.getApellido1());
-			ps.setString(3, empleado.getApellido2());
-			ps.setString(4, empleado.getTelefono());
-			ps.setString(5, empleado.getDni());
-			ps.setString(6, empleado.getTallaSuperior());
-			ps.setString(7, empleado.getTallaInferior());
-			ps.setString(8, empleado.getTallaPie());
-			ps.setString(9, empleado.getTipoCalzado());
-			ps.setInt(10, empleado.getCodigo());
-			i = ps.executeUpdate();
-			
+	public void actualizarEmpleado(Empleado empleado, Component parent) {
+		
+		int respuesta = mensajes.mensajePregunta(parent, "¿Está seguro de querer actualizar la información?", "Confirmar Actualizar");
+		if(respuesta ==0) //si es igual a 0 han aceptado el update contra la base de datos 
+		{
+			try {
+				con = getConnection();
 
-			
-			if(i>0) {
-			}else {
-				
+				int i = -1;
+				ps = con.prepareStatement("UPDATE empleado SET nombre = ?, apellido1 = ?, apellido2 = ?, telefono = ?, dni = ?, tallaSuperior = ?, tallaInferior = ?, tallaPie = ?, tipoCalzado = ? WHERE codigo = ?");			
+				ps.setString(1, empleado.getNombre());
+				ps.setString(2, empleado.getApellido1());
+				ps.setString(3, empleado.getApellido2());
+				ps.setString(4, empleado.getTelefono());
+				ps.setString(5, empleado.getDni());
+				ps.setString(6, empleado.getTallaSuperior());
+				ps.setString(7, empleado.getTallaInferior());
+				ps.setString(8, empleado.getTallaPie());
+				ps.setString(9, empleado.getTipoCalzado());
+				ps.setInt(10, empleado.getCodigo());
+
+
+				i = ps.executeUpdate(); // devuelve la cantidad de filas afectadas con el update.
+
+				if(i>0) mensajes.mensajeInfo(parent, "Informacion del empleado "+empleado.getCodigo()+" actualizada correctamente", "Actualización satisfactoria");
+
+			}catch(Exception ex) {
+				System.out.println(ex.getLocalizedMessage());
+			}finally {
+				try{
+					if(con!=null)con.close();
+					if(ps!=null)ps.close();
+					if(rs!=null)rs.close();	
+				}catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
 			}
-			
-		}catch(SQLException ex) {
-			System.out.println(ex.getSQLState());
-		}finally {
-			try{
-				if(con!=null)con.close();
-				if(ps!=null)ps.close();
-				if(rs!=null)rs.close();	
-			}catch(Exception e) {
-				System.out.println(e.getMessage());
-			}
+		}else {
+			mensajes.mensajeInfo(parent, "Cancelada la actualizacion de la información", "Actualización cancelada");
 		}
-		
-		
+
 	}
 	
 	/*/ METODO PARA INSERTAR UNIFORMIDAD/*/
