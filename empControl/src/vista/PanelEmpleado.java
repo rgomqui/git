@@ -11,10 +11,17 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 import javax.swing.*;
+
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 
 import controlador.Conexion;
 import controlador.Mensajes;
+import modelo.Configuracion;
 import modelo.Empleado;
 import modelo.Uniformidad;
 import modelo.Vacaciones;
@@ -324,7 +331,7 @@ public class PanelEmpleado extends JPanel{
 				}
 				
 				//llamamos al metodo con consulta la base de datos y rellena las cajas de texto con los dias pendiente de descansar
-				//conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(),txtCompensatorio,txtConvenio,txtVacaciones,txtPermisos);
+					//conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio,txtCompensatorio, txtVacaciones, txtPermisos);
 				
 			}
 		});
@@ -495,6 +502,7 @@ public class PanelEmpleado extends JPanel{
 		
 	}
 	
+
 	private Empleado empleadoSeleccionado;
 	private Conexion conexion = new Conexion();
 	private Mensajes mensajes =  new Mensajes();

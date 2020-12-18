@@ -5,18 +5,15 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.MaskFormatter;
 
 import controlador.Conexion;
 import modelo.Empleado;
@@ -214,7 +211,8 @@ public class FormularioActualizarEmpleado extends JDialog {
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
 							try {	
-								System.out.println(empleado);
+								
+								/*/RELLENAMOS EL OBJETO EMPLEADO CON LOS DATOS ACTUALES DE LAS CAJAS DE TEXTO Y COMBOBOX. UNA VEZ TERMINADA LA ACTUALIZACION, SE CIERRA LA PANTALLA./*/
 								empleado.setCodigo(Integer.valueOf(txtCod.getText().toString()));
 								empleado.setNombre(txtNombre.getText().toString());
 								empleado.setApellido1(txtApe1.getText().toString());

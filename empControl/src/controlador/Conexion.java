@@ -188,12 +188,18 @@ public class Conexion{
 	}
 
 	/*/ METODO PARA DEVOLVER DIAS DE DESCANSO PENDIENTES DE DISFRUTAR/*/
-	public void devolverVacaciones(int codigoEmpleado, JTextField txtCompensatorio, JTextField txtConvenio, JTextField txtVacaciones, JTextField txtPermiso) {
+	public void devolverVacaciones(int codigoEmpleado, JTextField txtConvenio, JTextField txtCompensatorio, JTextField txtVacaciones, JTextField txtPermisos) {
 		
 	diasPendienteVacaciones =0;
 	diasPendienteConvenio = 0;
 	diasPendientecompensatorio = 0;
 	diasPendientePermiso = 0;
+	
+	/*/PONEMOS EN BLANCO LAS CAJAS DE TEXTO/*/
+	txtConvenio.setText("");
+	txtCompensatorio.setText("");
+	txtVacaciones.setText("");
+	txtPermisos.setText("");
 	
 		try {
 			con = getConnection();
@@ -242,7 +248,7 @@ public class Conexion{
 				if(v.getTipo().equals("permiso")) {
 					diasPendientePermiso += v.getDiasPorDisfrutar();
 				}
-	
+
 			}
 			
 			configuracion = recuperaConfig();
@@ -252,8 +258,8 @@ public class Conexion{
 			txtConvenio.setText(String.valueOf(diasPendienteConvenio));
 			txtCompensatorio.setText(String.valueOf(diasPendientecompensatorio));
 			txtVacaciones.setText(String.valueOf(diasPendienteVacaciones));
-			txtPermiso.setText(String.valueOf(diasPendientePermiso));
-				
+			txtPermisos.setText(String.valueOf(diasPendientePermiso));
+			
 		}catch(Exception e) {
 			System.out.println("No hay vacaciones para mostrar");
 			//e.printStackTrace();
