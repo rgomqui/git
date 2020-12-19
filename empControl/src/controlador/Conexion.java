@@ -478,7 +478,8 @@ public class Conexion{
 			ps.setInt(1,codigo);
 			rs = ps.executeQuery();
 		while(rs.next()) {
-			Integer i = 25;		
+			System.out.println("entra en el while de fecha duplicada, codigo empleado: "+codigo);
+			Integer i = null;		
 			if(rs.getDate(1).compareTo(new Date(local.toDate().getTime()))==0) {
 				System.out.println("fechas iguales");
 				i =  mensajes.mensajePregunta(form.getParent(),"Ya existe un registro con la misma fecha para esa entrega de uniformidad.\n"+
@@ -486,7 +487,11 @@ public class Conexion{
 				System.out.println(i);		
 			}
 			
-			if(i!=null)return(i==0)?true:false;
+			if(i!=null) {
+				return(i==0)?true:false;
+			}else {
+				return true;
+			}
 				
 		}
 		}catch(Exception e) {
@@ -591,7 +596,9 @@ public class Conexion{
 	/*/ METODO PARA INSERTAR UNIFORMIDAD/*/
 	public void insertarUniformidad(Component parent, Empleado empleado, Uniformidad uniformidad){
 		try {	
-					boolean b = fechaDuplicada(empleado.getCodigo());					
+					boolean b = false;
+					System.out.println(empleado.getCodigo());
+					 b = fechaDuplicada(empleado.getCodigo());					
 					System.out.println("booleano de entrada al if para ingresar uniformidad " + b);
 					if(b) {
 						con = getConnection();
@@ -618,7 +625,6 @@ public class Conexion{
 						System.out.println("Se ha denegado duplicar fechas de entrega");
 						mensajes.mensajeInfo(parent, "Se ha denegado duplicar las fechas de entrega", "Denegado duplicar entrega");
 					}
-					System.out.println("finally de uniformidad");
 				
 		}catch(Exception e) {
 			System.out.println("Error en añadir uniforme(conexion): " + e.getMessage());

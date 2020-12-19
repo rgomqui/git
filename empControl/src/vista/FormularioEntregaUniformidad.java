@@ -254,10 +254,11 @@ public class FormularioEntregaUniformidad extends JDialog {
 				uniformidad.setZapatos(Integer.valueOf(comboZapatos.getSelectedItem().toString()));
 				uniformidad.setTipo(comboTipo.getSelectedItem().toString());
 				fechaHoy = new Date(local.toDate().getTime());
-				System.out.println("");
-				//uniformidad.setUltimaEntrega(new Date(local.toDate().getTime()));
-				//conexion.insertarUniformidad(getParent(), empleado, uniformidad);
-				
+				System.out.println(fechaHoy);
+				uniformidad.setUltimaEntrega(new Date(local.toDate().getTime()));
+				conexion.insertarUniformidad(getRootPane(), empleado, uniformidad);
+				System.out.println(uniformidad.toString());
+				cargarTabla();
 			}
 		});
 
@@ -293,8 +294,14 @@ public class FormularioEntregaUniformidad extends JDialog {
 		panelFondo.add(btnSalir);
 
 	}
+	
+	
+	//METODO PARA CARGAR LOS DATOS DE UNIFORMIDAD EN LA TABLA, CON BORRADO PREVIO PARA QUE NO SE SOLAPEN DATOS//
 	private void cargarTabla() {
 		try {
+			for(int i = 0; i <modeloDescansos.getRowCount();i++) {
+				modeloDescansos.removeRow(i);
+			}
 			listaUniformes = conexion.devolverUniformidad(empleado.getCodigo());
 			for(Uniformidad u : listaUniformes) {
 				lista = new Object[] {u.getCamisa(), u.getForro(), u.getPantalon(), u.getZapatos(), u.getTipo(), u.getUltimaEntrega()};
@@ -311,7 +318,7 @@ public class FormularioEntregaUniformidad extends JDialog {
 	}
 
 	private Date fechaHoy;
-	private LocalDate local;
+	private LocalDate local = new LocalDate();
 	private TableColumn columnaCamisa, columnaForro, columnaPantalon, columnaZapatos, columnaTipo, columnaFecha;
 	private JCheckBox checkCamisa, checkForro, checkPantalon, checkZapatos;
 	private DefaultTableModel modeloDescansos;
