@@ -229,7 +229,7 @@ public class FormularioActualizarEmpleado extends JDialog {
 								
 							
 							}catch(Exception e) {
-							System.out.println("error boton actualizar" + e.getCause().toString());	
+							System.out.println("error boton actualizar: " + e.getCause().toString());	
 							}
 							
 						}

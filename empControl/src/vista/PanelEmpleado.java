@@ -36,8 +36,9 @@ public class PanelEmpleado extends JPanel{
 		cuadro3();
 		cuadro4();
 		
-		conexion.devolverEmpleados(comboNombre, "");
 		
+		conexion.devolverEmpleados(comboNombre, "");
+		conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio,txtCompensatorio, txtVacaciones, txtPermisos);
 	}
 	
 	
@@ -279,13 +280,40 @@ public class PanelEmpleado extends JPanel{
 		
 		btnBuscarNombre = new JButton("Actualizar");
 		btnBuscarNombre.setBounds(235,325,95,20);
-		btnBuscarNombre.addActionListener(new ActionListener() {
+		btnBuscarNombre.addMouseListener(new MouseListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
 				conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
+				conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio,txtCompensatorio, txtVacaciones, txtPermisos);
 			}
 		});
+		
 		add(btnBuscarNombre);
 
 		//BUSQUEDA POR NOMBRE DE EMPLEADO
@@ -316,7 +344,7 @@ public class PanelEmpleado extends JPanel{
 					txtTallaInferior.setText(empleadoSeleccionado.getTallaInferior());
 					txtTallaCalzado.setText(empleadoSeleccionado.getTallaPie());
 					txtTipoCalzado.setText(empleadoSeleccionado.getTipoCalzado());
-
+					conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio, txtCompensatorio, txtVacaciones, txtPermisos);
 				}else {
 					txtCod.setText("");
 					txtNombre.setText("");
@@ -331,7 +359,7 @@ public class PanelEmpleado extends JPanel{
 				}
 				
 				//llamamos al metodo con consulta la base de datos y rellena las cajas de texto con los dias pendiente de descansar
-					//conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio,txtCompensatorio, txtVacaciones, txtPermisos);
+					
 				
 			}
 		});

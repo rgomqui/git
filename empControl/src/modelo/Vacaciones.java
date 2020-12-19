@@ -109,4 +109,13 @@ public class Vacaciones {
 	public void setDisfrutado(boolean disfrutado) {
 		this.disfrutado = disfrutado;
 	}
+
+	@Override
+	public String toString() {
+		return "Vacaciones [id=" + id + ", codigo=" + codigo + ", diasPorDisfrutar=" + diasPorDisfrutar + ", tipo="
+				+ tipo + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + ", fechaDevengo=" + fechaDevengo
+				+ ", mesCompleto=" + mesCompleto + ", disfrutado=" + disfrutado + "]";
+	}
+	
+	
 }

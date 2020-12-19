@@ -39,7 +39,13 @@ public class Conexion{
 	
 	///id12310196_rgomqui
 	
-	
+	public  Conexion() {
+		
+		//INICIALIZAMOS LA CONFIGURACION DE DIAS GUARDADA EN LA BASE DE DATOS//
+		configuracion= new Configuracion();
+		configuracion = recuperaConfig();
+		
+	}
     
   
 	/*/ METODO PARA CONECTAR CON LA BBDD/*/
@@ -101,6 +107,7 @@ public class Conexion{
 	/*/METODO PARA RELLENAR JCOMBOBOX DE BUSQUEDA DE EMPLEADOS/*/
 	public void devolverEmpleados(JComboBox comboNombre, String texto) {
 		try {
+			listarVacaciones();
 			listaEmpleados = new ArrayList();
 			if(texto != "") {
 				con = getConnection();
@@ -127,15 +134,18 @@ public class Conexion{
 			empleado.setTallaPie(rs.getString("tallaPie"));
 			empleado.setTipoCalzado(rs.getString("tipoCalzado"));
 			
-			listaEmpleados.add(empleado);	
+			
+			listaEmpleados.add(empleado);
+			
 		}
 			comboNombre.removeAllItems();
+			System.out.println("punto de control devolviendo empleados");
 			for(Empleado e:listaEmpleados)	{
 				comboNombre.addItem(e);
 			}
-		
+			
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Error devolviendo empleados: "+e.getMessage());
 		}finally{
 			try{
 		
@@ -147,7 +157,6 @@ public class Conexion{
 			e.printStackTrace();
 		}
 		}
-		
 		
 	}
 		
@@ -187,54 +196,88 @@ public class Conexion{
 		return null;
 	}
 
-	/*/ METODO PARA DEVOLVER DIAS DE DESCANSO PENDIENTES DE DISFRUTAR/*/
-	public void devolverVacaciones(int codigoEmpleado, JTextField txtConvenio, JTextField txtCompensatorio, JTextField txtVacaciones, JTextField txtPermisos) {
+	//METODO PARA LISTAR LAS VACACIONES DE LOS EMPLEADOS ACTUALES//
+	private void listarVacaciones() {
 		
-	diasPendienteVacaciones =0;
-	diasPendienteConvenio = 0;
-	diasPendientecompensatorio = 0;
-	diasPendientePermiso = 0;
-	
-	/*/PONEMOS EN BLANCO LAS CAJAS DE TEXTO/*/
-	txtConvenio.setText("");
-	txtCompensatorio.setText("");
-	txtVacaciones.setText("");
-	txtPermisos.setText("");
-	
 		try {
 			con = getConnection();
+			listaVacaciones = new ArrayList();
 			
-			/* hacemos una consulta de todos los descansos del trabajador*/
-			ps = con.prepareStatement("select * from vacaciones where codigo=?");
-			ps.setInt(1, codigoEmpleado);
+			ps = con.prepareStatement("select * from vacaciones;");
 			rs = ps.executeQuery();
 			
-			
+			 
+			 
 			while(rs.next()) {
-				Date fechaDevengo = rs.getDate("fechaDevengo"); // guardamos la fecha de devengo para ver a que año corresponde el descanso
-				listaVacaciones = new ArrayList();
+				
+				
 				vacaciones = new Vacaciones();
-			
-			//if(fechaDevengo !=null && fechaDevengo.after(fechaEneroActual.parse(unoEneroAñoActual)) &&  fechaDevengo.before(fechaEneroAñoSiguiente.parse(unoEneroAñoSiguiente)))System.out.println("Es de este año");
+				
+				//RELLENAMOS EL OBJETO VACACIONES//
+				
+				Date fechaDevengo = rs.getDate("fechaDevengo"); // guardamos la fecha de devengo para ver a que año corresponde el descanso
+				//if(fechaDevengo !=null && fechaDevengo.after(fechaEneroActual.parse(unoEneroAñoActual)) &&  fechaDevengo.before(fechaEneroAñoSiguiente.parse(unoEneroAñoSiguiente)))System.out.println("Es de este año");
 				vacaciones.setCodigo(rs.getInt("codigo"));
 				vacaciones.setId(rs.getInt("id"));
 				vacaciones.setDiasPorDisfrutar(rs.getInt("diasPorDisfrutar"));
 				vacaciones.setDisfrutado(rs.getBoolean("disfrutado"));
 				vacaciones.setFechaDevengo((rs.getDate("fechaDevengo")==null)?null:(rs.getDate("fechaDevengo")));
 			
-				if(rs.getBoolean("disfrutado")) {
-					vacaciones.setFechaInicio(rs.getDate("fechaInicio"));
-					vacaciones.setFechaFin(rs.getDate("fechaFin"));
+					if(rs.getBoolean("disfrutado")) {
+						vacaciones.setFechaInicio(rs.getDate("fechaInicio"));
+						vacaciones.setFechaFin(rs.getDate("fechaFin"));
+					}
+					
+				vacaciones.setMesCompleto(rs.getBoolean("mesCompleto"));
+				vacaciones.setObservaciones(rs.getString("observaciones"));
+				vacaciones.setTipo(rs.getString("tipo"));
+				
+				listaVacaciones.add(vacaciones);
+				
+				
+				
+				if(rs.isLast()) {
+					System.out.println("filas: "+rs.getRow());
+					System.out.println("columnas: "+rs.getMetaData().getColumnCount() );
 				}
-			vacaciones.setMesCompleto(rs.getBoolean("mesCompleto"));
-			vacaciones.setObservaciones(rs.getString("observaciones"));
-			vacaciones.setTipo(rs.getString("tipo"));
-			
-			listaVacaciones.add(vacaciones);  // guardamos en el arraylist todos los resultados de vacaciones del empleado buscado.
-			
 			}
+		}catch(Exception e) {
+			System.out.println("Error listando vacaciones" + e.getMessage());
+				//e.printStackTrace();	
+		}finally{
+			try{
+		
+			if(con!=null)con.close();
+			if(ps!=null)ps.close();
+			if(rs!=null)rs.close();	
+		}catch(Exception e) {
 			
-			for(Vacaciones v:listaVacaciones) {
+			
+			e.printStackTrace();
+		}
+		}
+	}
+	
+	/*/ METODO PARA DEVOLVER DIAS DE DESCANSO PENDIENTES DE DISFRUTAR/*/
+	public void devolverVacaciones(int codigoEmpleado, JTextField txtConvenio, JTextField txtCompensatorio, JTextField txtVacaciones, JTextField txtPermisos) {
+		
+		
+	diasPendienteVacaciones =0;
+	diasPendienteConvenio = 0;
+	diasPendientecompensatorio = 0;
+	diasPendientePermiso = 0;
+	
+	//PONEMOS EN BLANCO LAS CAJAS DE TEXTO//
+	txtConvenio.setText("");
+	txtCompensatorio.setText("");
+	txtVacaciones.setText("");
+	txtPermisos.setText("");
+	
+	try {
+		
+			
+		for(Vacaciones v:listaVacaciones) {
+			if(v.getCodigo()==codigoEmpleado) {
 				if(v.getTipo().equals("vacaciones")) {
 					diasPendienteVacaciones = Days.daysBetween(new LocalDate(v.getFechaInicio()), new LocalDate(v.getFechaFin())).getDays();
 					++diasPendienteVacaciones;
@@ -248,20 +291,23 @@ public class Conexion{
 				if(v.getTipo().equals("permiso")) {
 					diasPendientePermiso += v.getDiasPorDisfrutar();
 				}
-
 			}
+		}
+		
 			
-			configuracion = recuperaConfig();
 			diasPendienteVacaciones = configuracion.getDiasVacaciones()-diasPendienteVacaciones;
 			diasPendienteConvenio = configuracion.getDiasConvenio()-diasPendienteConvenio;
+			System.out.println("punto de control mostrando vacaciones");
 			
 			txtConvenio.setText(String.valueOf(diasPendienteConvenio));
 			txtCompensatorio.setText(String.valueOf(diasPendientecompensatorio));
 			txtVacaciones.setText(String.valueOf(diasPendienteVacaciones));
 			txtPermisos.setText(String.valueOf(diasPendientePermiso));
 			
+	
 		}catch(Exception e) {
-			System.out.println("No hay vacaciones para mostrar");
+			//System.out.println("No hay vacaciones para mostrar");
+			System.out.println("Error mostrando vacaciones " + e.getMessage());
 			//e.printStackTrace();
 			
 		}finally{
@@ -273,10 +319,11 @@ public class Conexion{
 		}catch(Exception e) {
 			
 			
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		}
 	}
+	
 	
 	/*/METODO PARA RESCATAR LA CONFIGURACION DE LA BASE DE DATOS/*/
 	
@@ -610,7 +657,7 @@ public class Conexion{
 	private SimpleDateFormat fechaEneroActual = new SimpleDateFormat("yyyy-MM-dd");
 	private SimpleDateFormat fechaEneroAñoSiguiente= new SimpleDateFormat("yyyy-MM-dd");
 	private Vacaciones vacaciones;
-	private Configuracion configuracion= new Configuracion();
+	private Configuracion configuracion;
 	private Uniformidad uniformidad;
 	private Empleado empleado;
 	private ArrayList<Empleado> listaEmpleados;
