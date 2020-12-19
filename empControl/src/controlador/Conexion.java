@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import org.joda.time.Days;
@@ -470,7 +471,7 @@ public class Conexion{
 	
 	
 	/*/METODO PARA CONFIRMAR INCLUIR REGISTRO CON FECHA DUPLICADA/*/
-	public boolean fechaDuplicada(int codigo) {
+	public boolean fechaDuplicada(int codigo, Component parent) {
 		
 		try {
 			con = getConnection();
@@ -478,19 +479,19 @@ public class Conexion{
 			ps.setInt(1,codigo);
 			rs = ps.executeQuery();
 		while(rs.next()) {
-			System.out.println("entra en el while de fecha duplicada, codigo empleado: "+codigo);
+			System.out.println("entra en el while de fecha duplicada, codigo empleado: "+codigo+"\n y con fecha anterior de: "+ rs.getDate(1));
 			Integer i = null;		
 			if(rs.getDate(1).compareTo(new Date(local.toDate().getTime()))==0) {
 				System.out.println("fechas iguales");
-				i =  mensajes.mensajePregunta(form.getParent(),"Ya existe un registro con la misma fecha para esa entrega de uniformidad.\n"+
+				i =  mensajes.mensajePregunta(parent,"Ya existe un registro con la misma fecha para esa entrega de uniformidad.\n"+
 						"¿Desea continuar con la insercion?", "Confirmar insercion");
 				System.out.println(i);		
 			}
 			
-			if(i!=null) {
-				return(i==0)?true:false;
-			}else {
+			if(i==JOptionPane.YES_NO_OPTION) {
 				return true;
+			}else {
+				return false;
 			}
 				
 		}
@@ -598,11 +599,11 @@ public class Conexion{
 		try {	
 					boolean b = false;
 					System.out.println(empleado.getCodigo());
-					 b = fechaDuplicada(empleado.getCodigo());					
+					 b = fechaDuplicada(empleado.getCodigo(), parent);					
 					System.out.println("booleano de entrada al if para ingresar uniformidad " + b);
 					if(b) {
 						con = getConnection();
-						ps = con.prepareStatement("insert into uniformidad (codigo, camisa, pantalon, zapatos, tipo, ultimaEntrega) values (?, ?, ?, ?, ?, ?, ?)");
+						ps = con.prepareStatement("insert into uniformidad (codigo, camisa, forro, pantalon, zapatos, tipo, ultimaEntrega) values (?, ?, ?, ?, ?, ?, ?)");
 						ps.setInt(1, empleado.getCodigo());
 						ps.setString(2, uniformidad.getCamisa());
 						ps.setString(3, uniformidad.getForro());

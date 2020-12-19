@@ -35,7 +35,7 @@ public class FormularioEntregaUniformidad extends JDialog {
 
 	public FormularioEntregaUniformidad(Empleado empleado) {
 		this.empleado = empleado;
-		listaUniformes = new ArrayList();
+		
 		
 		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -52,9 +52,9 @@ public class FormularioEntregaUniformidad extends JDialog {
 			
 			componentesGraficos();
 			cargarTabla();
-			
+				}
 		}
-	}		
+			
 
 	private void componentesGraficos() {
 		
@@ -85,7 +85,7 @@ public class FormularioEntregaUniformidad extends JDialog {
 		columnaZapatos.setPreferredWidth(50);
 		columnaTipo = tablaUniformidad.getColumn("Tipo");
 		columnaTipo.setResizable(false);
-		columnaTipo.setPreferredWidth(50);
+		columnaTipo.setPreferredWidth(60);
 		columnaFecha = tablaUniformidad.getColumn("fecha entrega");
 		columnaFecha.setResizable(false);
 		columnaFecha.setPreferredWidth(80);
@@ -254,7 +254,6 @@ public class FormularioEntregaUniformidad extends JDialog {
 				uniformidad.setZapatos(Integer.valueOf(comboZapatos.getSelectedItem().toString()));
 				uniformidad.setTipo(comboTipo.getSelectedItem().toString());
 				fechaHoy = new Date(local.toDate().getTime());
-				System.out.println(fechaHoy);
 				uniformidad.setUltimaEntrega(new Date(local.toDate().getTime()));
 				conexion.insertarUniformidad(getRootPane(), empleado, uniformidad);
 				System.out.println(uniformidad.toString());
@@ -299,19 +298,20 @@ public class FormularioEntregaUniformidad extends JDialog {
 	//METODO PARA CARGAR LOS DATOS DE UNIFORMIDAD EN LA TABLA, CON BORRADO PREVIO PARA QUE NO SE SOLAPEN DATOS//
 	private void cargarTabla() {
 		try {
-			for(int i = 0; i <modeloDescansos.getRowCount();i++) {
-				modeloDescansos.removeRow(i);
+			System.out.println("modelo uniformidad count: "+modeloDescansos.getRowCount());
+			int filas = 0;
+			while(modeloDescansos.getRowCount()>0) {
+				modeloDescansos.removeRow(0);
 			}
+
 			listaUniformes = conexion.devolverUniformidad(empleado.getCodigo());
 			for(Uniformidad u : listaUniformes) {
+				
 				lista = new Object[] {u.getCamisa(), u.getForro(), u.getPantalon(), u.getZapatos(), u.getTipo(), u.getUltimaEntrega()};
 				 System.out.println(u.getUltimaEntrega());
 				modeloDescansos.addRow(lista);
-					
 				}
-				
-				
-			
+			System.out.println("modelo uniformidad count: "+modeloDescansos.getRowCount());
 		}catch(Exception e){
 			System.out.println("Error en formulario entrega uniformidad");
 		}
