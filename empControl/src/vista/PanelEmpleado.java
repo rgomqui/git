@@ -3,28 +3,15 @@ package vista;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-
 import javax.swing.*;
-
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-
 import controlador.Conexion;
 import controlador.Mensajes;
-import modelo.Configuracion;
 import modelo.Empleado;
-import modelo.Uniformidad;
-import modelo.Vacaciones;
+
 public class PanelEmpleado extends JPanel{
 	
 	public PanelEmpleado(){
@@ -252,7 +239,7 @@ public class PanelEmpleado extends JPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {	
-				
+				formularioEntregaUniformidad = new FormularioEntregaUniformidad(empleadoSeleccionado);
 				
 			}
 		});
@@ -384,8 +371,7 @@ public class PanelEmpleado extends JPanel{
 			btnInsertar.addActionListener(new ActionListener() {
 								
 				@Override
-				public void actionPerformed(ActionEvent e) {				
-				//	vMenu = new VentanaMenuPrincipal();				
+				public void actionPerformed(ActionEvent e) {							
 					formularioEmpleadoNuevo = new FormularioEmpleadoNuevo(comboNombre);
 				}
 			});
@@ -441,17 +427,21 @@ public class PanelEmpleado extends JPanel{
 				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					
+					int i;
 					int respuesta =mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de querer eliminar el empleado seleccionado?", "Confirmar eliminar empleado");
-					int i = conexion.borrado("empleado", Integer.valueOf(txtCod.getText()));
-					if(i == 0) {
-						mensajes.mensajeInfo(getParent(),"Registro con el codigo "+txtCod.getText()+" eliminado correctamente.","registro eliminado correctamente" );
-						comboNombre.removeAllItems();
-						conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
-					}else if(i == 1){
+					
+					System.out.println("Borrado: " + respuesta);
+					if(respuesta == 0) {
+						i = conexion.borrado("empleado", Integer.valueOf(txtCod.getText()));
+						if(i >0) {
+							mensajes.mensajeInfo(getParent(),"Registro con el codigo "+txtCod.getText()+" eliminado correctamente.","registro eliminado correctamente" );
+							comboNombre.removeAllItems();
+							conexion.devolverEmpleados(comboNombre,"");
+						}else{
 						mensajes.mensajeInfo(getParent(),"Registro con el codigo "+txtCod.getText()+" no se ha podido eliminar correctamente.","error eliminando registro" );
+					}
 					}else {
-						mensajes.mensajeInfo(getParent(),"No existe ningun registro con el codigo " +txtCod.getText()+ ".","Registro inexistente " );
+						mensajes.mensajeInfo(getParent(),"Rechazado eliminar registro.","Rechazado eliminar registro" );
 					}
 					
 					
@@ -542,8 +532,8 @@ public class PanelEmpleado extends JPanel{
 	public JTextField txtUltimaEntrega, txtCod, txtVacaciones, txtPermisos, txtConvenio, txtCompensatorio, txtBuscarNombre;
 	public JButton btnInsertar, btnEliminar, btnActualizar, btnBuscarNombre, btnConsultaUniformidad;
 	private FormularioEmpleadoNuevo formularioEmpleadoNuevo;
+	private FormularioEntregaUniformidad formularioEntregaUniformidad;
 	public JComboBox<Empleado> comboNombre;
-	private VentanaMenuPrincipal vMenu;
 	private FormularioActualizarEmpleado formularioActualizarEmpleado;
 	Graphics g;
 		

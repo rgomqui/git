@@ -139,7 +139,6 @@ public class Conexion{
 			
 		}
 			comboNombre.removeAllItems();
-			System.out.println("punto de control devolviendo empleados");
 			for(Empleado e:listaEmpleados)	{
 				comboNombre.addItem(e);
 			}
@@ -161,26 +160,33 @@ public class Conexion{
 	}
 		
 	
-	/*/METODO PARA RELLENAR LOS CAMPOS DE UNIFORMIDAD AL SELECCIONAR EMPLEADO EN EL JCOMBOBOX/*/
-	public Uniformidad devolverUniformidad(int codigoEmpleado) {
+	/*/METODO PARA RELLENAR LA TABLA DE UNIFORMIDAD AL SELECCIONAR EMPLEADO EN EL JCOMBOBOX/*/
+	public ArrayList<Uniformidad> devolverUniformidad(int codigoEmpleado) {
 		try {
+			listaUniformes = new ArrayList();
 			con = getConnection();
+			
 			
 			ps=con.prepareStatement("select * from uniformidad where codigo=?");
 			ps.setInt(1, codigoEmpleado);
 			rs = ps.executeQuery();
+			
 			while(rs.next()) {
+				
 				uniformidad = new Uniformidad();
 				uniformidad.setCodigo(codigoEmpleado);
-				uniformidad.setInferior(rs.getString("inferior"));
-				uniformidad.setSuperior(rs.getString("superior"));
-				uniformidad.setTallaPie(rs.getDouble("tallaPie"));
+				uniformidad.setCamisa(rs.getString("camisa"));
+				uniformidad.setForro(rs.getString("forro"));
+				uniformidad.setPantalon(rs.getString("pantalon"));
+				uniformidad.setZapatos(rs.getInt("zapatos"));
 				uniformidad.setTipo(rs.getString("tipo"));
 				uniformidad.setUltimaEntrega(rs.getDate("ultimaEntrega"));
-				return uniformidad;
+				
+				listaUniformes.add(uniformidad);
 			}
-			return null;
+			return listaUniformes;
 		}catch(Exception e) {
+			System.out.println("Error devolviendo uniformidad");
 			e.printStackTrace();
 		}finally{
 			try{
@@ -189,6 +195,7 @@ public class Conexion{
 			if(ps!=null)ps.close();
 			if(rs!=null)rs.close();	
 		}catch(Exception e) {
+			
 			
 			e.printStackTrace();
 		}
@@ -234,12 +241,6 @@ public class Conexion{
 				
 				listaVacaciones.add(vacaciones);
 				
-				
-				
-				if(rs.isLast()) {
-					System.out.println("filas: "+rs.getRow());
-					System.out.println("columnas: "+rs.getMetaData().getColumnCount() );
-				}
 			}
 		}catch(Exception e) {
 			System.out.println("Error listando vacaciones" + e.getMessage());
@@ -297,7 +298,6 @@ public class Conexion{
 			
 			diasPendienteVacaciones = configuracion.getDiasVacaciones()-diasPendienteVacaciones;
 			diasPendienteConvenio = configuracion.getDiasConvenio()-diasPendienteConvenio;
-			System.out.println("punto de control mostrando vacaciones");
 			
 			txtConvenio.setText(String.valueOf(diasPendienteConvenio));
 			txtCompensatorio.setText(String.valueOf(diasPendientecompensatorio));
@@ -306,7 +306,6 @@ public class Conexion{
 			
 	
 		}catch(Exception e) {
-			//System.out.println("No hay vacaciones para mostrar");
 			System.out.println("Error mostrando vacaciones " + e.getMessage());
 			//e.printStackTrace();
 			
@@ -491,7 +490,7 @@ public class Conexion{
 				
 		}
 		}catch(Exception e) {
-			System.out.println(e.toString()+" 1");
+			System.out.println(e.toString()+" en fecha duplicada");
 			e.getMessage();
 		}finally {
 			try{
@@ -500,8 +499,7 @@ public class Conexion{
 				if(rs!=null)rs.close();
 				
 			}catch(Exception e) {
-				
-				System.out.println(e.toString() + "2");
+				e.printStackTrace();
 			}
 		}
 		return true;
@@ -523,7 +521,7 @@ public class Conexion{
 				ps.setInt(1, clausula);
 				System.out.println(ps.toString());
 				i = ps.executeUpdate();
-				return(i>0)?0:1;
+				return(i>0)?1:0;
 			}else {
 				return -1;
 			}
@@ -591,48 +589,39 @@ public class Conexion{
 	}
 	
 	/*/ METODO PARA INSERTAR UNIFORMIDAD/*/
-	public void insertarUniformidad(JLabel visor, Empleado empleado, Uniformidad uniformidad){
-		try {
-			if(fechaDuplicada(empleado.getCodigo())) {
-				con = getConnection();
-				ps = con.prepareStatement("select codigo from empleado where dni =?");
-				ps.setString(1,empleado.getDni());
-				rs = ps.executeQuery();
-
-				if(rs.next()) {
-					uniformidad.setCodigo(rs.getInt("codigo"));
-					System.out.println(uniformidad.toString());	
-					boolean b = fechaDuplicada(uniformidad.getCodigo());					
+	public void insertarUniformidad(Component parent, Empleado empleado, Uniformidad uniformidad){
+		try {	
+					boolean b = fechaDuplicada(empleado.getCodigo());					
 					System.out.println("booleano de entrada al if para ingresar uniformidad " + b);
 					if(b) {
 						con = getConnection();
-						ps = con.prepareStatement("insert into uniformidad (codigo, superior, inferior, tallaPie, tipo, ultimaEntrega) values (?, ?, ?, ?, ?, ?)");
-						ps.setInt(1, uniformidad.getCodigo());
-						ps.setString(2, uniformidad.getSuperior());
-						ps.setString(3, uniformidad.getInferior());
-						ps.setDouble(4, uniformidad.getTallaPie());
-						ps.setString(5, uniformidad.getTipo());
-						ps.setDate(6, uniformidad.getUltimaEntrega());
+						ps = con.prepareStatement("insert into uniformidad (codigo, camisa, pantalon, zapatos, tipo, ultimaEntrega) values (?, ?, ?, ?, ?, ?, ?)");
+						ps.setInt(1, empleado.getCodigo());
+						ps.setString(2, uniformidad.getCamisa());
+						ps.setString(3, uniformidad.getForro());
+						ps.setString(4, uniformidad.getPantalon());
+						ps.setDouble(5, uniformidad.getZapatos());
+						ps.setString(6, uniformidad.getTipo());
+						ps.setDate(7, uniformidad.getUltimaEntrega());
 
 						int i = ps.executeUpdate();
 						System.out.println("punto de control uniformidad3");
 
 						if(i == 1) {
 							System.out.println("** Uniformidad insertada correctamente para el empleado ");
-							mensajes.mensajeVisorEmpNuevo(visor, mensajes.verdeOscuro, "**Uniformidad insertada correctamente");
+							mensajes.mensajeInfo(parent, "Uniformidad insertada correctamente", "Insercion correcta");
 						}else {
 							System.out.println("** No se ha podido insertar la uniformidad para el empleado ");
-							mensajes.mensajeVisorEmpNuevo(visor, mensajes.rojo, "**Uniformidad no insertada");
+							mensajes.mensajeInfo(parent, "Uniformidad no se ha podido insertar", "Error insertando uniformidad");
 						}
 					}else {
 						System.out.println("Se ha denegado duplicar fechas de entrega");
-						mensajes.mensajeVisorEmpNuevo(visor, mensajes.rojo, "**Se ha denegado duplicar las fechas de entrega");
+						mensajes.mensajeInfo(parent, "Se ha denegado duplicar las fechas de entrega", "Denegado duplicar entrega");
 					}
 					System.out.println("finally de uniformidad");
-				}
-			}
+				
 		}catch(Exception e) {
-			e.printStackTrace();
+			System.out.println("Error en añadir uniforme(conexion): " + e.getMessage());
 		}finally {
 			try{
 				if(con!=null)con.close();
@@ -648,6 +637,8 @@ public class Conexion{
 
 	}
 	
+	
+	private ArrayList<Uniformidad> listaUniformes;
 	private int diasPendienteVacaciones;
 	private int diasPendienteConvenio;
 	private int diasPendientecompensatorio;
