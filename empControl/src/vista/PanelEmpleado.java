@@ -432,7 +432,7 @@ public class PanelEmpleado extends JPanel{
 					
 					System.out.println("Borrado: " + respuesta);
 					if(respuesta == 0) {
-						i = conexion.borrado("empleado", Integer.valueOf(txtCod.getText()));
+						i = conexion.borrado("empleado","codigo", Integer.valueOf(txtCod.getText()));
 						if(i >0) {
 							mensajes.mensajeInfo(getParent(),"Registro con el codigo "+txtCod.getText()+" eliminado correctamente.","registro eliminado correctamente" );
 							comboNombre.removeAllItems();

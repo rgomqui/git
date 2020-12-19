@@ -161,7 +161,7 @@ public class Conexion{
 	}
 		
 	
-	/*/METODO PARA RELLENAR LA TABLA DE UNIFORMIDAD AL SELECCIONAR EMPLEADO EN EL JCOMBOBOX/*/
+	/*/METODO PARA RELLENAR LA TABLA DE UNIFORMIDAD/*/
 	public ArrayList<Uniformidad> devolverUniformidad(int codigoEmpleado) {
 		try {
 			listaUniformes = new ArrayList();
@@ -175,6 +175,7 @@ public class Conexion{
 			while(rs.next()) {
 				
 				uniformidad = new Uniformidad();
+				uniformidad.setId(rs.getInt("id"));
 				uniformidad.setCodigo(codigoEmpleado);
 				uniformidad.setCamisa(rs.getString("camisa"));
 				uniformidad.setForro(rs.getString("forro"));
@@ -512,18 +513,18 @@ public class Conexion{
 	}
 	
 	
-	/*/METODO PARA BORRAR UNA FILA/*/
-	public int borrado(String tabla, Integer clausula) {
+	/*/METODO PARA BORRAR UNA FILA (si borra una o mas filas, devuelve uno sino devuelve cero o -1 en caso de error/*/
+	public int borrado(String tabla, String columna, Integer clausula) {
 		
 		try {
 			Integer i;
 			con = getConnection();
-			ps=con.prepareStatement("select * from "+tabla+" where codigo = ? ");
+			ps=con.prepareStatement("select * from "+tabla+" where "+columna+" = ? ");
 			ps.setInt(1, clausula);
 			rs = ps.executeQuery();
 			if(rs.next()) {
 				System.out.println("hay registros");
-				ps=con.prepareStatement("delete from "+tabla+" where codigo = ?");
+				ps=con.prepareStatement("delete from "+tabla+" where "+columna+" = ?");
 				ps.setInt(1, clausula);
 				System.out.println(ps.toString());
 				i = ps.executeUpdate();

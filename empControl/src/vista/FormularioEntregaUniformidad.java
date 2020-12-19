@@ -3,18 +3,23 @@ package vista;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.util.ArrayList;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -26,6 +31,7 @@ import javax.swing.table.TableColumn;
 import org.joda.time.LocalDate;
 
 import controlador.Conexion;
+import controlador.Mensajes;
 import modelo.Empleado;
 import modelo.Uniformidad;
 
@@ -56,11 +62,17 @@ public class FormularioEntregaUniformidad extends JDialog {
 		}
 			
 
+	public FormularioEntregaUniformidad() {
+		// TODO Auto-generated constructor stub
+	}
+
+
 	private void componentesGraficos() {
 		
 		//TABLA DE ENTREGAS//
 		
 		modeloDescansos = new DefaultTableModel();
+		modeloDescansos.addColumn("id");
 		modeloDescansos.addColumn("camisa");	
 		modeloDescansos.addColumn("forro");
 		modeloDescansos.addColumn("pantalon");
@@ -68,9 +80,12 @@ public class FormularioEntregaUniformidad extends JDialog {
 		modeloDescansos.addColumn("Tipo");
 		modeloDescansos.addColumn("fecha entrega");
 		tablaUniformidad = new JTable(modeloDescansos);
-		tablaUniformidad.setEnabled(false);
+		//tablaUniformidad.setEnabled(false);
 		scrollUniformidad = new JScrollPane(tablaUniformidad, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollUniformidad.setBounds(20, 100, 350, 180);
+		columnaCamisa = tablaUniformidad.getColumn("id");
+		columnaCamisa.setResizable(false);
+		columnaCamisa.setPreferredWidth(30);
 		columnaCamisa = tablaUniformidad.getColumn("camisa");
 		columnaCamisa.setResizable(false);
 		columnaCamisa.setPreferredWidth(40);
@@ -91,6 +106,35 @@ public class FormularioEntregaUniformidad extends JDialog {
 		columnaFecha.setPreferredWidth(80);
 		panelFondo.add(scrollUniformidad);
 
+		//popup menu tabla//
+		
+		JPopupMenu popup = new JPopupMenu();
+		
+		Image iconoPopup =  new ImageIcon("src/img/cancelar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+		JMenuItem menuItem1 = new JMenuItem("Eliminar registro", new ImageIcon(iconoPopup));
+		menuItem1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
+
+				Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaUniformidad.getSelectedRow(), 0).toString());
+				if(conexion.borrado("uniformidad", "id",id)==1) {
+					JOptionPane.showMessageDialog(getRootPane(), "registro Eliminado");
+					cargarTabla();
+				}else {
+					JOptionPane.showMessageDialog(getRootPane(), "registro  No Eliminado");
+				}
+			}else {
+				JOptionPane.showMessageDialog(getRootPane(), "Cancelado ELiminar");
+			}
+			}
+		});
+		
+		popup.add(menuItem1);
+		tablaUniformidad.setComponentPopupMenu(popup);
+		
 		//TITULO
 
 		lblTitulo = new JLabel("FORMULARIO PARA ENTREGAR UNIFORMIDAD");
@@ -248,16 +292,23 @@ public class FormularioEntregaUniformidad extends JDialog {
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				uniformidad = new Uniformidad();
-				uniformidad.setCamisa(comboCamisa.getSelectedItem().toString());
-				uniformidad.setForro(comboForroPolar.getSelectedItem().toString());
-				uniformidad.setPantalon(comboPantalon.getSelectedItem().toString());
-				uniformidad.setZapatos(Integer.valueOf(comboZapatos.getSelectedItem().toString()));
-				uniformidad.setTipo(comboTipo.getSelectedItem().toString());
-				fechaHoy = new Date(local.toDate().getTime());
-				uniformidad.setUltimaEntrega(new Date(local.toDate().getTime()));
-				conexion.insertarUniformidad(getRootPane(), empleado, uniformidad);
-				System.out.println(uniformidad.toString());
-				cargarTabla();
+				if(checkCamisa.isSelected() || checkForro.isSelected() || checkPantalon.isSelected() || checkZapatos.isSelected()) {
+					if(checkCamisa.isSelected())uniformidad.setCamisa(comboCamisa.getSelectedItem().toString());
+					if(checkForro.isSelected())uniformidad.setForro(comboForroPolar.getSelectedItem().toString());
+					if(checkPantalon.isSelected())uniformidad.setPantalon(comboPantalon.getSelectedItem().toString());
+					if(checkZapatos.isSelected()) {
+						uniformidad.setZapatos(Integer.valueOf(comboZapatos.getSelectedItem().toString()));
+						uniformidad.setTipo(comboTipo.getSelectedItem().toString());
+					}
+					fechaHoy = new Date(local.toDate().getTime());
+					uniformidad.setUltimaEntrega(new Date(local.toDate().getTime()));
+					conexion.insertarUniformidad(getRootPane(), empleado, uniformidad);
+					System.out.println(uniformidad.toString());
+					cargarTabla();			
+				}else {
+					mensajes.mensajeInfo(getRootPane(), "Porfavor, selecciona al menos una prenda para introducir el registro.", "Seleccione una prenda");
+					
+				}
 			}
 		});
 
@@ -307,7 +358,7 @@ public class FormularioEntregaUniformidad extends JDialog {
 			listaUniformes = conexion.devolverUniformidad(empleado.getCodigo());
 			for(Uniformidad u : listaUniformes) {
 				
-				lista = new Object[] {u.getCamisa(), u.getForro(), u.getPantalon(), u.getZapatos(), u.getTipo(), u.getUltimaEntrega()};
+				lista = new Object[] {u.getId(),u.getCamisa(), u.getForro(), u.getPantalon(), u.getZapatos(), u.getTipo(), u.getUltimaEntrega()};
 				 System.out.println(u.getUltimaEntrega());
 				modeloDescansos.addRow(lista);
 				}
@@ -317,6 +368,7 @@ public class FormularioEntregaUniformidad extends JDialog {
 		}
 	}
 
+	private Mensajes mensajes = new Mensajes();
 	private Date fechaHoy;
 	private LocalDate local = new LocalDate();
 	private TableColumn columnaCamisa, columnaForro, columnaPantalon, columnaZapatos, columnaTipo, columnaFecha;
@@ -325,7 +377,7 @@ public class FormularioEntregaUniformidad extends JDialog {
 	private Object [] lista;
 	private ArrayList<Uniformidad> listaUniformes;
 	private Uniformidad uniformidad;
-	private JTable  tablaUniformidad;
+	protected JTable  tablaUniformidad;
 	private JScrollPane  scrollUniformidad;
 	private Empleado empleado;
 	private Conexion conexion = new Conexion();
