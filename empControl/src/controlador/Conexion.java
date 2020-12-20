@@ -41,10 +41,8 @@ public class Conexion{
 	///id12310196_rgomqui
 	
 	public  Conexion() {
+
 		
-		//INICIALIZAMOS LA CONFIGURACION DE DIAS GUARDADA EN LA BASE DE DATOS//
-		configuracion= new Configuracion();
-		configuracion = recuperaConfig();
 		
 	}
     
@@ -266,7 +264,7 @@ public class Conexion{
 	/*/ METODO PARA DEVOLVER DIAS DE DESCANSO PENDIENTES DE DISFRUTAR/*/
 	public void devolverVacaciones(int codigoEmpleado, JTextField txtConvenio, JTextField txtCompensatorio, JTextField txtVacaciones, JTextField txtPermisos) {
 		
-		
+		configuracion = recuperaConfig();
 	diasPendienteVacaciones =0;
 	diasPendienteConvenio = 0;
 	diasPendientecompensatorio = 0;
@@ -299,7 +297,6 @@ public class Conexion{
 			}
 		}
 		
-			
 			diasPendienteVacaciones = configuracion.getDiasVacaciones()-diasPendienteVacaciones;
 			diasPendienteConvenio = configuracion.getDiasConvenio()-diasPendienteConvenio;
 			
@@ -408,7 +405,7 @@ public class Conexion{
 				e.printStackTrace();
 			}
 		}
-		
+		configuracion = recuperaConfig();
 	}
 
 

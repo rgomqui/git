@@ -316,7 +316,8 @@ private void cuadro2() {
 	private void cargarTabla(Empleado empleadoSeleccionado) {
 		try {
 			
-			System.out.println(empleadoSeleccionado.getCodigo());
+			
+			//borramos las tablas
 			while(modeloDescansos.getRowCount()>0) {
 				modeloDescansos.removeRow(0);
 			}
@@ -324,7 +325,12 @@ private void cuadro2() {
 				modeloVacaciones.removeRow(0);
 			}
 			
+			//añadimos dos filas vacias para poder interactuar con el menu contextual en las tablas//
+			modeloDescansos.addRow(new String[] {""});
+			modeloVacaciones.addRow(new String[] {""});
 			
+			
+			//bucle para añadir los descansos y vacaciones a las tablas//
 			listaCompleta = conexion.listarVacaciones();
 			for(Vacaciones v : listaCompleta) {
 				
@@ -345,7 +351,12 @@ private void cuadro2() {
 				}
 				 
 				}
-			System.out.println("modelo descansos count: "+modeloDescansos.getRowCount());
+			
+			//si se han añadido registros borra la fila vacia//
+			if(modeloVacaciones.getRowCount()>1)modeloVacaciones.removeRow(0);
+			if(modeloDescansos.getRowCount()>1)modeloDescansos.removeRow(0);
+			
+			
 		}catch(Exception e){
 			System.out.println("Error en formulario llenado de lista descansos");
 		}
