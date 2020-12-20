@@ -80,7 +80,6 @@ public class FormularioEntregaUniformidad extends JDialog {
 		modeloDescansos.addColumn("Tipo");
 		modeloDescansos.addColumn("fecha entrega");
 		tablaUniformidad = new JTable(modeloDescansos);
-		//tablaUniformidad.setEnabled(false);
 		scrollUniformidad = new JScrollPane(tablaUniformidad, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollUniformidad.setBounds(20, 100, 350, 180);
 		columnaCamisa = tablaUniformidad.getColumn("id");

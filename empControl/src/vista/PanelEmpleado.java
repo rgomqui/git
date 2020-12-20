@@ -319,6 +319,7 @@ public class PanelEmpleado extends JPanel{
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
 				
+				
 				empleadoSeleccionado =(Empleado) comboNombre.getSelectedItem();
 				if(arg0.getSource()==comboNombre && empleadoSeleccionado!=null) {
 					txtCod.setText(String.valueOf(empleadoSeleccionado.getCodigo()));
