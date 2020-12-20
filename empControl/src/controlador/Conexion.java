@@ -112,14 +112,14 @@ public class Conexion{
 			listaEmpleados = new ArrayList();
 			if(texto != "") {
 				con = getConnection();
-				ps = con.prepareStatement("select * from empleado where nombre LIKE ?  or apellido1 LIKE ? or apellido2 LIKE ?");
+				ps = con.prepareStatement("select * from empleado where nombre LIKE ?  or apellido1 LIKE ? or apellido2 LIKE ? order by apellido1 asc");
 				ps.setString(1, "%"+texto+"%");
 				ps.setString(2, "%"+texto+"%");
 				ps.setString(3, "%"+texto+"%");
 				rs = ps.executeQuery(); 
 			}else {
 				con = getConnection();
-				ps = con.prepareStatement("select * from empleado");
+				ps = con.prepareStatement("select * from empleado order by apellido1 asc");
 				rs = ps.executeQuery();
 			}
 		while(rs.next()) {
@@ -206,7 +206,7 @@ public class Conexion{
 	}
 
 	//METODO PARA LISTAR LAS VACACIONES DE LOS EMPLEADOS ACTUALES//
-	private void listarVacaciones() {
+	public ArrayList<Vacaciones> listarVacaciones() {
 		
 		try {
 			con = getConnection();
@@ -244,6 +244,7 @@ public class Conexion{
 				listaVacaciones.add(vacaciones);
 				
 			}
+			return listaVacaciones;
 		}catch(Exception e) {
 			System.out.println("Error listando vacaciones" + e.getMessage());
 				//e.printStackTrace();	
@@ -259,6 +260,7 @@ public class Conexion{
 			e.printStackTrace();
 		}
 		}
+		return null;
 	}
 	
 	/*/ METODO PARA DEVOLVER DIAS DE DESCANSO PENDIENTES DE DISFRUTAR/*/

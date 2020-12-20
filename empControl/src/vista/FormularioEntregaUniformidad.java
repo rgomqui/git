@@ -71,15 +71,15 @@ public class FormularioEntregaUniformidad extends JDialog {
 		
 		//TABLA DE ENTREGAS//
 		
-		modeloDescansos = new DefaultTableModel();
-		modeloDescansos.addColumn("id");
-		modeloDescansos.addColumn("camisa");	
-		modeloDescansos.addColumn("forro");
-		modeloDescansos.addColumn("pantalon");
-		modeloDescansos.addColumn("zapatos");
-		modeloDescansos.addColumn("Tipo");
-		modeloDescansos.addColumn("fecha entrega");
-		tablaUniformidad = new JTable(modeloDescansos);
+		modeloUniformidad = new DefaultTableModel();
+		modeloUniformidad.addColumn("id");
+		modeloUniformidad.addColumn("camisa");	
+		modeloUniformidad.addColumn("forro");
+		modeloUniformidad.addColumn("pantalon");
+		modeloUniformidad.addColumn("zapatos");
+		modeloUniformidad.addColumn("Tipo");
+		modeloUniformidad.addColumn("fecha entrega");
+		tablaUniformidad = new JTable(modeloUniformidad);
 		scrollUniformidad = new JScrollPane(tablaUniformidad, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollUniformidad.setBounds(20, 100, 350, 180);
 		columnaCamisa = tablaUniformidad.getColumn("id");
@@ -118,7 +118,7 @@ public class FormularioEntregaUniformidad extends JDialog {
 				
 				if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
 
-				Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaUniformidad.getSelectedRow(), 0).toString());
+				Integer id = Integer.valueOf(modeloUniformidad.getValueAt(tablaUniformidad.getSelectedRow(), 0).toString());
 				if(conexion.borrado("uniformidad", "id",id)==1) {
 					JOptionPane.showMessageDialog(getRootPane(), "registro Eliminado");
 					cargarTabla();
@@ -348,10 +348,10 @@ public class FormularioEntregaUniformidad extends JDialog {
 	//METODO PARA CARGAR LOS DATOS DE UNIFORMIDAD EN LA TABLA, CON BORRADO PREVIO PARA QUE NO SE SOLAPEN DATOS//
 	private void cargarTabla() {
 		try {
-			System.out.println("modelo uniformidad count: "+modeloDescansos.getRowCount());
+			System.out.println("modelo uniformidad count: "+modeloUniformidad.getRowCount());
 			int filas = 0;
-			while(modeloDescansos.getRowCount()>0) {
-				modeloDescansos.removeRow(0);
+			while(modeloUniformidad.getRowCount()>0) {
+				modeloUniformidad.removeRow(0);
 			}
 
 			listaUniformes = conexion.devolverUniformidad(empleado.getCodigo());
@@ -359,9 +359,9 @@ public class FormularioEntregaUniformidad extends JDialog {
 				
 				lista = new Object[] {u.getId(),u.getCamisa(), u.getForro(), u.getPantalon(), u.getZapatos(), u.getTipo(), u.getUltimaEntrega()};
 				 System.out.println(u.getUltimaEntrega());
-				modeloDescansos.addRow(lista);
+				modeloUniformidad.addRow(lista);
 				}
-			System.out.println("modelo uniformidad count: "+modeloDescansos.getRowCount());
+			System.out.println("modelo uniformidad count: "+modeloUniformidad.getRowCount());
 		}catch(Exception e){
 			System.out.println("Error en formulario entrega uniformidad");
 		}
@@ -372,7 +372,7 @@ public class FormularioEntregaUniformidad extends JDialog {
 	private LocalDate local = new LocalDate();
 	private TableColumn columnaCamisa, columnaForro, columnaPantalon, columnaZapatos, columnaTipo, columnaFecha;
 	private JCheckBox checkCamisa, checkForro, checkPantalon, checkZapatos;
-	private DefaultTableModel modeloDescansos;
+	private DefaultTableModel modeloUniformidad;
 	private Object [] lista;
 	private ArrayList<Uniformidad> listaUniformes;
 	private Uniformidad uniformidad;
