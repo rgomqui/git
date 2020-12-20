@@ -17,6 +17,7 @@ import javax.swing.table.TableColumn;
 
 import controlador.Conexion;
 import modelo.Empleado;
+import modelo.Uniformidad;
 
 public class PanelVacaciones extends JPanel{
 	
@@ -89,7 +90,7 @@ public class PanelVacaciones extends JPanel{
 				lblTituloDescansos.setBounds(140,40,150,20);
 				add(lblTituloDescansos);
 				
-				DefaultTableModel modeloDescansos = new DefaultTableModel();
+				modeloDescansos = new DefaultTableModel();
 				modeloDescansos.addColumn("fecha descanso");					
 				modeloDescansos.addColumn("tipo");
 				modeloDescansos.addColumn("fecha devengo");
@@ -107,6 +108,35 @@ public class PanelVacaciones extends JPanel{
 				columnaDevengo.setResizable(false);
 				columnaDevengo.setPreferredWidth(110);
 				add(scrollDescansos);
+				
+				//popup menu tabla//
+				
+				JPopupMenu popup = new JPopupMenu();
+				
+				Image iconoPopup =  new ImageIcon("src/img/cancelar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+				JMenuItem menuItem1 = new JMenuItem("Eliminar registro", new ImageIcon(iconoPopup));
+				menuItem1.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						/*
+						if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
+
+						Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaUniformidad.getSelectedRow(), 0).toString());
+						if(conexion.borrado("uniformidad", "id",id)==1) {
+							JOptionPane.showMessageDialog(getRootPane(), "registro Eliminado");
+							cargarTabla();
+						}else {
+							JOptionPane.showMessageDialog(getRootPane(), "registro  No Eliminado");
+						}
+					}else {
+						JOptionPane.showMessageDialog(getRootPane(), "Cancelado ELiminar");
+					}*/
+					}
+				});
+				
+				popup.add(menuItem1);
+				tablaDescansos.setComponentPopupMenu(popup);
 	}
 	
 private void cuadro2() {
@@ -118,7 +148,7 @@ private void cuadro2() {
 				lblTituloVacaciones.setBounds(415,40,150,20);
 				add(lblTituloVacaciones);
 				
-				DefaultTableModel modeloVacaciones = new DefaultTableModel();
+				modeloVacaciones = new DefaultTableModel();
 				modeloVacaciones.addColumn("fecha inicio");
 				modeloVacaciones.addColumn("fecha fin");
 				modeloVacaciones.addColumn("año devengo");
@@ -294,7 +324,28 @@ private void cuadro2() {
 			add(btnEliminar);
 		
 	}
+	private void cargarTabla() {
+		try {
+			/*
+			int filas = 0;
+			while(modeloDescansos.getRowCount()>0) {
+				modeloDescansos.removeRow(0);
+			}
+
+			listaDescansos = conexion.devolverUniformidad(empleado.getCodigo());
+			for(Uniformidad u : listaUniformes) {
+				
+				lista = new Object[] {u.getId(),u.getCamisa(), u.getForro(), u.getPantalon(), u.getZapatos(), u.getTipo(), u.getUltimaEntrega()};
+				 System.out.println(u.getUltimaEntrega());
+				modeloDescansos.addRow(lista);
+				}
+			System.out.println("modelo uniformidad count: "+modeloDescansos.getRowCount());*/
+		}catch(Exception e){
+			System.out.println("Error en formulario entrega uniformidad");
+		}
+	}
 	
+	private DefaultTableModel modeloDescansos, modeloVacaciones;
 	private Conexion conexion =  new Conexion();
 	private Empleado empleadoSeleccionado;
 	private Font fuente = new Font("arial", 1, 13);
