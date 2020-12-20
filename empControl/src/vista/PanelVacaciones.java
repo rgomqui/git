@@ -26,9 +26,6 @@ public class PanelVacaciones extends JPanel{
 	
 	public PanelVacaciones(){
 		
-		listaVacaciones = conexion.listarVacaciones();
-		
-		for(Vacaciones v:listaVacaciones)System.out.println(v.toString());
 		
 		setBackground(new Color(198,222,235));
 		setLayout(null);
@@ -51,17 +48,17 @@ public class PanelVacaciones extends JPanel{
 		g.drawRoundRect(10, 5, 590, 25,10,10);	 // CUADRO NOMBRE EMPLEADO
 		g.fillRoundRect(10, 5, 590, 25,10,10);
 		
-		g.drawRoundRect(10, 35, 335, 230,10,10);	 // CUADRO 1 "COMPENSATORIOS"
-		g.fillRoundRect(10, 35, 335, 230,10,10);
+		g.drawRoundRect(10, 35, 335, 260,10,10);	 // CUADRO 1 "DESCANSOS"
+		g.fillRoundRect(10, 35, 335, 260,10,10);
 		
-		g.drawRoundRect(350, 35, 250, 230,10,10);	// CUADRO 2 "DESCANSOS"
-		g.fillRoundRect(350, 35, 250, 230,10,10);
+		g.drawRoundRect(350, 35, 250, 260,10,10);	// CUADRO 2 "VACACIONES"
+		g.fillRoundRect(350, 35, 250, 260,10,10);
 		
-		g.drawRoundRect(10, 270, 335, 175, 10, 10);    // CUADRO 3 "BUSQUEDA EMPLEADO"
-		g.fillRoundRect(10, 270, 335, 175, 10, 10); 
+		g.drawRoundRect(10, 300, 335, 140, 10, 10);    // CUADRO 3 "BUSQUEDA EMPLEADO"
+		g.fillRoundRect(10, 300, 335, 140, 10, 10); 
 		
-		g.drawRoundRect(350, 270, 250, 175, 10, 10);   // CUADRO 4 "VACACIONES"
-		g.fillRoundRect(350, 270, 250, 175, 10, 10);
+		g.drawRoundRect(350, 300, 250, 140, 10, 10);   // CUADRO 4 "BOTON AÑADIR"
+		g.fillRoundRect(350, 300, 250, 140, 10, 10);
 		
 		
 	}
@@ -123,19 +120,56 @@ public class PanelVacaciones extends JPanel{
 				
 				add(scrollDescansos);
 				
-				//popup menu tabla//
 				
+	}
+	
+private void cuadro2() {
+		
+		//TITULO DEL CUADRO 2 "VACACIONES" 
+		
+				lblTituloVacaciones = new JLabel("VACACIONES");
+				lblTituloVacaciones.setFont(fuente);
+				lblTituloVacaciones.setBounds(415,40,150,20);
+				add(lblTituloVacaciones);
+				
+				modeloVacaciones = new DefaultTableModel(new String[] {"id", "fecha inicio", "fecha fin","año"},4 );
+				tablaVacaciones = new JTable(modeloVacaciones);
+				tablaVacaciones.setEnabled(true);
+				scrollVacaciones = new JScrollPane(tablaVacaciones, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				scrollVacaciones.setBounds(355, 60, 240, 200);
+				TableColumn columnaId = tablaVacaciones.getColumn("id");
+				columnaId.setResizable(false);
+				columnaId.setPreferredWidth(40);
+				TableColumn columnaInicio = tablaVacaciones.getColumn("fecha inicio");
+				columnaInicio.setResizable(false);
+				columnaInicio.setPreferredWidth(80);
+				TableColumn columnaFin = tablaVacaciones.getColumn("fecha fin");
+				columnaFin.setResizable(false);
+				columnaFin.setPreferredWidth(80);
+				TableColumn columnaAñoDevengo = tablaVacaciones.getColumn("año");
+				columnaAñoDevengo.setResizable(false);
+				columnaAñoDevengo.setPreferredWidth(40);
+				add(scrollVacaciones);
+				
+				
+//popup menu tabla//
+				try {
 				JPopupMenu popup = new JPopupMenu();
 				
 				Image iconoPopupEliminar =  new ImageIcon("src/img/cancelar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
 				JMenuItem menuItemEliminar = new JMenuItem("Eliminar registro", new ImageIcon(iconoPopupEliminar));
 				Image iconoPopupActualizar =  new ImageIcon("src/img/actualizar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
 				JMenuItem menuItemActualizar = new JMenuItem("Actualizar registro", new ImageIcon(iconoPopupActualizar));
+				Image iconoPopupAnadir = new ImageIcon("src/img/anadirDescanso.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+				JMenuItem menuItemAnadir = new JMenuItem("Añadir nuevo registro", new ImageIcon(iconoPopupAnadir));
 				menuItemEliminar.addActionListener(new ActionListener() {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						if(arg0.getSource().equals(tablaDescansos))System.out.println("evento eliminar en tabla descansos");
+						
+						System.out.println("eliminar");
+						//if(arg0.getSource().equals(modeloDescansos))System.out.println("evento eliminar en tabla descansos");
+						
 					}
 						/*
 						if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
@@ -153,39 +187,36 @@ public class PanelVacaciones extends JPanel{
 					}*/
 				});
 				
-				popup.add(menuItemEliminar);
-				popup.add(menuItemActualizar);
-				tablaDescansos.setComponentPopupMenu(popup);
-				//tablaVacaciones.setComponentPopupMenu(popup);
-	}
-	
-private void cuadro2() {
-		
-		//TITULO DEL CUADRO 2 "VACACIONES" 
-		
-				lblTituloVacaciones = new JLabel("VACACIONES");
-				lblTituloVacaciones.setFont(fuente);
-				lblTituloVacaciones.setBounds(415,40,150,20);
-				add(lblTituloVacaciones);
+				menuItemActualizar.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						// TODO Auto-generated method stub
+						formularioActualizarVacaciones = new FormularioActualizarVacaciones();		
+					}
+				});
 				
-				modeloVacaciones = new DefaultTableModel();
-				modeloVacaciones.addColumn("fecha inicio");
-				modeloVacaciones.addColumn("fecha fin");
-				modeloVacaciones.addColumn("año devengo");
-				tablaVacaciones = new JTable(modeloVacaciones);
-				tablaVacaciones.setEnabled(true);
-				scrollVacaciones = new JScrollPane(tablaVacaciones, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-				scrollVacaciones.setBounds(355, 60, 240, 200);
-				TableColumn columnaInicio = tablaVacaciones.getColumn("fecha inicio");
-				columnaInicio.setResizable(false);
-				columnaInicio.setPreferredWidth(80);
-				TableColumn columnaFin = tablaVacaciones.getColumn("fecha fin");
-				columnaFin.setResizable(false);
-				columnaFin.setPreferredWidth(80);
-				TableColumn columnaAñoDevengo = tablaVacaciones.getColumn("año devengo");
-				columnaAñoDevengo.setResizable(false);
-				columnaAñoDevengo.setPreferredWidth(80);
-				add(scrollVacaciones);
+				
+				menuItemAnadir.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						// TODO Auto-generated method stub
+						formularioVacacionesNueva = new FormularioVacacionesNueva();
+					}
+				});
+				
+				
+				popup.add(menuItemAnadir);
+				popup.add(menuItemActualizar);
+				popup.add(menuItemEliminar);
+				
+				tablaDescansos.setComponentPopupMenu(popup);
+				tablaVacaciones.setComponentPopupMenu(popup);
+				
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
 	}
 	
 	
@@ -196,7 +227,7 @@ private void cuadro2() {
 		
 		lblTituloBuscar = new JLabel("BUSCAR EMPLEADO");
 		lblTituloBuscar.setFont(fuente);
-		lblTituloBuscar.setBounds(110,270,150,20);
+		lblTituloBuscar.setBounds(110,310,150,20);
 		add(lblTituloBuscar);
 
 		
@@ -204,16 +235,16 @@ private void cuadro2() {
 		
 		lblBuscarNombre = new JLabel("Nombre:");
 		lblBuscarNombre.setFont(fuente);
-		lblBuscarNombre.setBounds(10, 310, 85, 20);
+		lblBuscarNombre.setBounds(10, 350, 85, 20);
 		lblBuscarNombre.setHorizontalAlignment(JLabel.RIGHT);
 		add(lblBuscarNombre);
 		
 		txtBuscarNombre = new JTextField();
-		txtBuscarNombre.setBounds(110,310,180,20);
+		txtBuscarNombre.setBounds(110,350,180,20);
 		add(txtBuscarNombre);
 		
 		btnBuscarNombre = new JButton("Actualizar");
-		btnBuscarNombre.setBounds(235,350,95,20);
+		btnBuscarNombre.setBounds(235,390,95,20);
 		btnBuscarNombre.addMouseListener(new MouseListener() {
 			
 			@Override
@@ -250,7 +281,7 @@ private void cuadro2() {
 		add(btnBuscarNombre);
 				
 				comboNombre = new JComboBox();
-				comboNombre.setBounds(40, 350, 190, 20);		
+				comboNombre.setBounds(40, 390, 190, 20);		
 				comboNombre.setEditable(false);
 				comboNombre.addItemListener(new ItemListener() {
 					
@@ -270,91 +301,32 @@ private void cuadro2() {
 				});
 				
 				add(comboNombre);
-		//BOTONES DE ACCION
 		
-			btnInsertar = new JButton();
-		 	btnInsertar.setBounds(50,380,40,40);
-		 	lblInsertar = new JLabel("AÑADIR NUEVO");
-		 	lblInsertar.setFont(new Font("arial", 1, 11));
-		 	lblInsertar.setBounds(30, 415, 100, 30);
-			try {
-			Image icono = new ImageIcon("src/img/anadirDescanso.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-			btnInsertar.setIcon(new ImageIcon(icono));
-			btnInsertar.setContentAreaFilled(false);
-			btnInsertar.setBorderPainted(false);
-			}catch ( Exception e){
-				System.out.println("Error al cargar la imagen " + e.getMessage());
-			}
+			lblMensaje = new JLabel("Porfavor, utilice el menu contextual");
+			lblMensaje.setFont(new Font("arial",1,12));
+			lblMensaje.setBounds(370, 350, 200, 30);
+			add(lblMensaje);
+			lblMensaje2 = new JLabel("para interactuar con las tablas.");
+			lblMensaje2.setFont(new Font("arial",1,11));
+			lblMensaje2.setBounds(370, 360, 200, 30);
+			add(lblMensaje2);
+
 			
-			btnInsertar.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					formularioVacacionesNueva = new FormularioVacacionesNueva();								
-				}
-			});
-			
-			add(lblInsertar);
-			add(btnInsertar);
-			 
-		// BOTON ACTUALIZAR
-			
-			btnActualizar = new JButton();
-			btnActualizar.setBounds(150,378,50,50);
-			lblActualizar = new JLabel("MODIFICAR");
-			lblActualizar.setFont(new Font("arial", 1, 11));
-			lblActualizar.setBounds(140, 415, 120, 30);
-			try {
-			Image icono = new ImageIcon("src/img/actualizar.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-			btnActualizar.setIcon(new ImageIcon(icono));
-			btnActualizar.setContentAreaFilled(false);
-			btnActualizar.setBorderPainted(false);
-			}catch ( Exception e){
-				System.out.println("Error al cargar la imagen " + e.getMessage());
-			}	
-			
-			btnActualizar.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					formularioActualizarVacaciones = new FormularioActualizarVacaciones();								
-				}
-			});
-			
-			add(lblActualizar);
-			add(btnActualizar);
-			
-			//BOTON ELIMINAR
-			
-			btnEliminar = new JButton();
-			btnEliminar.setBounds(260,378,40,40);
-			lblEliminar = new JLabel("ELIMINAR DESCANSO");
-			lblEliminar.setFont(new Font("arial", 1, 11));
-			lblEliminar.setBounds(225, 415, 120, 30);
-			try {
-			Image icono = new ImageIcon("src/img/cancelar.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-			btnEliminar.setIcon(new ImageIcon(icono));
-			btnEliminar.setContentAreaFilled(false);
-			btnEliminar.setBorderPainted(false);
-			}catch ( Exception e){
-				System.out.println("Error al cargar la imagen " + e.getMessage());
-			}	
-			
-			add(lblEliminar);
-			add(btnEliminar);
-		
 	}
 	private void cargarTabla(Empleado empleadoSeleccionado) {
 		try {
 			
 			System.out.println(empleadoSeleccionado.getCodigo());
-			int filas = 0;
 			while(modeloDescansos.getRowCount()>0) {
 				modeloDescansos.removeRow(0);
 			}
+			while(modeloVacaciones.getRowCount()>0) {
+				modeloVacaciones.removeRow(0);
+			}
 			
-			listaVacaciones = conexion.listarVacaciones();
-			for(Vacaciones v : listaVacaciones) {
+			
+			listaCompleta = conexion.listarVacaciones();
+			for(Vacaciones v : listaCompleta) {
 				
 				
 				if(!v.getTipo().equals("vacaciones") && v.getCodigo()==empleadoSeleccionado.getCodigo()) {
@@ -364,6 +336,13 @@ private void cuadro2() {
 					
 					modeloDescansos.addRow(listaDescansos);
 				}
+				if(v.getTipo().equals("vacaciones") && v.getCodigo()==empleadoSeleccionado.getCodigo()){
+					
+					String añoDevengo = String.valueOf(v.getFechaDevengo()).substring(0, 4);				
+					listaVacaciones = new Object[] {v.getId(), v.getFechaInicio(), v.getFechaFin(), añoDevengo};
+					
+					modeloVacaciones.addRow(listaVacaciones);
+				}
 				 
 				}
 			System.out.println("modelo descansos count: "+modeloDescansos.getRowCount());
@@ -372,14 +351,15 @@ private void cuadro2() {
 		}
 	}
 	
+	private Object listaVacaciones[];
 	private Object listaDescansos [];
 	private Mensajes mensajes = new Mensajes();
-	private ArrayList<Vacaciones> listaVacaciones;
+	private ArrayList<Vacaciones> listaCompleta;
 	private DefaultTableModel modeloDescansos, modeloVacaciones;
 	private Conexion conexion =  new Conexion();
 	private Empleado empleadoSeleccionado;
 	private Font fuente = new Font("arial", 1, 13);
-	private JLabel  lblTituloVacaciones, lblTituloDescansos,lblBuscarNombre,lblNombre, lblCodigo, lblTituloBuscar, lblEliminar, lblActualizar, lblInsertar;
+	private JLabel  lblTituloVacaciones, lblTituloDescansos,lblBuscarNombre,lblNombre, lblCodigo, lblTituloBuscar, lblEliminar, lblActualizar, lblInsertar, lblMensaje, lblMensaje2;
 	private JTextField txtBuscarNombre, txtNombreEmpleado, txtCodigo;
 	private JButton btnInsertar, btnActualizar, btnEliminar, btnBuscarNombre;
 	private PanelEmpleado empleado;
