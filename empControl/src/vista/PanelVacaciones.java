@@ -6,10 +6,17 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import controlador.Conexion;
+import modelo.Empleado;
 
 public class PanelVacaciones extends JPanel{
 	
@@ -20,6 +27,8 @@ public class PanelVacaciones extends JPanel{
 		cuadro1();	
 		cuadro2();
 		cuadro3();
+		
+		conexion.devolverEmpleados(comboNombre, "");
 	}
 	
 	
@@ -139,36 +148,78 @@ private void cuadro2() {
 		lblTituloBuscar.setFont(fuente);
 		lblTituloBuscar.setBounds(110,270,150,20);
 		add(lblTituloBuscar);
+
 		
-		
-		//BUSQUEDA POR CODIGO DE EMPLEADO
-		
-		lblBuscarCod = new JLabel("Código:");
-		lblBuscarCod.setFont(fuente);
-		lblBuscarCod.setBounds(10, 300, 100, 20);
-		lblBuscarCod.setHorizontalAlignment(JLabel.RIGHT);
-		add(lblBuscarCod);
-		
-		
-		comboCodigo = new JComboBox();
-		comboCodigo.setBounds(110, 300, 80, 20);
-		comboCodigo.setEditable(true);
-		add(comboCodigo);
-		
-		
-		//BUSQUEDA POR NOMBRE DE EMPLEADO
+		//label y jtextfield para busqueda por nombre//
 		
 		lblBuscarNombre = new JLabel("Nombre:");
 		lblBuscarNombre.setFont(fuente);
-		lblBuscarNombre.setBounds(10, 340, 100, 20);
+		lblBuscarNombre.setBounds(10, 310, 85, 20);
 		lblBuscarNombre.setHorizontalAlignment(JLabel.RIGHT);
 		add(lblBuscarNombre);
 		
-		comboNombre = new JComboBox();
-		comboNombre.setBounds(110, 340, 200, 20);		
-		comboNombre.setEditable(true);
-		add(comboNombre);
+		txtBuscarNombre = new JTextField();
+		txtBuscarNombre.setBounds(110,310,180,20);
+		add(txtBuscarNombre);
+		
+		btnBuscarNombre = new JButton("Actualizar");
+		btnBuscarNombre.setBounds(235,350,95,20);
+		btnBuscarNombre.addMouseListener(new MouseListener() {
 			
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
+				
+			}
+		});
+		add(btnBuscarNombre);
+				
+				comboNombre = new JComboBox();
+				comboNombre.setBounds(40, 350, 190, 20);		
+				comboNombre.setEditable(false);
+				comboNombre.addItemListener(new ItemListener() {
+					
+					@Override
+					public void itemStateChanged(ItemEvent arg0) {
+						
+						empleadoSeleccionado =(Empleado) comboNombre.getSelectedItem();
+						if(arg0.getSource()==comboNombre && empleadoSeleccionado!=null) {
+							txtCodigo.setFont(fuente);
+							txtCodigo.setText(String.valueOf(empleadoSeleccionado.getCodigo()));
+							txtNombreEmpleado.setFont(fuente);
+							txtNombreEmpleado.setText(empleadoSeleccionado.toString());
+							
+							// aqui van los metodos para recuperar las vacaciones
+						}
+					}
+				});
+				
+				add(comboNombre);
 		//BOTONES DE ACCION
 		
 			btnInsertar = new JButton();
@@ -244,16 +295,16 @@ private void cuadro2() {
 		
 	}
 	
-	
-	
+	private Conexion conexion =  new Conexion();
+	private Empleado empleadoSeleccionado;
 	private Font fuente = new Font("arial", 1, 13);
-	private JLabel  lblTituloVacaciones, lblTituloDescansos,lblBuscarNombre, lblBuscarCod, lblNombre, lblCodigo, lblTituloBuscar, lblEliminar, lblActualizar, lblInsertar;
-	private JTextField txtBuscarCod, txtBuscarNombre, txtNombreEmpleado, txtCodigo;
-	private JButton btnInsertar, btnActualizar, btnEliminar;
+	private JLabel  lblTituloVacaciones, lblTituloDescansos,lblBuscarNombre,lblNombre, lblCodigo, lblTituloBuscar, lblEliminar, lblActualizar, lblInsertar;
+	private JTextField txtBuscarNombre, txtNombreEmpleado, txtCodigo;
+	private JButton btnInsertar, btnActualizar, btnEliminar, btnBuscarNombre;
 	private PanelEmpleado empleado;
 	private FormularioVacacionesNueva formularioVacacionesNueva;
 	private FormularioActualizarVacaciones formularioActualizarVacaciones;
-	JComboBox comboNombre, comboCodigo;
+	JComboBox comboNombre;
 	JTable  tablaVacaciones, tablaDescansos;
 	
 	JScrollPane  scrollDescansos, scrollVacaciones;

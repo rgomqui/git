@@ -259,7 +259,7 @@ public class PanelEmpleado extends JPanel{
 		add(lblTituloBuscar);
 		
 		
-		//BUSQUEDA POR CODIGO DE EMPLEADO
+		//BUSQUEDA POR NOMBRE DE EMPLEADO
 		
 		txtBuscarNombre = new JTextField();
 		txtBuscarNombre.setBounds(110,290,180,20);
@@ -313,7 +313,7 @@ public class PanelEmpleado extends JPanel{
 		
 		comboNombre = new JComboBox();
 		comboNombre.setBounds(40, 325, 190, 20);		
-		comboNombre.setEditable(true);
+		comboNombre.setEditable(false);
 		comboNombre.addItemListener(new ItemListener() {
 			
 			@Override
