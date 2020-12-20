@@ -167,24 +167,19 @@ private void cuadro2() {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						
-						System.out.println("eliminar");
-						//if(arg0.getSource().equals(modeloDescansos))System.out.println("evento eliminar en tabla descansos");
-						
-					}
-						/*
-						if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
+					if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
 
 						Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
 						if(conexion.borrado("uniformidad", "id",id)==1) {
 							JOptionPane.showMessageDialog(getRootPane(), "registro Eliminado");
-							cargarTabla();
+							cargarTabla(empleadoSeleccionado);
 						}else {
 							JOptionPane.showMessageDialog(getRootPane(), "registro  No Eliminado");
 						}
 					}else {
 						JOptionPane.showMessageDialog(getRootPane(), "Cancelado ELiminar");
 					}
-					}*/
+					}
 				});
 				
 				menuItemActualizar.addActionListener(new ActionListener() {
