@@ -77,6 +77,20 @@ public class FormularioVacacionesNueva extends JDialog {
 				radioDescanso.setFont(fuente);
 				radioDescanso.setContentAreaFilled(false);
 				radioDescanso.setSelected(true);
+				radioDescanso.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						if(radioDescanso.isSelected()) {
+							txtAñoDevengoVacaciones.setEnabled(false);
+							
+							comboDiaInicioDescanso.setEnabled(true);
+							comboMesInicioDescanso.setEnabled(true);
+							comboAnioInicioDescanso.setEnabled(true);
+						}
+						
+					}
+				});
 				panelFondo.add(radioDescanso);
 				
 				
@@ -84,6 +98,19 @@ public class FormularioVacacionesNueva extends JDialog {
 				radioVacaciones.setBounds(400, 100, 200, 20);
 				radioVacaciones.setFont(fuente);
 				radioVacaciones.setContentAreaFilled(false);
+				radioVacaciones.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						if(radioVacaciones.isSelected()) {
+							txtAñoDevengoVacaciones.setEnabled(true);
+							comboDiaInicioDescanso.setEnabled(false);
+							comboMesInicioDescanso.setEnabled(false);
+							comboAnioInicioDescanso.setEnabled(false);
+						}
+						
+					}
+				});
 				panelFondo.add(radioVacaciones);
 				
 				
@@ -101,25 +128,25 @@ public class FormularioVacacionesNueva extends JDialog {
 				lblFechaInicio.setHorizontalAlignment(SwingConstants.RIGHT);
 				lblFechaInicio.setFont(fuente);
 				
-				comboDia = new JComboBox();
-				diaMes(32);
-				comboDia.setBounds(140, 140, 40, 20);
-				comboDia.setFont(fuente);
+				comboDiaInicioDescanso = new JComboBox();
+				rellenaDiaMes(31, comboDiaInicioDescanso);
+				comboDiaInicioDescanso.setBounds(140, 140, 40, 20);
+				comboDiaInicioDescanso.setFont(fuente);
 				JLabel lblBarra=new JLabel("/");
 				lblBarra.setBounds(185, 140, 10, 20);
 				panelFondo.add(lblBarra);
-				comboMes = new JComboBox();
+				comboMesInicioDescanso = new JComboBox();
 				for(String s : mes) {
-					comboMes.addItem(s);
+					comboMesInicioDescanso.addItem(s);
 				}
-				comboMes.setBounds(195, 140, 40, 20);
-				comboMes.setFont(fuente);
-				comboMes.addActionListener(new ActionListener() {
+				comboMesInicioDescanso.setBounds(195, 140, 40, 20);
+				comboMesInicioDescanso.setFont(fuente);
+				comboMesInicioDescanso.addActionListener(new ActionListener() {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						try {
-						actionComboMes();
+						actionComboMes(comboDiaInicioDescanso);
 						}catch(Exception e) {
 							e.printStackTrace();
 						}
@@ -129,56 +156,83 @@ public class FormularioVacacionesNueva extends JDialog {
 				JLabel lblBarra2 = new JLabel("/");
 				lblBarra2.setBounds(240, 140, 10, 20);
 				panelFondo.add(lblBarra2);
-				comboAnio = new JComboBox();
-				comboAnio.setBounds(250, 140, 60, 20);
-				comboAnio.setFont(fuente);
+				comboAnioInicioDescanso = new JComboBox();
+				comboAnioInicioDescanso.setBounds(250, 140, 60, 20);
+				comboAnioInicioDescanso.setFont(fuente);
 				for(String a : anio) {
-					comboAnio.addItem(a);
+					comboAnioInicioDescanso.addItem(a);
 				}
-				comboAnio.setSelectedItem(String.valueOf(local.getYear()));
-				comboAnio.addActionListener(new ActionListener() {
+				comboAnioInicioDescanso.setSelectedItem(String.valueOf(local.getYear()));
+				comboAnioInicioDescanso.addActionListener(new ActionListener() {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						actionComboMes();
+						actionComboMes(comboDiaInicioDescanso);
 						
 					}
 				});
 				
 				panelFondo.add(lblFechaInicio);
-				panelFondo.add(comboDia);
-				panelFondo.add(comboMes);
-				panelFondo.add(comboAnio);
+				panelFondo.add(comboDiaInicioDescanso);
+				panelFondo.add(comboMesInicioDescanso);
+				panelFondo.add(comboAnioInicioDescanso);
 				
 				
-				/*/ FECHA DEVENGO DESCANSOS/*/
+/*/ FECHA DEVENGO DESCANSOS/*/
 				
-				lblFechaDevengo = new JLabel("Fecha de Devengo:");
-				lblFechaDevengo.setBounds(60, 190, 130, 20);
+				lblFechaDevengo = new JLabel("Fecha devengo:");
+				lblFechaDevengo.setBounds(20, 190, 120, 20);
 				lblFechaDevengo.setHorizontalAlignment(SwingConstants.RIGHT);
 				lblFechaDevengo.setFont(fuente);
 				
-				txtDiaFechaDevengo = new JTextField("18");
-				txtDiaFechaDevengo.setBounds(190, 190, 20, 20);
-				txtDiaFechaDevengo.setFont(fuente);
+				comboDiaDevengoDescanso = new JComboBox();
+				rellenaDiaMes(31,comboDiaDevengoDescanso);
+				comboDiaDevengoDescanso.setBounds(140, 190, 40, 20);
+				comboDiaDevengoDescanso.setFont(fuente);
 				JLabel lblBarra3=new JLabel("/");
-				lblBarra3.setBounds(215, 190, 10, 20);
+				lblBarra3.setBounds(185, 140, 10, 20);
 				panelFondo.add(lblBarra3);
-				txtMesFechaDevengo = new JTextField("05");
-				txtMesFechaDevengo.setBounds(220, 190, 20, 20);
-				txtMesFechaDevengo.setFont(fuente);
-				JLabel lblBarra4 = new JLabel("/");
-				lblBarra4.setBounds(245, 190, 10, 20);
-				panelFondo.add(lblBarra4);
-				txtAnioFechaDevengo = new JTextField("1988");
-				txtAnioFechaDevengo.setBounds(250, 190, 40, 20);
-				txtAnioFechaDevengo.setFont(fuente);
+				comboMesDevengoDescanso = new JComboBox();
+				for(String s : mes) {
+					comboMesDevengoDescanso.addItem(s);
+				}
+				comboMesDevengoDescanso.setBounds(195, 190, 40, 20);
+				comboMesDevengoDescanso.setFont(fuente);
+				comboMesDevengoDescanso.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						try {
+						actionComboMes(comboDiaDevengoDescanso);
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
 				
+				JLabel lblBarra4 = new JLabel("/");
+				lblBarra4.setBounds(240, 190, 10, 20);
+				panelFondo.add(lblBarra4);
+				comboAnioDevengoDescanso = new JComboBox();
+				comboAnioDevengoDescanso.setBounds(250, 190, 60, 20);
+				comboAnioDevengoDescanso.setFont(fuente);
+				for(String a : anio) {
+					comboAnioDevengoDescanso.addItem(a);
+				}
+				comboAnioDevengoDescanso.setSelectedItem(String.valueOf(local.getYear()));
+				comboAnioDevengoDescanso.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						actionComboMes(comboDiaDevengoDescanso);
+						
+					}
+				});
 				
 				panelFondo.add(lblFechaDevengo);
-				panelFondo.add(txtDiaFechaDevengo);
-				panelFondo.add(txtMesFechaDevengo);
-				panelFondo.add(txtAnioFechaDevengo);
+				panelFondo.add(comboDiaDevengoDescanso);
+				panelFondo.add(comboMesDevengoDescanso);
+				panelFondo.add(comboAnioDevengoDescanso);
 				
 				
 				/*/COMBOBOX PARA SELECCIONAR EL TIPO DE DESCANSO/*/
@@ -190,9 +244,9 @@ public class FormularioVacacionesNueva extends JDialog {
 				
 				panelFondo.add(lblTipo);
 				
-				comboTipo = new JComboBox(new String[] {"Compensatorio","Libre Disposición","1ºExtra","2ºExtra","3ºExtra","4ºExtra","Navidad","Semana Santa"});
-				comboTipo.setBounds(140,250,150,20);
-				panelFondo.add(comboTipo);
+				comboTipoDescanso = new JComboBox(new String[] {"Compensatorio","Libre Disposición","1ºExtra","2ºExtra","3ºExtra","4ºExtra","Navidad","Semana Santa"});
+				comboTipoDescanso.setBounds(140,250,150,20);
+				panelFondo.add(comboTipoDescanso);
 				
 				
 				
@@ -220,56 +274,91 @@ public class FormularioVacacionesNueva extends JDialog {
 				lblFechaInicioVacaciones.setHorizontalAlignment(SwingConstants.RIGHT);
 				lblFechaInicioVacaciones.setFont(fuente);
 				
-				txtDiaFechaInicioVacaciones = new JTextField("18");
-				txtDiaFechaInicioVacaciones.setBounds(520, 140, 20, 20);
-				txtDiaFechaInicioVacaciones.setFont(fuente);
+				comboDiaInicioVacaciones = new JComboBox();
+				comboDiaInicioVacaciones.setBounds(520, 140, 40, 20);
+				comboDiaInicioVacaciones.setFont(fuente);
+				rellenaDiaMes(31, comboDiaInicioVacaciones);
 				JLabel lblBarra5=new JLabel("/");
-				lblBarra5.setBounds(545, 140, 10, 20);
+				lblBarra5.setBounds(565, 140, 10, 20);
 				panelFondo.add(lblBarra5);
-				txtMesFechaInicioVacaciones = new JTextField("05");
-				txtMesFechaInicioVacaciones.setBounds(550, 140, 20, 20);
-				txtMesFechaInicioVacaciones.setFont(fuente);
+				comboMesInicioVacaciones = new JComboBox();
+				comboMesInicioVacaciones.setBounds(575, 140, 40, 20);
+				comboMesInicioVacaciones.setFont(fuente);
+				for(String s : mes) {
+					comboMesInicioVacaciones.addItem(s);
+				}
+				comboMesInicioVacaciones.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						try {
+						actionComboMes(comboDiaInicioVacaciones);
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
 				JLabel lblBarra6 = new JLabel("/");
-				lblBarra6.setBounds(575, 140, 10, 20);
+				lblBarra6.setBounds(620, 140, 10, 20);
 				panelFondo.add(lblBarra6);
-				txtAnioFechaInicioVacaciones = new JTextField("1988");
-				txtAnioFechaInicioVacaciones.setBounds(580, 140, 40, 20);
-				txtAnioFechaInicioVacaciones.setFont(fuente);
+				ComboAnioInicioVacaciones = new JComboBox();
+				ComboAnioInicioVacaciones.setBounds(630, 140, 60, 20);
+				ComboAnioInicioVacaciones.setFont(fuente);
+				for(String a : anio) {
+					ComboAnioInicioVacaciones.addItem(a);
+				}
 				
 				
 				panelFondo.add(lblFechaInicioVacaciones);
-				panelFondo.add(txtDiaFechaInicioVacaciones);
-				panelFondo.add(txtMesFechaInicioVacaciones);
-				panelFondo.add(txtAnioFechaInicioVacaciones);	
+				panelFondo.add(comboDiaInicioVacaciones);
+				panelFondo.add(comboMesInicioVacaciones);
+				panelFondo.add(ComboAnioInicioVacaciones);	
 				
 				/*/ FECHA FIN VACACIONES/*/
 				
-				lblFechaFinVacaciones = new JLabel("Fecha de Fin:");
+				lblFechaFinVacaciones = new JLabel("Fecha finalizacion:");
 				lblFechaFinVacaciones.setBounds(390, 190, 130, 20);
 				lblFechaFinVacaciones.setHorizontalAlignment(SwingConstants.RIGHT);
 				lblFechaFinVacaciones.setFont(fuente);
 				
-				txtDiaFechaFinVacaciones = new JTextField("18");
-				txtDiaFechaFinVacaciones.setBounds(520, 190, 20, 20);
-				txtDiaFechaFinVacaciones.setFont(fuente);
+				comboDiaFinVacaciones = new JComboBox();
+				comboDiaFinVacaciones.setBounds(520, 190, 40, 20);
+				comboDiaFinVacaciones.setFont(fuente);
+				rellenaDiaMes(31, comboDiaFinVacaciones);
 				JLabel lblBarra7=new JLabel("/");
-				lblBarra7.setBounds(545, 140, 10, 20);
+				lblBarra7.setBounds(565, 190, 10, 20);
 				panelFondo.add(lblBarra7);
-				txtMesFechaFinVacaciones = new JTextField("05");
-				txtMesFechaFinVacaciones.setBounds(550, 190, 20, 20);
-				txtMesFechaFinVacaciones.setFont(fuente);
+				comboMesFinVacaciones = new JComboBox();
+				comboMesFinVacaciones.setBounds(575, 190, 40, 20);
+				comboMesFinVacaciones.setFont(fuente);
+				for(String s : mes) {
+					comboMesFinVacaciones.addItem(s);
+				}
+				comboMesFinVacaciones.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						try {
+						actionComboMes(comboDiaFinVacaciones);
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
 				JLabel lblBarra8 = new JLabel("/");
-				lblBarra8.setBounds(575, 140, 10, 20);
-				panelFondo.add(lblBarra8);
-				txtAnioFechaFinVacaciones = new JTextField("1988");
-				txtAnioFechaFinVacaciones.setBounds(580, 190, 40, 20);
-				txtAnioFechaFinVacaciones.setFont(fuente);
-				
+				lblBarra7.setBounds(620, 190, 10, 20);
+				panelFondo.add(lblBarra7);
+				ComboAnioFinVacaciones = new JComboBox();
+				ComboAnioFinVacaciones.setBounds(630, 190, 60, 20);
+				ComboAnioFinVacaciones.setFont(fuente);
+				for(String a : anio) {
+					ComboAnioFinVacaciones.addItem(a);
+				}
 				
 				panelFondo.add(lblFechaFinVacaciones);
-				panelFondo.add(txtDiaFechaFinVacaciones);
-				panelFondo.add(txtMesFechaFinVacaciones);
-				panelFondo.add(txtAnioFechaFinVacaciones);	
+				panelFondo.add(comboDiaFinVacaciones);
+				panelFondo.add(comboMesFinVacaciones);
+				panelFondo.add(ComboAnioFinVacaciones);	
 				
 				/*/ AÑO DEVENGO VACACIONES /*/
 				lblAñoDevengo = new JLabel("Año de devengo:");
@@ -277,12 +366,15 @@ public class FormularioVacacionesNueva extends JDialog {
 				lblAñoDevengo.setFont(fuente);
 				lblAñoDevengo.setHorizontalAlignment(SwingConstants.RIGHT);
 				
-				txtAñoDevengoVacaciones = new JTextField();
-				txtAñoDevengoVacaciones.setBounds(580, 250, 40, 20);
-				txtAñoDevengoVacaciones.setFont(fuente);
+				comboAnioDevengoVacaciones = new JComboBox();
+				comboAnioDevengoVacaciones.setBounds(580, 250, 60, 20);
+				comboAnioDevengoVacaciones.setFont(fuente);
+				for(String a : anio) {
+					comboAnioDevengoVacaciones.addItem(a);
+				}
 				
 				panelFondo.add(lblAñoDevengo);
-				panelFondo.add(txtAñoDevengoVacaciones);
+				panelFondo.add(comboAnioDevengoVacaciones);
 				
 					//BOTONES DE ACCION
 					
@@ -342,42 +434,42 @@ public class FormularioVacacionesNueva extends JDialog {
 	
 		}		
 		
-		private void diaMes(int x) {
+		private void rellenaDiaMes(int x, JComboBox componente) {
 			
 			for(int i = 1; i<=x; i++) {
 				dia.add(String.valueOf(i));
 			}
 			for(String d : dia) {
-				comboDia.addItem(d);;
+				componente.addItem(d);
 			}
 		}
 		
-		private void actionComboMes(){
+		private void actionComboMes(JComboBox combo){
 			dia.clear();
-			comboDia.removeAllItems();
+			combo.removeAllItems();
 			
-			if(Integer.valueOf(comboMes.getSelectedItem().toString())!= 2) {
-				if(Integer.valueOf(comboMes.getSelectedItem().toString())%2 ==0 && Integer.valueOf(comboMes.getSelectedItem().toString())<8) {
-					diaMes(30);
+			if(Integer.valueOf(combo.getSelectedItem().toString())!= 2) {
+				if(Integer.valueOf(combo.getSelectedItem().toString())%2 ==0 && Integer.valueOf(combo.getSelectedItem().toString())<8) {
+					rellenaDiaMes(30, combo);
 					System.out.println("Mes de 30 dias");
-				}else if(Integer.valueOf(comboMes.getSelectedItem().toString())%2 !=0 && Integer.valueOf(comboMes.getSelectedItem().toString())<8){
-					diaMes(31);
+				}else if(Integer.valueOf(combo.getSelectedItem().toString())%2 !=0 && Integer.valueOf(combo.getSelectedItem().toString())<8){
+					rellenaDiaMes(31, combo);
 					System.out.println("mes de 31 dias");
-				}else if(Integer.valueOf(comboMes.getSelectedItem().toString())%2 ==0 && Integer.valueOf(comboMes.getSelectedItem().toString())>=8){
-					diaMes(31);
+				}else if(Integer.valueOf(combo.getSelectedItem().toString())%2 ==0 && Integer.valueOf(combo.getSelectedItem().toString())>=8){
+					rellenaDiaMes(31, combo);
 					System.out.println("mes de 31 dias");
 				}else {
-					diaMes(30);
+					rellenaDiaMes(30, combo);
 					System.out.println("Mes de 30 dias");
 				}
 				
 			}else {
 				
-				if(calendar.isLeapYear(Integer.valueOf(comboAnio.getSelectedItem().toString()))){
-					diaMes(29);
+				if(calendar.isLeapYear(Integer.valueOf(combo.getSelectedItem().toString()))){
+					rellenaDiaMes(29, combo);
 					System.out.println("es febrero bisiesto");
 				}else {
-					diaMes(28);
+					rellenaDiaMes(28, combo);
 					System.out.println("es febrero NO bisiesto");
 				}
 				
@@ -390,17 +482,15 @@ public class FormularioVacacionesNueva extends JDialog {
 		private ArrayList <Vacaciones> listaDescansosEmpleado;
 		private Vacaciones vacaciones;
 		private Empleado empleadoSeleccionado;
-		private boolean bDescansos, bVacaciones;
 		private JScrollPane scrollDescansos;
 		private JTable tablaDescansos;
 		private Font fuente = new Font("arial", 1, 13);
 		private JLabel lblSalir, lblInsertar, lblTitulo, lblTipo, lblFechaInicio, lblFechaInicioVacaciones, lblFechaFinVacaciones, lblAñoDevengo, lblFechaDevengo;
-		private JTextField txtDiaFechaInicio, txtMesFechaInicio, txtAnioFechaInicio, txtAñoDevengo,txtDiaFechaFinVacaciones,
-		        txtMesFechaFinVacaciones, txtAnioFechaFinVacaciones, txtDiaFechaDevengo, txtMesFechaDevengo, txtAnioFechaDevengo, txtDiaFechaInicioVacaciones,
-		        txtMesFechaInicioVacaciones, txtAnioFechaInicioVacaciones, txtAñoDevengoVacaciones;
-		private JComboBox comboTipo, comboDia, comboMes, comboAnio;
+		private JTextField txtAñoDevengoVacaciones;
+		private JComboBox comboTipoDescanso, comboDiaInicioDescanso, comboMesInicioDescanso, comboAnioInicioDescanso, comboDiaDevengoDescanso, comboMesDevengoDescanso,
+				comboAnioDevengoDescanso, comboDiaInicioVacaciones, comboMesInicioVacaciones, ComboAnioInicioVacaciones,comboDiaFinVacaciones, comboMesFinVacaciones, ComboAnioFinVacaciones,
+				comboAnioDevengoVacaciones;
 		private ArrayList <String> dia,mes, anio;
-		//private String[] mes = new String[]{"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto","Septiembre", "Octubre", "Noviembre", "Diciembre"};
 		private JRadioButton radioDescanso, radioVacaciones;
 		private ButtonGroup grupo1;
 		private JButton btnInsertar, btnSalir;
