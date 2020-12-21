@@ -152,66 +152,8 @@ private void cuadro2() {
 				add(scrollVacaciones);
 				
 				
-//popup menu tabla//
-				try {
-				JPopupMenu popup = new JPopupMenu();
+				popupMenu();
 				
-				Image iconoPopupEliminar =  new ImageIcon("src/img/cancelar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-				JMenuItem menuItemEliminar = new JMenuItem("Eliminar registro", new ImageIcon(iconoPopupEliminar));
-				Image iconoPopupActualizar =  new ImageIcon("src/img/actualizar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-				JMenuItem menuItemActualizar = new JMenuItem("Actualizar registro", new ImageIcon(iconoPopupActualizar));
-				Image iconoPopupAnadir = new ImageIcon("src/img/anadirDescanso.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-				JMenuItem menuItemAnadir = new JMenuItem("Añadir nuevo registro", new ImageIcon(iconoPopupAnadir));
-				menuItemEliminar.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						
-					if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
-
-						Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
-						if(conexion.borrado("uniformidad", "id",id)==1) {
-							JOptionPane.showMessageDialog(getRootPane(), "registro Eliminado");
-							cargarTabla(empleadoSeleccionado);
-						}else {
-							JOptionPane.showMessageDialog(getRootPane(), "registro  No Eliminado");
-						}
-					}else {
-						JOptionPane.showMessageDialog(getRootPane(), "Cancelado ELiminar");
-					}
-					}
-				});
-				
-				menuItemActualizar.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						// TODO Auto-generated method stub
-						formularioActualizarVacaciones = new FormularioActualizarVacaciones();		
-					}
-				});
-				
-				
-				menuItemAnadir.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						// TODO Auto-generated method stub
-						formularioVacacionesNueva = new FormularioVacacionesNueva();
-					}
-				});
-				
-				
-				popup.add(menuItemAnadir);
-				popup.add(menuItemActualizar);
-				popup.add(menuItemEliminar);
-				
-				tablaDescansos.setComponentPopupMenu(popup);
-				tablaVacaciones.setComponentPopupMenu(popup);
-				
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
 	}
 	
 	
@@ -326,18 +268,18 @@ private void cuadro2() {
 			
 			
 			//bucle para añadir los descansos y vacaciones a las tablas//
-			listaCompleta = conexion.listarVacaciones();
-			for(Vacaciones v : listaCompleta) {
+			listaVacacionesEmpleado = conexion.devolverVacacionesEmpleado(empleadoSeleccionado.getCodigo());
+			for(Vacaciones v : listaVacacionesEmpleado) {
 				
 				
-				if(!v.getTipo().equals("vacaciones") && v.getCodigo()==empleadoSeleccionado.getCodigo()) {
+				if(!v.getTipo().equals("vacaciones")) {
 					
 					String añoDevengo = String.valueOf(v.getFechaDevengo()).substring(0, 4);				
 					listaDescansos = new Object[] {v.getId(), v.getFechaInicio(), v.getFechaFin(), añoDevengo, v.getTipo()};
 					
 					modeloDescansos.addRow(listaDescansos);
 				}
-				if(v.getTipo().equals("vacaciones") && v.getCodigo()==empleadoSeleccionado.getCodigo()){
+				if(v.getTipo().equals("vacaciones")){
 					
 					String añoDevengo = String.valueOf(v.getFechaDevengo()).substring(0, 4);				
 					listaVacaciones = new Object[] {v.getId(), v.getFechaInicio(), v.getFechaFin(), añoDevengo};
@@ -357,10 +299,140 @@ private void cuadro2() {
 		}
 	}
 	
+	
+	private void popupMenu() {
+		
+		//popup menu tabla descansos//
+		try {
+		popup = new JPopupMenu();
+		
+		Image iconoPopupEliminar =  new ImageIcon("src/img/cancelar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+		JMenuItem menuItemEliminar = new JMenuItem("Eliminar registro", new ImageIcon(iconoPopupEliminar));
+		Image iconoPopupActualizar =  new ImageIcon("src/img/actualizar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+		JMenuItem menuItemActualizar = new JMenuItem("Actualizar registro", new ImageIcon(iconoPopupActualizar));
+		Image iconoPopupAnadir = new ImageIcon("src/img/anadirDescanso.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+		JMenuItem menuItemAnadir = new JMenuItem("Añadir nuevo registro", new ImageIcon(iconoPopupAnadir));
+		menuItemEliminar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				System.out.println("eliminar en descansos");
+			/*	
+			if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
+
+				Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
+				if(conexion.borrado("uniformidad", "id",id)==1) {
+					JOptionPane.showMessageDialog(getRootPane(), "registro Eliminado");
+					cargarTabla(empleadoSeleccionado);
+				}else {
+					JOptionPane.showMessageDialog(getRootPane(), "registro  No Eliminado");
+				}
+			}else {
+				JOptionPane.showMessageDialog(getRootPane(), "Cancelado ELiminar");
+			}*/
+			}
+		});
+		
+		menuItemActualizar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				formularioActualizarVacaciones = new FormularioActualizarVacaciones();		
+			}
+		});
+		
+		
+		menuItemAnadir.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				formularioVacacionesNueva = new FormularioVacacionesNueva(empleadoSeleccionado, listaVacacionesEmpleado);
+			}
+		});
+		
+		
+		popup.add(menuItemAnadir);
+		popup.add(menuItemActualizar);
+		popup.add(menuItemEliminar);
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		//popup menu tabla vacaciones//
+		try {
+		popupVacaciones = new JPopupMenu();
+		
+		Image iconoPopupEliminar2 =  new ImageIcon("src/img/cancelar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+		JMenuItem menuItemEliminar2 = new JMenuItem("Eliminar registro", new ImageIcon(iconoPopupEliminar2));
+		Image iconoPopupActualizar2 =  new ImageIcon("src/img/actualizar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+		JMenuItem menuItemActualizar2 = new JMenuItem("Actualizar registro", new ImageIcon(iconoPopupActualizar2));
+		Image iconoPopupAnadir2 = new ImageIcon("src/img/anadirDescanso.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+		JMenuItem menuItemAnadir2 = new JMenuItem("Añadir nuevo registro", new ImageIcon(iconoPopupAnadir2));
+		menuItemEliminar2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				System.out.println("eliminar en vacaciones");
+			/*	
+			if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
+
+				Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
+				if(conexion.borrado("uniformidad", "id",id)==1) {
+					JOptionPane.showMessageDialog(getRootPane(), "registro Eliminado");
+					cargarTabla(empleadoSeleccionado);
+				}else {
+					JOptionPane.showMessageDialog(getRootPane(), "registro  No Eliminado");
+				}
+			}else {
+				JOptionPane.showMessageDialog(getRootPane(), "Cancelado ELiminar");
+			}*/
+			}
+		});
+		
+		menuItemActualizar2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				formularioActualizarVacaciones = new FormularioActualizarVacaciones();		
+			}
+		});
+		
+		
+		menuItemAnadir2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				formularioVacacionesNueva = new FormularioVacacionesNueva(empleadoSeleccionado, listaVacacionesEmpleado);
+			}
+		});
+		
+		
+		popupVacaciones.add(menuItemAnadir2);
+		popupVacaciones.add(menuItemActualizar2);
+		popupVacaciones.add(menuItemEliminar2);
+		
+		tablaDescansos.setComponentPopupMenu(popup);
+		tablaVacaciones.setComponentPopupMenu(popupVacaciones);
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private JPopupMenu popup, popupVacaciones;
 	private Object listaVacaciones[];
 	private Object listaDescansos [];
 	private Mensajes mensajes = new Mensajes();
-	private ArrayList<Vacaciones> listaCompleta;
+	private ArrayList<Vacaciones> listaVacacionesEmpleado;
 	private DefaultTableModel modeloDescansos, modeloVacaciones;
 	private Conexion conexion =  new Conexion();
 	private Empleado empleadoSeleccionado;

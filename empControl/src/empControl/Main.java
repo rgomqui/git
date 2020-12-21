@@ -14,6 +14,8 @@ public class  Main{
 			public void run() { 
 				//login.setVisible(true);
 				v2.setVisible(true);
+				
+				
 				} 
 			});
 		

@@ -202,6 +202,31 @@ public class Conexion{
 		}
 		return null;
 	}
+	
+	//METODO PARA DEVOLVER UNA LISTA DE LOS DESCANSOS DE UN DETERMINADO EMPLEADO//
+	
+	public ArrayList<Vacaciones> devolverVacacionesEmpleado(int codigoEmpleado) {
+		
+		try {
+			listaVacacionesEmpleado = new ArrayList();
+				for(Vacaciones v: listaVacaciones) {
+					if(v.getCodigo() == codigoEmpleado) {
+						listaVacacionesEmpleado.add(v);
+					}
+				}
+				
+			
+			return listaVacacionesEmpleado;
+		}catch(Exception e) {
+			System.out.println("Error listando vacaciones de empleado "+ codigoEmpleado +".  " + e.getMessage());
+				e.printStackTrace();	
+		}
+		
+		return null;
+		
+	}
+		
+	
 
 	//METODO PARA LISTAR LAS VACACIONES DE LOS EMPLEADOS ACTUALES//
 	public ArrayList<Vacaciones> listarVacaciones() {
@@ -659,7 +684,7 @@ public class Conexion{
 	private Uniformidad uniformidad;
 	private Empleado empleado;
 	private ArrayList<Empleado> listaEmpleados;
-	private ArrayList<Vacaciones> listaVacaciones;
+	private ArrayList<Vacaciones> listaVacaciones,listaVacacionesEmpleado;
 	private LocalDate local = new LocalDate();
 	private Mensajes mensajes = new Mensajes();
 	private FormularioEmpleadoNuevo form;

@@ -4,13 +4,13 @@ package vista;
 public class VentanaPrincipal{
 	
 	public void ventanaMenu() {
-		menu = new VentanaMenuPrincipal();
-		menu.setVisible(true);
+		//menu = new VentanaMenuPrincipal();
+		//menu.setVisible(true);
 		
 	}
 	public void ventanaLogin() {
-		login = new VentanaLogin();
-		login.setVisible(true);
+		//login = new VentanaLogin();
+		//login.setVisible(true);
 	}
 	public void ventanaEmpleado() {
 		try {
@@ -22,7 +22,7 @@ public class VentanaPrincipal{
 	}
 	
 	
-	
+	FormularioVacacionesNueva vac;
 	VentanaMenuPrincipal menu;
 	VentanaLogin login;
 	PanelEmpleado empleado;
