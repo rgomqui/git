@@ -25,6 +25,7 @@ public class FormularioVacacionesNueva extends JDialog {
 		
 			public FormularioVacacionesNueva(Empleado empleadoSeleccionado, ArrayList<Vacaciones> listaDescansosEmpleado){
 				
+			
 			this.empleadoSeleccionado = empleadoSeleccionado;
 			this.listaDescansosEmpleado = listaDescansosEmpleado;
 			anio = new ArrayList();
@@ -77,18 +78,12 @@ public class FormularioVacacionesNueva extends JDialog {
 				radioDescanso.setFont(fuente);
 				radioDescanso.setContentAreaFilled(false);
 				radioDescanso.setSelected(true);
+				
 				radioDescanso.addActionListener(new ActionListener() {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						if(radioDescanso.isSelected()) {
-							txtAñoDevengoVacaciones.setEnabled(false);
-							
-							comboDiaInicioDescanso.setEnabled(true);
-							comboMesInicioDescanso.setEnabled(true);
-							comboAnioInicioDescanso.setEnabled(true);
-						}
-						
+						actionRadioButon();
 					}
 				});
 				panelFondo.add(radioDescanso);
@@ -102,12 +97,7 @@ public class FormularioVacacionesNueva extends JDialog {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						if(radioVacaciones.isSelected()) {
-							txtAñoDevengoVacaciones.setEnabled(true);
-							comboDiaInicioDescanso.setEnabled(false);
-							comboMesInicioDescanso.setEnabled(false);
-							comboAnioInicioDescanso.setEnabled(false);
-						}
+						actionRadioButon();
 						
 					}
 				});
@@ -120,6 +110,8 @@ public class FormularioVacacionesNueva extends JDialog {
 				grupo1.add(radioDescanso);
 				grupo1.add(radioVacaciones);				
 								
+				
+				
 				
 				/*/ FECHA INICIO DESCANSOS/*/
 				
@@ -145,11 +137,9 @@ public class FormularioVacacionesNueva extends JDialog {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						try {
-						actionComboMes(comboDiaInicioDescanso);
-						}catch(Exception e) {
-							e.printStackTrace();
-						}
+						
+						actionComboMes(comboDiaInicioDescanso, comboMesInicioDescanso, comboAnioInicioDescanso);
+						
 					}
 				});
 				
@@ -167,7 +157,7 @@ public class FormularioVacacionesNueva extends JDialog {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						actionComboMes(comboDiaInicioDescanso);
+						actionComboMes(comboDiaInicioDescanso, comboMesInicioDescanso, comboAnioInicioDescanso);
 						
 					}
 				});
@@ -202,11 +192,9 @@ public class FormularioVacacionesNueva extends JDialog {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						try {
-						actionComboMes(comboDiaDevengoDescanso);
-						}catch(Exception e) {
-							e.printStackTrace();
-						}
+						
+						actionComboMes(comboDiaDevengoDescanso, comboMesDevengoDescanso, comboAnioDevengoDescanso);
+						
 					}
 				});
 				
@@ -224,7 +212,7 @@ public class FormularioVacacionesNueva extends JDialog {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						actionComboMes(comboDiaDevengoDescanso);
+						actionComboMes(comboDiaDevengoDescanso, comboMesDevengoDescanso, comboAnioDevengoDescanso);
 						
 					}
 				});
@@ -246,6 +234,14 @@ public class FormularioVacacionesNueva extends JDialog {
 				
 				comboTipoDescanso = new JComboBox(new String[] {"Compensatorio","Libre Disposición","1ºExtra","2ºExtra","3ºExtra","4ºExtra","Navidad","Semana Santa"});
 				comboTipoDescanso.setBounds(140,250,150,20);
+				comboTipoDescanso.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						actionCompensatorio();
+						
+					}
+				});
 				panelFondo.add(comboTipoDescanso);
 				
 				
@@ -291,11 +287,9 @@ public class FormularioVacacionesNueva extends JDialog {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						try {
-						actionComboMes(comboDiaInicioVacaciones);
-						}catch(Exception e) {
-							e.printStackTrace();
-						}
+						
+						actionComboMes(comboDiaInicioVacaciones, comboMesInicioVacaciones, ComboAnioInicioVacaciones);
+						
 					}
 				});
 				JLabel lblBarra6 = new JLabel("/");
@@ -307,7 +301,14 @@ public class FormularioVacacionesNueva extends JDialog {
 				for(String a : anio) {
 					ComboAnioInicioVacaciones.addItem(a);
 				}
-				
+				ComboAnioInicioVacaciones.addActionListener( new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						actionComboMes(comboDiaInicioVacaciones, comboMesInicioVacaciones, ComboAnioInicioVacaciones);
+						
+					}
+				});
 				
 				panelFondo.add(lblFechaInicioVacaciones);
 				panelFondo.add(comboDiaInicioVacaciones);
@@ -338,11 +339,9 @@ public class FormularioVacacionesNueva extends JDialog {
 					
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						try {
-						actionComboMes(comboDiaFinVacaciones);
-						}catch(Exception e) {
-							e.printStackTrace();
-						}
+						
+						actionComboMes(comboDiaFinVacaciones, comboMesFinVacaciones, ComboAnioFinVacaciones);
+						
 					}
 				});
 				JLabel lblBarra8 = new JLabel("/");
@@ -354,6 +353,15 @@ public class FormularioVacacionesNueva extends JDialog {
 				for(String a : anio) {
 					ComboAnioFinVacaciones.addItem(a);
 				}
+				
+				ComboAnioFinVacaciones.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						actionComboMes(comboDiaFinVacaciones, comboMesFinVacaciones, ComboAnioFinVacaciones);
+						
+					}
+				});
 				
 				panelFondo.add(lblFechaFinVacaciones);
 				panelFondo.add(comboDiaFinVacaciones);
@@ -429,52 +437,117 @@ public class FormularioVacacionesNueva extends JDialog {
 					panelFondo.add(lblSalir);
 					panelFondo.add(btnSalir);
 					
-					
-					
+					if(radioDescanso.isSelected() && comboAnioDevengoVacaciones.isEnabled())actionRadioButon();
 	
 		}		
 		
 		private void rellenaDiaMes(int x, JComboBox componente) {
-			
+			try {
+			dia.clear();
 			for(int i = 1; i<=x; i++) {
 				dia.add(String.valueOf(i));
 			}
 			for(String d : dia) {
 				componente.addItem(d);
 			}
+			}catch(Exception e) {
+				System.out.println("Error en rellena dia" + e.getMessage());
+			}
 		}
 		
-		private void actionComboMes(JComboBox combo){
+		private void actionComboMes(JComboBox comboDia, JComboBox comboEvento, JComboBox comboAnio){
+			try {
 			dia.clear();
-			combo.removeAllItems();
+			comboDia.removeAllItems();
 			
-			if(Integer.valueOf(combo.getSelectedItem().toString())!= 2) {
-				if(Integer.valueOf(combo.getSelectedItem().toString())%2 ==0 && Integer.valueOf(combo.getSelectedItem().toString())<8) {
-					rellenaDiaMes(30, combo);
+			if(Integer.valueOf(comboEvento.getSelectedItem().toString())!= 2) {
+				if(Integer.valueOf(comboEvento.getSelectedItem().toString())%2 ==0 && Integer.valueOf(comboEvento.getSelectedItem().toString())<8) {
+					rellenaDiaMes(30, comboDia);
 					System.out.println("Mes de 30 dias");
-				}else if(Integer.valueOf(combo.getSelectedItem().toString())%2 !=0 && Integer.valueOf(combo.getSelectedItem().toString())<8){
-					rellenaDiaMes(31, combo);
+				}else if(Integer.valueOf(comboEvento.getSelectedItem().toString())%2 !=0 && Integer.valueOf(comboEvento.getSelectedItem().toString())<8){
+					rellenaDiaMes(31, comboDia);
 					System.out.println("mes de 31 dias");
-				}else if(Integer.valueOf(combo.getSelectedItem().toString())%2 ==0 && Integer.valueOf(combo.getSelectedItem().toString())>=8){
-					rellenaDiaMes(31, combo);
+				}else if(Integer.valueOf(comboEvento.getSelectedItem().toString())%2 ==0 && Integer.valueOf(comboEvento.getSelectedItem().toString())>=8){
+					rellenaDiaMes(31, comboDia);
 					System.out.println("mes de 31 dias");
 				}else {
-					rellenaDiaMes(30, combo);
+					rellenaDiaMes(30, comboDia);
 					System.out.println("Mes de 30 dias");
 				}
 				
 			}else {
 				
-				if(calendar.isLeapYear(Integer.valueOf(combo.getSelectedItem().toString()))){
-					rellenaDiaMes(29, combo);
+				if(calendar.isLeapYear(Integer.valueOf(comboAnio.getSelectedItem().toString()))){
+					rellenaDiaMes(29, comboDia);
 					System.out.println("es febrero bisiesto");
 				}else {
-					rellenaDiaMes(28, combo);
+					rellenaDiaMes(28, comboDia);
 					System.out.println("es febrero NO bisiesto");
 				}
 				
 			}
+			}catch(Exception e) {
+				System.out.println("Error en combo mes");
+			}
 			
+		}
+		
+		//metodo para desactivar dia y mes en la fecha de devengo del descanso, si el dia es de convenio//
+		
+		private void actionCompensatorio() {
+			if(comboTipoDescanso.getSelectedItem().toString().equals("Compensatorio")) {
+				comboDiaDevengoDescanso.setEnabled(true);
+				comboMesDevengoDescanso.setEnabled(true);
+			}else {
+				comboDiaDevengoDescanso.setEnabled(false);
+				comboMesDevengoDescanso.setEnabled(false);
+			}
+		}
+		
+		private void actionRadioButon() {
+			
+			
+			
+			//si la opcion descanso esta seleccionada activamos su lado y desactivaos el lado de las vacaciones
+			if(radioDescanso.isSelected()) {
+				comboAnioDevengoVacaciones.setEnabled(false);
+				comboDiaInicioVacaciones.setEnabled(false);
+				comboMesInicioVacaciones.setEnabled(false);
+				ComboAnioInicioVacaciones.setEnabled(false);
+				comboDiaFinVacaciones.setEnabled(false);
+				comboMesFinVacaciones.setEnabled(false);
+				ComboAnioFinVacaciones.setEnabled(false);
+				
+				
+				comboDiaDevengoDescanso.setEnabled(true);
+				comboMesDevengoDescanso.setEnabled(true);
+				comboAnioDevengoDescanso.setEnabled(true);							
+				comboDiaInicioDescanso.setEnabled(true);
+				comboMesInicioDescanso.setEnabled(true);
+				comboAnioInicioDescanso.setEnabled(true);
+				comboTipoDescanso.setEnabled(true);
+				
+				actionCompensatorio();// comprobamos que tipo de permiso es, para volver a desactivar dia y mes en descanso, si el tipo de permiso es de convenio
+				
+			}else {
+				
+				//si esta seleccionado vacaciones, viceversa
+				comboAnioDevengoVacaciones.setEnabled(true);
+				comboDiaInicioVacaciones.setEnabled(true);
+				comboMesInicioVacaciones.setEnabled(true);
+				ComboAnioInicioVacaciones.setEnabled(true);
+				comboDiaFinVacaciones.setEnabled(true);
+				comboMesFinVacaciones.setEnabled(true);
+				ComboAnioFinVacaciones.setEnabled(true);
+				
+				comboDiaDevengoDescanso.setEnabled(false);
+				comboMesDevengoDescanso.setEnabled(false);
+				comboAnioDevengoDescanso.setEnabled(false);							
+				comboDiaInicioDescanso.setEnabled(false);
+				comboMesInicioDescanso.setEnabled(false);
+				comboAnioInicioDescanso.setEnabled(false);
+				comboTipoDescanso.setEnabled(false);
+			}
 		}
 		
 		private LocalDate local = new LocalDate();
