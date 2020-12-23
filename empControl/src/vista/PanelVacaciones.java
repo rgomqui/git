@@ -116,7 +116,7 @@ public class PanelVacaciones extends JPanel{
 				columnaDevengo.setPreferredWidth(40);
 				TableColumn columnaTipo = tablaDescansos.getColumn("tipo");
 				columnaTipo.setResizable(false);
-				columnaTipo.setPreferredWidth(85);
+				columnaTipo.setPreferredWidth(100);
 				
 				add(scrollDescansos);
 				
@@ -272,14 +272,14 @@ private void cuadro2() {
 			for(Vacaciones v : listaVacacionesEmpleado) {
 				
 				
-				if(!v.getTipo().equals("vacaciones")) {
+				if(!v.getTipo().equals("Vacaciones")) {
 					
 					String añoDevengo = String.valueOf(v.getFechaDevengo()).substring(0, 4);				
 					listaDescansos = new Object[] {v.getId(), v.getFechaInicio(), v.getFechaFin(), añoDevengo, v.getTipo()};
 					
 					modeloDescansos.addRow(listaDescansos);
 				}
-				if(v.getTipo().equals("vacaciones")){
+				if(v.getTipo().equals("Vacaciones")){
 					
 					String añoDevengo = String.valueOf(v.getFechaDevengo()).substring(0, 4);				
 					listaVacaciones = new Object[] {v.getId(), v.getFechaInicio(), v.getFechaFin(), añoDevengo};

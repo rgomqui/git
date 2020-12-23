@@ -554,22 +554,28 @@ public class FormularioVacacionesNueva extends JDialog {
 			if(comboTipoDescanso.getSelectedItem().toString().equals("Compensatorio")) {
 				comboDiaDevengoDescanso.setEnabled(true);
 				comboMesDevengoDescanso.setEnabled(true);
+				checkGuardar.setEnabled(true);
 			}else {
 				comboDiaDevengoDescanso.setEnabled(false);
+				comboDiaDevengoDescanso.setSelectedIndex(0);
 				comboMesDevengoDescanso.setEnabled(false);
+				comboMesDevengoDescanso.setSelectedIndex(0);
+				checkGuardar.setSelected(false);
+				checkGuardar.setEnabled(false);
+				
 			}
 		}
 		
 		/// configurando actualmente este metodo
 		private void cargarTabla() {
-
+				try {
 			//primero dejamos en blanco la tabla//
 			while(modeloDescansos.getRowCount()>0) {
 				modeloDescansos.removeRow(0);
 			}
 			
-			// despues de vaciar la tabla, procedemos a llenar los datos automaticos//
-			for(int x = 0 ; x<8; x++) {
+			// despues de vaciar la tabla, procedemos a llenar los datos automaticos sin el compensatorio (empzando en 1)//
+			for(int x = 1 ; x<8; x++) {
 				datosTablaDescansos = new String[] {listaPermisos[x], String.valueOf(local.getYear()), "1"};
 				modeloDescansos.addRow(datosTablaDescansos);
 			}
@@ -579,8 +585,9 @@ public class FormularioVacacionesNueva extends JDialog {
 			
 			for(Vacaciones v : listaDescansosEmpleado) {
 				datosTablaDescansos = new String[] {v.getTipo(), v.getFechaDevengo().toString().substring(0, 4), String.valueOf(v.getDiasPorDisfrutar())};
+				System.out.println("control en cargar tabla1");
 				
-				System.err.println("columna tipo dato de entrada: "+datosTablaDescansos[0] + " - presente en la lista: "+modeloDescansos.getValueAt(7, 0));
+				//System.err.println("columna tipo dato de entrada: "+datosTablaDescansos[0] + " - presente en la lista: "+modeloDescansos.getValueAt(7, 0));
 				
 				//comprobamos si coincide el descanso pendiente de disfrutar con algunos de los añadidos automaticamente en la lista
 				for(int j = 0; j < modeloDescansos.getRowCount();j++) {	
@@ -589,10 +596,10 @@ public class FormularioVacacionesNueva extends JDialog {
 					if(String.valueOf(modeloDescansos.getValueAt(j, 0)).equalsIgnoreCase(datosTablaDescansos[0]) && String.valueOf(modeloDescansos.getValueAt(j, 1)).equalsIgnoreCase(datosTablaDescansos[1])) {
 					
 						modeloDescansos.removeRow(j);
-						
+						System.out.println("control en cargar tabla1");
 					}
 				}
-				//modeloDescansos.addRow(datosTablaDescansos);
+				modeloDescansos.addRow(datosTablaDescansos);
 				
 				
 				//comprobamos que no sean vacaciones//
@@ -616,6 +623,9 @@ public class FormularioVacacionesNueva extends JDialog {
 				}
 			
 			System.out.println("lista permisos2: " + modeloDescansos.getRowCount());
+				}catch(Exception e) {
+					System.out.println("excepcion en cargar tabla: "+ e.getMessage());
+				}
 
 		}
 		
