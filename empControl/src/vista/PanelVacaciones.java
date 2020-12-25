@@ -31,7 +31,7 @@ public class PanelVacaciones extends JPanel{
 		setLayout(null);
 		cuadroTitulo();
 		cuadro1();	
-		cuadro2();
+		//cuadro2();
 		cuadro3();
 		
 		
@@ -48,12 +48,9 @@ public class PanelVacaciones extends JPanel{
 		g.drawRoundRect(10, 5, 590, 25,10,10);	 // CUADRO NOMBRE EMPLEADO
 		g.fillRoundRect(10, 5, 590, 25,10,10);
 		
-		g.drawRoundRect(10, 35, 335, 260,10,10);	 // CUADRO 1 "DESCANSOS"
-		g.fillRoundRect(10, 35, 335, 260,10,10);
-		
-		g.drawRoundRect(350, 35, 250, 260,10,10);	// CUADRO 2 "VACACIONES"
-		g.fillRoundRect(350, 35, 250, 260,10,10);
-		
+		g.drawRoundRect(10, 35, 590, 260,10,10);	 // CUADRO 1 "DESCANSOS" prueba cuadro corrido y una unica tabla
+		g.fillRoundRect(10, 35, 590, 260,10,10);
+
 		g.drawRoundRect(10, 300, 335, 140, 10, 10);    // CUADRO 3 "BUSQUEDA EMPLEADO"
 		g.fillRoundRect(10, 300, 335, 140, 10, 10); 
 		
@@ -92,16 +89,11 @@ public class PanelVacaciones extends JPanel{
 		
 		//TITULO DEL CUADRO 1 "DESCANSOS"
 		
-				lblTituloDescansos = new JLabel("DESCANSOS");
-				lblTituloDescansos.setFont(fuente);
-				lblTituloDescansos.setBounds(140,40,150,20);
-				add(lblTituloDescansos);
-				
-				modeloDescansos = new DefaultTableModel(new String[] {"id", "fecha inicio", "fecha fin","año", "tipo"}, 5);
+				modeloDescansos = new DefaultTableModel(new String[] {"id", "fecha inicio", "fecha fin","año", "tipo", "dias por disfrutar", "observaciones"}, 5);
 				tablaDescansos = new JTable(modeloDescansos);
 				tablaDescansos.setEnabled(true);
 				scrollDescansos = new JScrollPane(tablaDescansos, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-				scrollDescansos.setBounds(15, 60, 325, 200);
+				scrollDescansos.setBounds(15, 40, 580, 250);
 				TableColumn columnaId = tablaDescansos.getColumn("id");
 				columnaId.setResizable(false);
 				columnaId.setPreferredWidth(40);
@@ -117,9 +109,15 @@ public class PanelVacaciones extends JPanel{
 				TableColumn columnaTipo = tablaDescansos.getColumn("tipo");
 				columnaTipo.setResizable(false);
 				columnaTipo.setPreferredWidth(100);
+				TableColumn columnaPendientes = tablaDescansos.getColumn("dias por disfrutar");
+				columnaPendientes.setResizable(false);
+				columnaPendientes.setPreferredWidth(100);
+				TableColumn columnaObservaciones = tablaDescansos.getColumn("observaciones");
+				columnaObservaciones.setResizable(false);
+				columnaObservaciones.setPreferredWidth(145);
 				
 				add(scrollDescansos);
-				
+				popupMenu();
 				
 	}
 	
@@ -152,7 +150,7 @@ private void cuadro2() {
 				add(scrollVacaciones);
 				
 				
-				popupMenu();
+				
 				
 	}
 	
@@ -253,44 +251,27 @@ private void cuadro2() {
 	private void cargarTabla(Empleado empleadoSeleccionado) {
 		try {
 			
-			
 			//borramos las tablas
 			while(modeloDescansos.getRowCount()>0) {
 				modeloDescansos.removeRow(0);
 			}
-			while(modeloVacaciones.getRowCount()>0) {
-				modeloVacaciones.removeRow(0);
-			}
 			
 			//añadimos dos filas vacias para poder interactuar con el menu contextual en las tablas//
 			modeloDescansos.addRow(new String[] {""});
-			modeloVacaciones.addRow(new String[] {""});
 			
 			
-			//bucle para añadir los descansos y vacaciones a las tablas//
+			//bucle para añadir los descansos a la tabla//
 			listaVacacionesEmpleado = conexion.devolverVacacionesEmpleado(empleadoSeleccionado.getCodigo());
 			for(Vacaciones v : listaVacacionesEmpleado) {
-				
-				
-				if(!v.getTipo().equals("Vacaciones")) {
-					
+	
 					String añoDevengo = String.valueOf(v.getFechaDevengo()).substring(0, 4);				
-					listaDescansos = new Object[] {v.getId(), v.getFechaInicio(), v.getFechaFin(), añoDevengo, v.getTipo()};
+					listaDescansos = new Object[] {v.getId(), v.getFechaInicio(), v.getFechaFin(), añoDevengo, v.getTipo(), v.getDiasPorDisfrutar(), v.getObservaciones()};
 					
 					modeloDescansos.addRow(listaDescansos);
-				}
-				if(v.getTipo().equals("Vacaciones")){
-					
-					String añoDevengo = String.valueOf(v.getFechaDevengo()).substring(0, 4);				
-					listaVacaciones = new Object[] {v.getId(), v.getFechaInicio(), v.getFechaFin(), añoDevengo};
-					
-					modeloVacaciones.addRow(listaVacaciones);
-				}
-				 
+				
 				}
 			
 			//si se han añadido registros borra la fila vacia//
-			if(modeloVacaciones.getRowCount()>1)modeloVacaciones.removeRow(0);
 			if(modeloDescansos.getRowCount()>1)modeloDescansos.removeRow(0);
 			
 			
@@ -332,6 +313,7 @@ private void cuadro2() {
 				JOptionPane.showMessageDialog(getRootPane(), "Cancelado ELiminar");
 			}*/
 			}
+			
 		});
 		
 		menuItemActualizar.addActionListener(new ActionListener() {
@@ -358,78 +340,16 @@ private void cuadro2() {
 		popup.add(menuItemActualizar);
 		popup.add(menuItemEliminar);
 		
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		
-		//popup menu tabla vacaciones//
-		try {
-		popupVacaciones = new JPopupMenu();
-		
-		Image iconoPopupEliminar2 =  new ImageIcon("src/img/cancelar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-		JMenuItem menuItemEliminar2 = new JMenuItem("Eliminar registro", new ImageIcon(iconoPopupEliminar2));
-		Image iconoPopupActualizar2 =  new ImageIcon("src/img/actualizar.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-		JMenuItem menuItemActualizar2 = new JMenuItem("Actualizar registro", new ImageIcon(iconoPopupActualizar2));
-		Image iconoPopupAnadir2 = new ImageIcon("src/img/anadirDescanso.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-		JMenuItem menuItemAnadir2 = new JMenuItem("Añadir nuevo registro", new ImageIcon(iconoPopupAnadir2));
-		menuItemEliminar2.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				System.out.println("eliminar en vacaciones");
-			/*	
-			if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
-
-				Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
-				if(conexion.borrado("uniformidad", "id",id)==1) {
-					JOptionPane.showMessageDialog(getRootPane(), "registro Eliminado");
-					cargarTabla(empleadoSeleccionado);
-				}else {
-					JOptionPane.showMessageDialog(getRootPane(), "registro  No Eliminado");
-				}
-			}else {
-				JOptionPane.showMessageDialog(getRootPane(), "Cancelado ELiminar");
-			}*/
-			}
-		});
-		
-		menuItemActualizar2.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				formularioActualizarVacaciones = new FormularioActualizarVacaciones();		
-			}
-		});
-		
-		
-		menuItemAnadir2.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				formularioVacacionesNueva = new FormularioVacacionesNueva(empleadoSeleccionado, listaVacacionesEmpleado);
-			}
-		});
-		
-		
-		popupVacaciones.add(menuItemAnadir2);
-		popupVacaciones.add(menuItemActualizar2);
-		popupVacaciones.add(menuItemEliminar2);
-		
 		tablaDescansos.setComponentPopupMenu(popup);
-		tablaVacaciones.setComponentPopupMenu(popupVacaciones);
 		
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		
 		
 	}
 	
-	private JPopupMenu popup, popupVacaciones;
-	private Object listaVacaciones[];
+	private JPopupMenu popup;
 	private Object listaDescansos [];
 	private Mensajes mensajes = new Mensajes();
 	private ArrayList<Vacaciones> listaVacacionesEmpleado;
