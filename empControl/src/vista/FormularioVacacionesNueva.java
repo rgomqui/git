@@ -761,7 +761,8 @@ public class FormularioVacacionesNueva extends JDialog {
 			//llamada a la consulta con la base de datos enviando objeto de vacaciones
 			
 			if(correcto) {
-				System.out.println(vacaciones.toString());
+				conexion.insertarVacaciones(getRootPane(), vacaciones);
+				dispose();
 			}else {
 				System.out.println("Ha ocurrido un error en formulario envio vacaciones nueva");
 			}

@@ -11,6 +11,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.RootPaneContainer;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -349,6 +350,52 @@ public class Conexion{
 		}
 	}
 	
+	/*/METODO PARA INSERTAR NUEVAS VACACIONES/*/
+	public void insertarVacaciones(Component parent, Vacaciones v) {
+		try {
+			int i = mensajes.mensajePregunta(parent, "¿Esta seguro de ingresar el registro?", "Confirmar insercion");
+			if(i==0) {
+			
+			con = getConnection();
+			ps = con.prepareStatement("INSERT INTO vacaciones (codigo, tipo, fechaDevengo, FechaInicio, fechaFin, mesCompleto, observaciones, disfrutado, diasPorDisfrutar, diasDisfrutados)"+
+									" VALUES(?,?,?,?,?,?,?,?,?,?)");
+			ps.setInt(1, v.getCodigo());
+			ps.setString(2, v.getTipo());
+			ps.setDate(3, v.getFechaDevengo());
+			ps.setDate(4, v.getFechaInicio());
+			ps.setDate(5, v.getFechaFin());
+			ps.setBoolean(6, v.isMesCompleto());
+			ps.setString(7, v.getObservaciones());
+			ps.setBoolean(8, v.isDisfrutado());
+			ps.setInt(9, v.getDiasPorDisfrutar());
+			ps.setInt(10, v.getDiasDisfrutados());
+			
+			int resultado = ps.executeUpdate();
+			if(resultado>0) {
+				mensajes.mensajeInfo(parent, "Registro incluido con exito en la base de datos", "Insercion satisfactoria");
+			}else {
+				mensajes.mensajeInfo(parent, "No se ha podido registrar con exito en la base de datos", "Error en la insercion");
+			}
+			}else {
+				mensajes.mensajeInfo(parent, "Se ha cancelado la insercion en la base de datos", "insercion cancelada");
+			}
+			
+			
+		}catch(Exception e) {
+			System.out.println("Error insertando vacaciones en clase conexion"+e.getMessage());
+		}finally{
+			try{
+	
+				if(con!=null)con.close();
+				if(ps!=null)ps.close();
+				if(rs!=null)rs.close();	
+			}catch(Exception e) {
+		
+				e.printStackTrace();
+			}
+		}
+		
+	}
 	
 	/*/METODO PARA RESCATAR LA CONFIGURACION DE LA BASE DE DATOS/*/
 	
