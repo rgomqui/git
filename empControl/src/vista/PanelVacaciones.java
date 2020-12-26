@@ -230,7 +230,6 @@ private void cuadro2() {
 							txtNombreEmpleado.setFont(fuente);
 							txtNombreEmpleado.setText(empleadoSeleccionado.toString());
 							cargarTabla(empleadoSeleccionado);
-							// aqui van los metodos para recuperar las vacaciones
 						}
 					}
 				});
@@ -242,7 +241,7 @@ private void cuadro2() {
 			lblMensaje.setBounds(370, 350, 200, 30);
 			add(lblMensaje);
 			lblMensaje2 = new JLabel("para interactuar con las tablas.");
-			lblMensaje2.setFont(new Font("arial",1,11));
+			lblMensaje2.setFont(new Font("arial",1,12));
 			lblMensaje2.setBounds(370, 360, 200, 30);
 			add(lblMensaje2);
 
@@ -299,19 +298,27 @@ private void cuadro2() {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				System.out.println("eliminar en descansos");
-			/*	
-			if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
+			if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == 0){
 
 				Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
-				if(conexion.borrado("uniformidad", "id",id)==1) {
-					JOptionPane.showMessageDialog(getRootPane(), "registro Eliminado");
+				
+				int x = conexion.borrado("vacaciones", "id",id);
+				
+				if(x==1) {
+					
+					JOptionPane.showMessageDialog(getRootPane(), "Registro eliminado");
 					cargarTabla(empleadoSeleccionado);
+					
 				}else {
-					JOptionPane.showMessageDialog(getRootPane(), "registro  No Eliminado");
+					
+					JOptionPane.showMessageDialog(getRootPane(), "Registro  no eliminado");
+					
 				}
 			}else {
-				JOptionPane.showMessageDialog(getRootPane(), "Cancelado ELiminar");
-			}*/
+				
+				JOptionPane.showMessageDialog(getRootPane(), "Cancelado eliminar");
+				
+			}
 			}
 			
 		});

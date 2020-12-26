@@ -584,7 +584,7 @@ public class Conexion{
 	}
 	
 	
-	/*/METODO PARA BORRAR UNA FILA (si borra una o mas filas, devuelve uno sino devuelve cero o -1 en caso de error/*/
+	/*/METODO PARA BORRAR UNA FILA (si borra una o mas filas devuelve 1, sino devuelve 0 o -1 en caso de error/*/
 	public int borrado(String tabla, String columna, Integer clausula) {
 		
 		try {
@@ -601,6 +601,8 @@ public class Conexion{
 				i = ps.executeUpdate();
 				return(i>0)?1:0;
 			}else {
+				System.out.println("no existe el  registro");
+				
 				return -1;
 			}
 
