@@ -57,6 +57,10 @@ public class PanelVacaciones extends JPanel{
 		g.drawRoundRect(350, 300, 250, 140, 10, 10);   // CUADRO 4 "BOTON AÑADIR"
 		g.fillRoundRect(350, 300, 250, 140, 10, 10);
 		
+		g.setColor(new Color (228,241,245));
+		g.drawRoundRect(365, 355, 210, 45, 10, 10);   // CUADRO 5 "TEXTO MENU CONCEPTUAL"
+		g.fillRoundRect(365, 355, 210, 45, 10, 10);
+		
 		
 	}
 	private void cuadroTitulo() {
@@ -240,9 +244,9 @@ private void cuadro2() {
 			lblMensaje.setFont(new Font("arial",1,12));
 			lblMensaje.setBounds(370, 350, 200, 30);
 			add(lblMensaje);
-			lblMensaje2 = new JLabel("para interactuar con las tablas.");
+			lblMensaje2 = new JLabel("para interactuar con la tabla.");
 			lblMensaje2.setFont(new Font("arial",1,12));
-			lblMensaje2.setBounds(370, 360, 200, 30);
+			lblMensaje2.setBounds(370, 370, 200, 30);
 			add(lblMensaje2);
 
 			
@@ -328,7 +332,22 @@ private void cuadro2() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				formularioActualizarVacaciones = new FormularioActualizarVacaciones();		
+				try {
+				
+				int i = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
+				System.out.println(i);
+				
+				for(Vacaciones v : listaVacacionesEmpleado) {
+					System.out.println("punto de control actualizar");
+					if(v.getId() == i) {
+						System.out.println("coincidencia");
+						formularioActualizarVacaciones = new FormularioActualizarVacaciones(v.getId(), listaVacacionesEmpleado, empleadoSeleccionado);
+						
+					}
+				}			
+			}catch(Exception e) {
+				System.out.println("Excepcion en popup actualizar " + e.getMessage());
+			}
 			}
 		});
 		

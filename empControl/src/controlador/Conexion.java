@@ -254,6 +254,7 @@ public class Conexion{
 				vacaciones.setId(rs.getInt("id"));
 				vacaciones.setDiasPorDisfrutar(rs.getInt("diasPorDisfrutar"));
 				vacaciones.setDisfrutado(rs.getBoolean("disfrutado"));
+				vacaciones.setDiasDisfrutados(rs.getInt("diasDisfrutados"));
 				vacaciones.setFechaDevengo((rs.getDate("fechaDevengo")==null)?null:(rs.getDate("fechaDevengo")));
 			
 					if(rs.getBoolean("disfrutado")) {

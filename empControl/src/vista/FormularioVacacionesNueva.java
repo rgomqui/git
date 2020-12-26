@@ -624,6 +624,16 @@ public class FormularioVacacionesNueva extends JDialog {
 					
 					//si el descanso no fuera un compensatorio, serian un dia de convenio y se crearia con los siguientes datos
 				}else {
+					boolean disfrutado = false;
+					//recorremos la lista completa objeto por objeto comprobando si ya se ha disfrutado el dia de convenio que se esta pidiendo
+					for(Vacaciones v: listaDescansosEmpleado) {
+						if(v.getTipo().equalsIgnoreCase(comboTipoDescanso.getSelectedItem().toString()) &&
+								v.getFechaDevengo().toString().substring(0, 4).equalsIgnoreCase(comboAnioDevengoDescanso.getSelectedItem().toString())) {
+							disfrutado = true;
+						}
+					}
+					//comprobamos que no se ha dado ya en el año en que se pide
+					if(!disfrutado) {
 					//fecha de devengo en dias de convenio 01/01 y año de devengo del dia
 					LocalDate fechaDevengo = new LocalDate(Integer.valueOf(comboAnioDevengoDescanso.getSelectedItem().toString()),01,01);				
 					vacaciones.setFechaDevengo(Date.valueOf(fechaDevengo.toString()));
@@ -656,8 +666,12 @@ public class FormularioVacacionesNueva extends JDialog {
 					vacaciones.setDiasPorDisfrutar(0);
 					vacaciones.setDiasDisfrutados(1);
 
+				}else {
+					//ponemos a false "correcto" para que no haga la insercion e informamos al usuario
+					correcto = false;
+					mensajes.mensajeInfo(getRootPane(), "Dia " + comboTipoDescanso.getSelectedItem().toString()+" del año "+comboAnioDevengoDescanso.getSelectedItem().toString()+ " ya se ha disfrutado", "Dia de convenio ya disfrutado");
 				}
-				
+				}
 				
 			}
 			if(radioVacaciones.isSelected()){
