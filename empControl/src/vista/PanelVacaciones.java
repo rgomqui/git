@@ -31,7 +31,6 @@ public class PanelVacaciones extends JPanel{
 		setLayout(null);
 		cuadroTitulo();
 		cuadro1();	
-		//cuadro2();
 		cuadro3();
 		
 		
@@ -124,40 +123,8 @@ public class PanelVacaciones extends JPanel{
 				popupMenu();
 				
 	}
-	
-private void cuadro2() {
-		
-		//TITULO DEL CUADRO 2 "VACACIONES" 
-		
-				lblTituloVacaciones = new JLabel("VACACIONES");
-				lblTituloVacaciones.setFont(fuente);
-				lblTituloVacaciones.setBounds(415,40,150,20);
-				add(lblTituloVacaciones);
-				
-				modeloVacaciones = new DefaultTableModel(new String[] {"id", "fecha inicio", "fecha fin","año"},4 );
-				tablaVacaciones = new JTable(modeloVacaciones);
-				tablaVacaciones.setEnabled(true);
-				scrollVacaciones = new JScrollPane(tablaVacaciones, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-				scrollVacaciones.setBounds(355, 60, 240, 200);
-				TableColumn columnaId = tablaVacaciones.getColumn("id");
-				columnaId.setResizable(false);
-				columnaId.setPreferredWidth(40);
-				TableColumn columnaInicio = tablaVacaciones.getColumn("fecha inicio");
-				columnaInicio.setResizable(false);
-				columnaInicio.setPreferredWidth(80);
-				TableColumn columnaFin = tablaVacaciones.getColumn("fecha fin");
-				columnaFin.setResizable(false);
-				columnaFin.setPreferredWidth(80);
-				TableColumn columnaAñoDevengo = tablaVacaciones.getColumn("año");
-				columnaAñoDevengo.setResizable(false);
-				columnaAñoDevengo.setPreferredWidth(40);
-				add(scrollVacaciones);
-				
-				
-				
-				
-	}
-	
+					
+
 	
 	@SuppressWarnings("rawtypes")
 	private void cuadro3() {
@@ -213,7 +180,9 @@ private void cuadro2() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
+				empleadoActualIndex =comboNombre.getSelectedIndex();
 				conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
+				comboNombre.setSelectedIndex(empleadoActualIndex);
 				
 			}
 		});
@@ -253,7 +222,6 @@ private void cuadro2() {
 	}
 	private void cargarTabla(Empleado empleadoSeleccionado) {
 		try {
-			
 			//borramos las tablas
 			while(modeloDescansos.getRowCount()>0) {
 				modeloDescansos.removeRow(0);
@@ -301,7 +269,6 @@ private void cuadro2() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				System.out.println("eliminar en descansos");
 			if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == 0){
 
 				Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
@@ -311,7 +278,7 @@ private void cuadro2() {
 				if(x==1) {
 					
 					JOptionPane.showMessageDialog(getRootPane(), "Registro eliminado");
-					cargarTabla(empleadoSeleccionado);
+					conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
 					
 				}else {
 					
@@ -328,29 +295,26 @@ private void cuadro2() {
 		});
 		
 		menuItemActualizar.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				try {
-				
-				int i = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
-				System.out.println(i);
-				
-				for(Vacaciones v : listaVacacionesEmpleado) {
-					System.out.println("punto de control actualizar");
-					if(v.getId() == i) {
-						System.out.println("coincidencia");
-						formularioActualizarVacaciones = new FormularioActualizarVacaciones(v.getId(), listaVacacionesEmpleado, empleadoSeleccionado);
-						
+					//buscamos dentro de la lista de descansos el descanso que se ha seleccionado en la tabla y lo enviamos junto con el id y el empleado
+					int i = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
+					for(Vacaciones v : listaVacacionesEmpleado) {
+						if(v.getId() == i) {
+							formularioActualizarVacaciones = new FormularioActualizarVacaciones(v.getId(), listaVacacionesEmpleado, empleadoSeleccionado);	
+						}
 					}
-				}			
-			}catch(Exception e) {
-				System.out.println("Excepcion en popup actualizar " + e.getMessage());
-			}
+					empleadoActualIndex =comboNombre.getSelectedIndex();
+					conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
+					comboNombre.setSelectedIndex(empleadoActualIndex);
+				}catch(Exception e) {
+					System.out.println("Excepcion en popup actualizar " + e.getMessage());
+				}
 			}
 		});
-		
+
 		
 		menuItemAnadir.addActionListener(new ActionListener() {
 			
@@ -375,6 +339,7 @@ private void cuadro2() {
 		
 	}
 	
+	private int empleadoActualIndex;
 	private JPopupMenu popup;
 	private Object listaDescansos [];
 	private Mensajes mensajes = new Mensajes();
@@ -390,7 +355,7 @@ private void cuadro2() {
 	private FormularioVacacionesNueva formularioVacacionesNueva;
 	private FormularioActualizarVacaciones formularioActualizarVacaciones;
 	JComboBox comboNombre;
-	JTable  tablaVacaciones, tablaDescansos;
+	JTable  tablaDescansos;
 	
 	JScrollPane  scrollDescansos, scrollVacaciones;
 	

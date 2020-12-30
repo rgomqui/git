@@ -186,7 +186,7 @@ public class FormularioVacacionesNueva extends JDialog {
 				comboDiaDevengoDescanso.setBounds(150, 190, 40, 20);
 				comboDiaDevengoDescanso.setFont(fuente);
 				JLabel lblBarra3=new JLabel("/");
-				lblBarra3.setBounds(195, 140, 10, 20);
+				lblBarra3.setBounds(195, 190, 10, 20);
 				panelFondo.add(lblBarra3);
 				comboMesDevengoDescanso = new JComboBox();
 				for(String s : mes) {
@@ -396,8 +396,8 @@ public class FormularioVacacionesNueva extends JDialog {
 					}
 				});
 				JLabel lblBarra8 = new JLabel("/");
-				lblBarra7.setBounds(630, 190, 10, 20);
-				panelFondo.add(lblBarra7);
+				lblBarra8.setBounds(630, 190, 10, 20);
+				panelFondo.add(lblBarra8);
 				ComboAnioFinVacaciones = new JComboBox();
 				ComboAnioFinVacaciones.setBounds(640, 190, 60, 20);
 				ComboAnioFinVacaciones.setFont(fuente);
@@ -818,7 +818,7 @@ public class FormularioVacacionesNueva extends JDialog {
 			actionGuardarDescanso();
 		}
 		
-		/// configurando actualmente este metodo
+		//METODO PARA CARGAR LOS DATOS DE DESCANSOS PENDIENTES DE DISFRUTAR, EN LA TABLA
 		private void cargarTabla() {
 				try {
 			//primero dejamos en blanco la tabla//
@@ -832,14 +832,12 @@ public class FormularioVacacionesNueva extends JDialog {
 				modeloDescansos.addRow(datosTablaDescansos);
 			}
 			
-			System.out.println("lista permisos: " + modeloDescansos.getRowCount());
-			
-			
+			// cargamos los dias de vacaciones pendientes
+			datosTablaDescansos = new String[] {"Vacaciones", String.valueOf(local.getYear()), String.valueOf(configuracion.getDiasVacaciones())};
+			modeloDescansos.addRow(datosTablaDescansos);
+	
 			for(Vacaciones v : listaDescansosEmpleado) {
-				datosTablaDescansos = new String[] {v.getTipo(), v.getFechaDevengo().toString().substring(0, 4), String.valueOf(v.getDiasPorDisfrutar()), v.getObservaciones()};
-				System.out.println("control en cargar tabla1");
-				
-				//System.err.println("columna tipo dato de entrada: "+datosTablaDescansos[0] + " - presente en la lista: "+modeloDescansos.getValueAt(7, 0));
+				datosTablaDescansos = new String[] {v.getTipo(), v.getFechaDevengo().toString().substring(0, 4), String.valueOf(v.getDiasPorDisfrutar()), v.getObservaciones()};	
 				
 				//comprobamos si coincide el descanso pendiente de disfrutar con algunos de los añadidos automaticamente en la lista
 				for(int j = 0; j < modeloDescansos.getRowCount();j++) {	
@@ -853,27 +851,24 @@ public class FormularioVacacionesNueva extends JDialog {
 					}
 				}
 				
-				//comprobamos que no sean vacaciones//
-				if(!v.getTipo().equalsIgnoreCase("Vacaciones") && v.getDiasPorDisfrutar()>0) {
-
-					//y aqui comprobamos que no esten disfrutadas para mostrar las que estan pendientes//
-					if(v.getDiasPorDisfrutar()!=0) {
-						
+				//comprobamos que si son vacaciones//
+				if(v.getTipo().equalsIgnoreCase("Vacaciones")) {
+					//si son vacaciones rellenamos la tabla con una fila que indica los dias que quedan pendientes de disfrutar de vacaciones
+						datosTablaDescansos = new String[] {v.getTipo(), v.getFechaDevengo().toString().substring(0, 4), String.valueOf(configuracion.getDiasVacaciones()-v.getDiasDisfrutados())};
 						modeloDescansos.addRow(datosTablaDescansos);	
-					}
-				}else {
+				}else{
+					
+					
 					if(v.getDiasPorDisfrutar()!=0) {
 						int diasPendientes = 0;
 						
 						if(!v.isMesCompleto())diasPendientes = configuracion.getDiasVacaciones() - Days.daysBetween(new LocalDate(v.getFechaInicio()), new LocalDate(v.getFechaFin())).getDays();
-						
 						datosTablaDescansos = new String[] {v.getTipo(), v.getFechaDevengo().toString().substring(0, 4), String.valueOf(v.getDiasPorDisfrutar())};
 						modeloDescansos.addRow(datosTablaDescansos);
 					}
 				}
 				}
 			
-			System.out.println("lista permisos2: " + modeloDescansos.getRowCount());
 				}catch(Exception e) {
 					System.out.println("excepcion en cargar tabla: "+ e.getMessage());
 				}

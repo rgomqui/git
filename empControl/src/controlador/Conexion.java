@@ -383,7 +383,7 @@ public class Conexion{
 			
 			
 		}catch(Exception e) {
-			System.out.println("Error insertando vacaciones en clase conexion"+e.getMessage());
+			System.out.println("Error insertando vacaciones en clase conexion "+e.getMessage());
 		}finally{
 			try{
 	
@@ -398,6 +398,55 @@ public class Conexion{
 		
 	}
 	
+	
+	/*/METODO PARA ACTUALIZAR VACACIONES/*/
+	public void actualizarVacaciones(Component parent, Vacaciones v) {
+		try {
+			int i = mensajes.mensajePregunta(parent, "¿Esta seguro de actualizar el registro?", "Confirmar actualizacion");
+			if(i==0) {
+			System.out.println("id: "+ v.getId());
+			con = getConnection();
+			ps = con.prepareStatement("UPDATE vacaciones SET codigo = ?, tipo = ?, fechaDevengo = ?, FechaInicio = ?, fechaFin = ?, mesCompleto = ?, observaciones = ?,"
+										+ " disfrutado = ?, diasPorDisfrutar = ?, diasDisfrutados =? WHERE id = ?");
+			ps.setInt(1, v.getCodigo());
+			ps.setString(2, v.getTipo());
+			ps.setDate(3, v.getFechaDevengo());
+			ps.setDate(4, v.getFechaInicio());
+			ps.setDate(5, v.getFechaFin());
+			ps.setBoolean(6, v.isMesCompleto());
+			ps.setString(7, v.getObservaciones());
+			ps.setBoolean(8, v.isDisfrutado());
+			ps.setInt(9, v.getDiasPorDisfrutar());
+			ps.setInt(10, v.getDiasDisfrutados());
+			ps.setInt(11, v.getId());
+			
+			int resultado = ps.executeUpdate();
+			if(resultado>0) {
+				mensajes.mensajeInfo(parent, "Registro actualizado con exito en la base de datos", "Actualizacion satisfactoria");
+			}else {
+				mensajes.mensajeInfo(parent, "No se ha podido actualizar con exito en la base de datos", "Error en la actualizacion");
+			}
+			}else {
+				mensajes.mensajeInfo(parent, "Se ha cancelado la actualizacion en la base de datos", "actualizacion cancelada");
+			}
+			
+			
+		}catch(Exception e) {
+			System.out.println("Error actualizacion vacaciones en clase conexion "+e.getMessage());
+		}finally{
+			try{
+	
+				if(con!=null)con.close();
+				if(ps!=null)ps.close();
+				if(rs!=null)rs.close();	
+			}catch(Exception e) {
+		
+				e.printStackTrace();
+			}
+		}
+		
+		
+	}
 	/*/METODO PARA RESCATAR LA CONFIGURACION DE LA BASE DE DATOS/*/
 	
 	public Configuracion recuperaConfig() {
@@ -601,9 +650,7 @@ public class Conexion{
 				System.out.println(ps.toString());
 				i = ps.executeUpdate();
 				return(i>0)?1:0;
-			}else {
-				System.out.println("no existe el  registro");
-				
+			}else {			
 				return -1;
 			}
 
@@ -653,7 +700,7 @@ public class Conexion{
 				if(i>0) mensajes.mensajeInfo(parent, "Informacion del empleado "+empleado.getCodigo()+" actualizada correctamente", "Actualización satisfactoria");
 
 			}catch(Exception ex) {
-				System.out.println(ex.getLocalizedMessage());
+				System.out.println("Error en actualizar empleado en clase conexion " + ex.getMessage());
 			}finally {
 				try{
 					if(con!=null)con.close();

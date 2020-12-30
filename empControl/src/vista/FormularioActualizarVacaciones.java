@@ -73,19 +73,42 @@ public class FormularioActualizarVacaciones extends JDialog {
 			panelFondo.setLayout(null);
 			getContentPane().add(panelFondo);{
 				componentesGraficos();
-				//cargarTabla();
+				cargarTabla();
 			}	
 			
 			
-			//si el descanso que queremos modificar es un "Descanso", inhabilita el radiobutton de "Vacaciones" y selecciona el de "Descanso"
+			//si el descanso que queremos modificar es un "Descanso", inhabilita la zona de "Vacaciones" y selecciona el de "Descanso"
 			
-			if(vacaciones.getTipo() != "Vacaciones") {
+			if(!vacaciones.getTipo().toLowerCase().equals("vacaciones")) {
+				
+				
+				//se habilita todo lo referente a descanso
 				radioDescanso.setSelected(true);
+				radioDescanso.setEnabled(true);
+				comboDiaInicioDescanso.setEnabled(true);
+				comboMesInicioDescanso.setEnabled(true);
+				comboAnioInicioDescanso.setEnabled(true);
+				comboDiaDevengoDescanso.setEnabled(true);
+				comboMesDevengoDescanso.setEnabled(true);
+				comboAnioDevengoDescanso.setEnabled(true);
+				comboTipoDescanso.setEnabled(true);
+				checkGuardar.setEnabled(true);
+				comboMotivo.setEnabled(true);
+				comboDiasCompensatorio.setEnabled(true);
+				
+				
+				//se inhabilita todo lo referente a vacaciones
 				radioVacaciones.setSelected(false);
 				radioVacaciones.setEnabled(false);
-				System.out.println(vacaciones.getFechaInicio().toString());
-				System.out.println(vacaciones.getFechaInicio().toString().substring(8));
+				comboDiaInicioVacaciones.setEnabled(false);
+				comboMesInicioVacaciones.setEnabled(false);
+				ComboAnioInicioVacaciones.setEnabled(false);
+				comboDiaFinVacaciones.setEnabled(false);
+				comboMesFinVacaciones.setEnabled(false);
+				ComboAnioFinVacaciones.setEnabled(false);
+				comboAnioDevengoVacaciones.setEnabled(false);
 				
+
 				//rellenamos todos los datos del descanso que queremos modificar
 				comboAnioInicioDescanso.setSelectedItem(vacaciones.getFechaInicio().toString().subSequence(0, 4));
 				comboMesInicioDescanso.setSelectedItem(vacaciones.getFechaInicio().toString().substring(5, 7));
@@ -113,18 +136,46 @@ public class FormularioActualizarVacaciones extends JDialog {
 					comboAnioDevengoDescanso.setSelectedItem(vacaciones.getFechaDevengo().toString().subSequence(0, 4));
 				}
 				
+				//se rellena el combo tipo segun el tipo de descanso que sea
+				comboTipoDescanso.setSelectedItem(vacaciones.getTipo().toString());
+				
 				//se rellena el combo de motivo con las observaciones del permiso
 				comboMotivo.setSelectedItem(vacaciones.getObservaciones().toString());
 				
 				
-				//y en caso de no ser un descanso, se inhabilitaria todo lo referente a descanso y se habilitaria lo referente a vacaciones.
-			}else if(vacaciones.getTipo().equalsIgnoreCase("Vacaciones")) {
+				//en caso de no ser ningun tipo de descanso, corresponderia a unas vacaciones
+			}else {
+				
+				//se habilita todo lo referente a vacaciones
+				radioVacaciones.setEnabled(true);
+				radioVacaciones.setSelected(true);	
 				radioVacaciones.setSelected(true);
+				radioVacaciones.setEnabled(true);
+				comboDiaInicioVacaciones.setEnabled(true);
+				comboMesInicioVacaciones.setEnabled(true);
+				ComboAnioInicioVacaciones.setEnabled(true);
+				comboDiaFinVacaciones.setEnabled(true);
+				comboMesFinVacaciones.setEnabled(true);
+				ComboAnioFinVacaciones.setEnabled(true);
+				comboAnioDevengoVacaciones.setEnabled(true);
+				
+				//se inhabilita lo referente a descanso
 				radioDescanso.setSelected(false);
 				radioDescanso.setEnabled(false);
+				comboDiaInicioDescanso.setEnabled(false);
+				comboMesInicioDescanso.setEnabled(false);
+				comboAnioInicioDescanso.setEnabled(false);
+				comboDiaDevengoDescanso.setEnabled(false);
+				comboMesDevengoDescanso.setEnabled(false);
+				comboAnioDevengoDescanso.setEnabled(false);
+				comboTipoDescanso.setEnabled(false);
+				checkGuardar.setEnabled(false);
+				comboMotivo.setEnabled(false);
+				comboDiasCompensatorio.setEnabled(false);
+				
 			}
 			
-			System.out.println("punto de control en actualiza vacaciones panel");
+			
 		
 			
 			}
@@ -132,22 +183,17 @@ public class FormularioActualizarVacaciones extends JDialog {
 		
 		private void componentesGraficos() {	
 			
-			
-			
-			
+				
 			//TITULO
 			
-				lblTitulo = new JLabel("MODIFICAR EL DESCANSO CON ID "+ id + " DEL EMPLEADO "+ empleadoSeleccionado.getNombre().toUpperCase()+" "+ empleadoSeleccionado.getApellido1().toUpperCase()+ " "+ empleadoSeleccionado.getApellido2().toUpperCase());
+				lblTitulo = new JLabel("MODIFICAR "+ vacaciones.getTipo().toUpperCase() +" CON ID "+ id + " DEL EMPLEADO "+ empleadoSeleccionado.getNombre().toUpperCase()+" "+ empleadoSeleccionado.getApellido1().toUpperCase()+ " "+ empleadoSeleccionado.getApellido2().toUpperCase());
 				lblTitulo.setBounds(10,15,750,30);
 				lblTitulo.setFont(new Font("Arial", 1,15));
 				lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 				panelFondo.add(lblTitulo);
 				
-				lblTipo = new JLabel("Seleccione el tipo de descanso:");
-				lblTipo.setBounds(50,60,300,20);
-				lblTipo.setFont(fuente);
-				panelFondo.add(lblTipo);
 				
+				//RADIO BOTON DESCANSO
 				radioDescanso = new JRadioButton("DESCANSO");
 				radioDescanso.setBounds(50, 100, 100, 20);
 				radioDescanso.setFont(fuente);
@@ -254,7 +300,7 @@ public class FormularioActualizarVacaciones extends JDialog {
 				comboDiaDevengoDescanso.setBounds(150, 190, 40, 20);
 				comboDiaDevengoDescanso.setFont(fuente);
 				JLabel lblBarra3=new JLabel("/");
-				lblBarra3.setBounds(195, 140, 10, 20);
+				lblBarra3.setBounds(195, 190, 10, 20);
 				panelFondo.add(lblBarra3);
 				comboMesDevengoDescanso = new JComboBox();
 				for(String s : mes) {
@@ -349,37 +395,7 @@ public class FormularioActualizarVacaciones extends JDialog {
 				comboMotivo = new JComboBox(motivos);
 				comboMotivo.setBounds(90, 350, 200, 20);
 				panelFondo.add(comboMotivo);
-				
-				/*/TABLA DE DESCANSOS PENDIENTES DE DISFRUTAR /*/
-				modeloDescansos = new DefaultTableModel();
-				modeloDescansos.addColumn("Tipo descanso");
-				modeloDescansos.addColumn("Año");
-				modeloDescansos.addColumn("Dias por disfrutar");
-				modeloDescansos.addColumn("Observaciones");
-				tablaDescansos = new JTable(modeloDescansos);
-				tablaDescansos.setEnabled(false);
-				scrollDescansos = new JScrollPane(tablaDescansos, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-				scrollDescansos.setBounds(310, 300,390, 110);
-				TableColumn columnaInicio = tablaDescansos.getColumn("Tipo descanso");
-				columnaInicio.setResizable(false);
-				columnaInicio.setPreferredWidth(100);
-				TableColumn columnaAnio = tablaDescansos.getColumn("Año");
-				columnaAnio.setResizable(false);
-				columnaAnio.setPreferredWidth(45);
-				TableColumn columnaDias = tablaDescansos.getColumn("Dias por disfrutar");
-				columnaDias.setResizable(false);
-				columnaDias.setPreferredWidth(100);
-				TableColumn columnaObservaciones = tablaDescansos.getColumn("Observaciones");
-				columnaObservaciones.setResizable(false);
-				columnaObservaciones.setPreferredWidth(145);
-				panelFondo.add(scrollDescansos);
-				
-				
-				
-				
-				
-				
-				
+					
 				
 				/*/ FECHA INICIO VACACIONES/*/
 				
@@ -464,8 +480,8 @@ public class FormularioActualizarVacaciones extends JDialog {
 					}
 				});
 				JLabel lblBarra8 = new JLabel("/");
-				lblBarra7.setBounds(630, 190, 10, 20);
-				panelFondo.add(lblBarra7);
+				lblBarra8.setBounds(630, 190, 10, 20);
+				panelFondo.add(lblBarra8);
 				ComboAnioFinVacaciones = new JComboBox();
 				ComboAnioFinVacaciones.setBounds(640, 190, 60, 20);
 				ComboAnioFinVacaciones.setFont(fuente);
@@ -502,6 +518,30 @@ public class FormularioActualizarVacaciones extends JDialog {
 				comboAnioDevengoVacaciones.setSelectedItem(String.valueOf(local.getYear()));
 				panelFondo.add(lblAñoDevengo);
 				panelFondo.add(comboAnioDevengoVacaciones);
+				
+				/*/TABLA DE DESCANSOS PENDIENTES DE DISFRUTAR /*/
+				modeloDescansos = new DefaultTableModel();
+				modeloDescansos.addColumn("Tipo descanso");
+				modeloDescansos.addColumn("Año");
+				modeloDescansos.addColumn("Dias por disfrutar");
+				modeloDescansos.addColumn("Observaciones");
+				tablaDescansos = new JTable(modeloDescansos);
+				tablaDescansos.setEnabled(false);
+				scrollDescansos = new JScrollPane(tablaDescansos, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				scrollDescansos.setBounds(310, 300,390, 110);
+				TableColumn columnaInicio = tablaDescansos.getColumn("Tipo descanso");
+				columnaInicio.setResizable(false);
+				columnaInicio.setPreferredWidth(100);
+				TableColumn columnaAnio = tablaDescansos.getColumn("Año");
+				columnaAnio.setResizable(false);
+				columnaAnio.setPreferredWidth(45);
+				TableColumn columnaDias = tablaDescansos.getColumn("Dias por disfrutar");
+				columnaDias.setResizable(false);
+				columnaDias.setPreferredWidth(100);
+				TableColumn columnaObservaciones = tablaDescansos.getColumn("Observaciones");
+				columnaObservaciones.setResizable(false);
+				columnaObservaciones.setPreferredWidth(145);
+				panelFondo.add(scrollDescansos);
 				
 					//BOTONES DE ACCION
 					
@@ -624,11 +664,13 @@ public class FormularioActualizarVacaciones extends JDialog {
 
 			//codigo que rescatamos del objeto empleado
 			vacaciones.setCodigo(empleadoSeleccionado.getCodigo());  
+			
+			//id que traemos de la pantalla anterior en argumentos del constructor
+			vacaciones.setId(id);
 
 			if(radioDescanso.isSelected()) {
 				//tipo de descanso a enviar
 				vacaciones.setTipo(comboTipoDescanso.getSelectedItem().toString());
-
 
 				//si el descanso es un compensatorio hay que comprobar si se va a guardar los dias, o no.
 				if(comboTipoDescanso.getSelectedItem().toString().equalsIgnoreCase("Compensatorio")) {
@@ -696,6 +738,15 @@ public class FormularioActualizarVacaciones extends JDialog {
 					
 					//si el descanso no fuera un compensatorio, serian un dia de convenio y se crearia con los siguientes datos
 				}else {
+					boolean disfrutado = false;
+					//recorremos la lista completa objeto por objeto comprobando si ya se ha disfrutado el dia de convenio que se esta pidiendo
+					for(Vacaciones v: listaDescansosEmpleado) {
+						if(v.getTipo().equalsIgnoreCase(comboTipoDescanso.getSelectedItem().toString()) &&
+								v.getFechaDevengo().toString().substring(0, 4).equalsIgnoreCase(comboAnioDevengoDescanso.getSelectedItem().toString())) {
+							disfrutado = true;
+						}
+					}
+					if(!disfrutado) {
 					//fecha de devengo en dias de convenio 01/01 y año de devengo del dia
 					LocalDate fechaDevengo = new LocalDate(Integer.valueOf(comboAnioDevengoDescanso.getSelectedItem().toString()),01,01);				
 					vacaciones.setFechaDevengo(Date.valueOf(fechaDevengo.toString()));
@@ -728,9 +779,13 @@ public class FormularioActualizarVacaciones extends JDialog {
 					vacaciones.setDiasPorDisfrutar(0);
 					vacaciones.setDiasDisfrutados(1);
 
+				}else {
+					//ponemos a false "correcto" para que no haga la insercion e informamos al usuario
+					correcto = false;
+					mensajes.mensajeInfo(getRootPane(), "Dia " + comboTipoDescanso.getSelectedItem().toString()+" del año "+comboAnioDevengoDescanso.getSelectedItem().toString()+ " ya se ha disfrutado", "Dia de convenio ya disfrutado");
 				}
 				
-				
+				}	
 			}
 			if(radioVacaciones.isSelected()){
 				
@@ -813,11 +868,9 @@ public class FormularioActualizarVacaciones extends JDialog {
 					}	
 				}
 				
-				System.out.println("dias vacaciones preguardados: " + diasDisfrutados);
 				//se suman los dias capturados con los dias que se estan pidiendo en el formulario
 				diasDisfrutados +=diasEntre;
 				
-				System.out.println("dias vacaciones en conjunto: " + diasDisfrutados);
 				//si no se pide mes completo y la suma de todo es inferior o igual a los dias guardados en la configuracion
 				if(diasDisfrutados<=configuracion.getDiasVacaciones()) {
 					vacaciones.setDiasDisfrutados(diasEntre);
@@ -833,7 +886,7 @@ public class FormularioActualizarVacaciones extends JDialog {
 			//llamada a la consulta con la base de datos enviando objeto de vacaciones
 			
 			if(correcto) {
-				conexion.insertarVacaciones(getRootPane(), vacaciones);
+				conexion.actualizarVacaciones(getRootPane(), vacaciones);
 				dispose();
 			}else {
 				System.out.println("Ha ocurrido un error en formulario envio vacaciones nueva");
@@ -876,67 +929,6 @@ public class FormularioActualizarVacaciones extends JDialog {
 			actionGuardarDescanso();
 		}
 		
-		/// configurando actualmente este metodo
-		private void cargarTabla() {
-				try {
-			//primero dejamos en blanco la tabla//
-			while(modeloDescansos.getRowCount()>0) {
-				modeloDescansos.removeRow(0);
-			}
-			
-			// despues de vaciar la tabla, procedemos a llenar los datos automaticos sin el compensatorio (empzando en 1)//
-			for(int x = 1 ; x<8; x++) {
-				datosTablaDescansos = new String[] {listaPermisos[x], String.valueOf(local.getYear()), "1"};
-				modeloDescansos.addRow(datosTablaDescansos);
-			}
-			
-			System.out.println("lista permisos: " + modeloDescansos.getRowCount());
-			
-			
-			for(Vacaciones v : listaDescansosEmpleado) {
-				datosTablaDescansos = new String[] {v.getTipo(), v.getFechaDevengo().toString().substring(0, 4), String.valueOf(v.getDiasPorDisfrutar()), v.getObservaciones()};
-				System.out.println("control en cargar tabla1");
-				
-				//System.err.println("columna tipo dato de entrada: "+datosTablaDescansos[0] + " - presente en la lista: "+modeloDescansos.getValueAt(7, 0));
-				
-				//comprobamos si coincide el descanso pendiente de disfrutar con algunos de los añadidos automaticamente en la lista
-				for(int j = 0; j < modeloDescansos.getRowCount();j++) {	
-					
-					//si coinciden en tipo y año, se borra el relleno automaticamente. Si no hay coincidencias se añade al listado
-					if(String.valueOf(modeloDescansos.getValueAt(j, 0)).equalsIgnoreCase(datosTablaDescansos[0]) && String.valueOf(modeloDescansos.getValueAt(j, 1)).equalsIgnoreCase(datosTablaDescansos[1])&&
-							!modeloDescansos.getValueAt(j, 0).toString().equalsIgnoreCase("Compensatorio")) {
-					
-						modeloDescansos.removeRow(j);
-						System.out.println("control en cargar tabla1");
-					}
-				}
-				
-				//comprobamos que no sean vacaciones//
-				if(!v.getTipo().equalsIgnoreCase("Vacaciones") && v.getDiasPorDisfrutar()>0) {
-
-					//y aqui comprobamos que no esten disfrutadas para mostrar las que estan pendientes//
-					if(v.getDiasPorDisfrutar()!=0) {
-						
-						modeloDescansos.addRow(datosTablaDescansos);	
-					}
-				}else {
-					if(v.getDiasPorDisfrutar()!=0) {
-						int diasPendientes = 0;
-						
-						if(!v.isMesCompleto())diasPendientes = configuracion.getDiasVacaciones() - Days.daysBetween(new LocalDate(v.getFechaInicio()), new LocalDate(v.getFechaFin())).getDays();
-						
-						datosTablaDescansos = new String[] {v.getTipo(), v.getFechaDevengo().toString().substring(0, 4), String.valueOf(v.getDiasPorDisfrutar())};
-						modeloDescansos.addRow(datosTablaDescansos);
-					}
-				}
-				}
-			
-			System.out.println("lista permisos2: " + modeloDescansos.getRowCount());
-				}catch(Exception e) {
-					System.out.println("excepcion en cargar tabla: "+ e.getMessage());
-				}
-
-		}
 		
 		private void actionRadioButon() {
 			
@@ -992,6 +984,65 @@ public class FormularioActualizarVacaciones extends JDialog {
 			}
 		}
 		
+		
+		//METODO PARA CARGAR LOS DATOS DE DESCANSOS PENDIENTES DE DISFRUTAR, EN LA TABLA
+				private void cargarTabla() {
+						try {
+					//primero dejamos en blanco la tabla//
+					while(modeloDescansos.getRowCount()>0) {
+						modeloDescansos.removeRow(0);
+					}
+					
+					// despues de vaciar la tabla, procedemos a llenar los datos automaticos sin el compensatorio (empzando en 1)//
+					for(int x = 1 ; x<8; x++) {
+						datosTablaDescansos = new String[] {listaPermisos[x], String.valueOf(local.getYear()), "1"};
+						modeloDescansos.addRow(datosTablaDescansos);
+					}
+					
+					// cargamos tambien los dias de vacaciones pendientes
+					datosTablaDescansos = new String[] {"Vacaciones", String.valueOf(local.getYear()), String.valueOf(configuracion.getDiasVacaciones())};
+					modeloDescansos.addRow(datosTablaDescansos);
+			
+					for(Vacaciones v : listaDescansosEmpleado) {
+						datosTablaDescansos = new String[] {v.getTipo(), v.getFechaDevengo().toString().substring(0, 4), String.valueOf(v.getDiasPorDisfrutar()), v.getObservaciones()};
+										
+						//comprobamos si coincide el descanso pendiente de disfrutar con algunos de los añadidos automaticamente en la lista
+						for(int j = 0; j < modeloDescansos.getRowCount();j++) {	
+							
+							//si coinciden en tipo y año, se borra el relleno automaticamente. Si no hay coincidencias se añade al listado
+							if(String.valueOf(modeloDescansos.getValueAt(j, 0)).equalsIgnoreCase(datosTablaDescansos[0]) && String.valueOf(modeloDescansos.getValueAt(j, 1)).equalsIgnoreCase(datosTablaDescansos[1])&&
+									!modeloDescansos.getValueAt(j, 0).toString().equalsIgnoreCase("Compensatorio")) {
+							
+								modeloDescansos.removeRow(j);
+							}
+						}
+						
+						//comprobamos que si son vacaciones//
+						if(v.getTipo().equalsIgnoreCase("Vacaciones")) {
+							System.out.println("Son vacaciones");
+							//y aqui comprobamos que no esten disfrutadas para mostrar las que estan pendientes//
+								datosTablaDescansos = new String[] {v.getTipo(), v.getFechaDevengo().toString().substring(0, 4), String.valueOf(configuracion.getDiasVacaciones()-v.getDiasDisfrutados())};
+								modeloDescansos.addRow(datosTablaDescansos);	
+						}else{
+							
+							
+							if(v.getDiasPorDisfrutar()!=0) {
+								int diasPendientes = 0;
+								
+								if(!v.isMesCompleto())diasPendientes = configuracion.getDiasVacaciones() - Days.daysBetween(new LocalDate(v.getFechaInicio()), new LocalDate(v.getFechaFin())).getDays();
+								System.out.println("Son descansos");
+								datosTablaDescansos = new String[] {v.getTipo(), v.getFechaDevengo().toString().substring(0, 4), String.valueOf(v.getDiasPorDisfrutar())};
+								modeloDescansos.addRow(datosTablaDescansos);
+							}
+						}
+						}
+					
+						}catch(Exception e) {
+							System.out.println("excepcion en cargar tabla: "+ e.getMessage());
+						}
+
+				}
+		
 		private String[] motivos = new String[] {
 				"mudanza","boda",  "formacion", "festivo dia descanso","festivo trabajado",
 				"dia trabajado","acumulacion horas", "ingreso padre/madre", "intervencion padre/madre",
@@ -1001,6 +1052,8 @@ public class FormularioActualizarVacaciones extends JDialog {
 				"ingreso abuelo/a", "intervencion abuelo/a", "ingreso abuelo/a conyuge", "intervencion abuelo/a conyuge",
 				"ingreso trabajador", "intervencion trabajador", "ingreso hijo/a", "intervencion hijo/a"			
 		};
+		
+		private String[]  datosTablaDescansos;
 		private int id;
 		private Configuracion configuracion =  new Configuracion();
 		private Mensajes mensajes = new Mensajes();
@@ -1012,17 +1065,16 @@ public class FormularioActualizarVacaciones extends JDialog {
 		private ArrayList <Vacaciones> listaDescansosEmpleado;
 		private Vacaciones vacaciones;
 		private Empleado empleadoSeleccionado;
-		private JScrollPane scrollDescansos;
-		private JTable tablaDescansos;
 		private Font fuente = new Font("arial", 1, 13);
 		private JLabel lblSalir, lblInsertar, lblTitulo, lblTipo, lblFechaInicio, lblFechaInicioVacaciones, lblFechaFinVacaciones, lblAñoDevengo, lblFechaDevengo, lblDiasCompensatorio, lblMotivo;
 		private JComboBox comboTipoDescanso, comboDiaInicioDescanso, comboMesInicioDescanso, comboAnioInicioDescanso, comboDiaDevengoDescanso, comboMesDevengoDescanso,
 				comboAnioDevengoDescanso, comboDiaInicioVacaciones, comboMesInicioVacaciones, ComboAnioInicioVacaciones,comboDiaFinVacaciones, comboMesFinVacaciones, ComboAnioFinVacaciones,
-				comboAnioDevengoVacaciones, comboDiasCompensatorio,comboMotivo;
+				comboAnioDevengoVacaciones, comboDiasCompensatorio,comboMotivo, comboNombre;
 		private ArrayList <String> dia,mes, anio;
-		private String[]  datosTablaDescansos;
 		private JCheckBox checkGuardar;
 		private JRadioButton radioDescanso, radioVacaciones;
 		private ButtonGroup grupo1;
 		private JButton btnInsertar, btnSalir;
+		private JTable tablaDescansos;
+		private JScrollPane scrollDescansos;
 	}
