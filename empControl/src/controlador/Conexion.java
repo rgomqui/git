@@ -27,13 +27,6 @@ import java.text.*;
 
 public class Conexion{
 	
-	//public static final String URL= "jdbc:mysql://localhost:3306/empcontrol?useSSL=false&serverTimezone=UTC";
-	//public static final String USER="root";
-	//public static final String PASS="8142";
-	
-	//public final String URL= "jdbc:mysql://db4free.net:3306/pruebas479?useSSL=false&serverTimezone=UTC";
-    //public final String USER="rgomqui";
-    //public final String PASS = "44760093";
     
     public final String URL = "jdbc:mysql://sql262.main-hosting.eu:3306/u877485772_empcontrol?useSSL=false&serverTimezone=UTC";
     public final String USER = "u877485772_rgomqui";
