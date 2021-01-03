@@ -40,7 +40,7 @@ public VentanaMenuPrincipal(){
 		 panelFondoMenu.add(scrollPaneles);
 		 empleado = new PanelEmpleado();
 		 vacaciones = new PanelVacaciones();
-		scrollPaneles.setViewportView(vacaciones);//volver a poner empleado 
+		scrollPaneles.setViewportView(empleado);
 	 }
 	 
 	 

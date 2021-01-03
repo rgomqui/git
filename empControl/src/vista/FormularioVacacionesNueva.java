@@ -832,7 +832,7 @@ public class FormularioVacacionesNueva extends JDialog {
 				modeloDescansos.addRow(datosTablaDescansos);
 			}
 			
-			// cargamos los dias de vacaciones pendientes
+			// cargamos tambien los dias de vacaciones pendientes
 			datosTablaDescansos = new String[] {"Vacaciones", String.valueOf(local.getYear()), String.valueOf(configuracion.getDiasVacaciones())};
 			modeloDescansos.addRow(datosTablaDescansos);
 	

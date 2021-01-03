@@ -209,20 +209,7 @@ public class FormularioEmpleadoNuevo extends JDialog {
 					}
 					
 					
-					
-					/*/ borra esto despues/*/
-					
-					
-					txtNombre.setText("a");
-					txtApe1.setText("a");
-					txtApe2.setText("a");
-					txtDni.setText("a");
-					txtTlf.setText("a");
-					
-					
-					
-					
-					
+									
 					btnInsertar.addActionListener(new ActionListener() {
 						
 						@Override
