@@ -115,19 +115,10 @@ public class FormularioEntregaUniformidad extends JDialog {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
-				if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION){
 
 				Integer id = Integer.valueOf(modeloUniformidad.getValueAt(tablaUniformidad.getSelectedRow(), 0).toString());
-				if(conexion.borrado("uniformidad", "id",id)==1) {
-					JOptionPane.showMessageDialog(getRootPane(), "registro Eliminado");
+				conexion.borrado(getRootPane(), "uniformidad", "id",id);
 					cargarTabla();
-				}else {
-					JOptionPane.showMessageDialog(getRootPane(), "registro  No Eliminado");
-				}
-			}else {
-				JOptionPane.showMessageDialog(getRootPane(), "Cancelado ELiminar");
-			}
 			}
 		});
 		
@@ -343,6 +334,7 @@ public class FormularioEntregaUniformidad extends JDialog {
 		panelFondo.add(btnSalir);
 
 	}
+	
 	
 	
 	//METODO PARA CARGAR LOS DATOS DE UNIFORMIDAD EN LA TABLA, CON BORRADO PREVIO PARA QUE NO SE SOLAPEN DATOS//

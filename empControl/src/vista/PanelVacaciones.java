@@ -264,36 +264,24 @@ public class PanelVacaciones extends JPanel{
 		JMenuItem menuItemActualizar = new JMenuItem("Actualizar registro", new ImageIcon(iconoPopupActualizar));
 		Image iconoPopupAnadir = new ImageIcon("src/img/anadirDescanso.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
 		JMenuItem menuItemAnadir = new JMenuItem("Añadir nuevo registro", new ImageIcon(iconoPopupAnadir));
+		
+		//EVENTO EN EL ITEM ELIMINAR DEL MENU CONTEXTUAL
 		menuItemEliminar.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
-			if(mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == 0){
 
+				//rescatamos el id del item seleccionado
 				Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
 				
-				int x = conexion.borrado("vacaciones", "id",id);
-				
-				if(x==1) {
-					
-					JOptionPane.showMessageDialog(getRootPane(), "Registro eliminado");
-					conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
-					
-				}else {
-					
-					JOptionPane.showMessageDialog(getRootPane(), "Registro  no eliminado");
-					
-				}
-			}else {
-				
-				JOptionPane.showMessageDialog(getRootPane(), "Cancelado eliminar");
-				
-			}
+				//lo pasamos como argumento junto con la tabla y el campo del where
+				conexion.borrado(getRootPane(),"vacaciones", "id",id);
+
 			}
 			
 		});
 		
+		//EVENTO EN EL ITEM ACTUALIZAR DEL MENU CONTEXTUAL
 		menuItemActualizar.addActionListener(new ActionListener() {
 
 			@Override
@@ -316,11 +304,11 @@ public class PanelVacaciones extends JPanel{
 		});
 
 		
+		////EVENTO EN EL ITEM AÑADIR DEL MENU CONTEXTUAL
 		menuItemAnadir.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				formularioVacacionesNueva = new FormularioVacacionesNueva(empleadoSeleccionado, listaVacacionesEmpleado);
 			}
 		});

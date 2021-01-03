@@ -525,9 +525,10 @@ public class Conexion{
 
 
 	/*/METODO PARA INSERTAR EMPLEADO/*/
-	public void insertarEmpleado(JLabel visor, JComboBox comboNombre, Empleado empleado) {
+	public void insertarEmpleado(Component parent, JComboBox comboNombre, Empleado empleado) {
 		try {
 			
+			//COMPROBAMOS SI EL DNI YA EXISTE EN EL SISTEMA
 			Integer i = -1;
 			con = getConnection();
 			ps= con.prepareStatement("SELECT * FROM empleado where dni =?");
@@ -535,9 +536,9 @@ public class Conexion{
 			rs=ps.executeQuery();
 			
 			boolean b = rs.next();
-			System.out.println(b + " existe o no el dni");
+			
+			//SI EL DNI NO EXISTE GENERA LA CONSULTA PARA INSERTAR AL EMPLEADO
 			if(!b) {
-				System.out.println("punto de control");
 			ps = con.prepareStatement("INSERT INTO empleado (nombre, apellido1, apellido2, telefono, dni, tallaSuperior, tallaInferior, tallaPie, tipoCalzado, fechaRegistro) VALUES (?,?,?,?,?,?,?,?,?,?)");
 			
 			
@@ -555,20 +556,22 @@ public class Conexion{
 			i = ps.executeUpdate();
 			
 			
-			}
-			
-			
-			
 			/*/SI DEVUELVE ALGUN RESULTADO, RETORNA TRUE INDICANDO QUE HA HABIDO UNA INSERCION/*/
 			
 			if(i>0) {
-				mensajes.mensajeVisorEmpNuevo(visor, mensajes.verdeOscuro,"** El empleado ha sido insertado correctamente.");
+				mensajes.mensajeInfo(parent, "El empleado ha sido insertado correctamente.", "Insercion correcta");
 				devolverEmpleados(comboNombre, "");
 
 			}else {
-				mensajes.mensajeVisorEmpNuevo(visor, mensajes.rojo, "** El empleado ya existe en la base de datos.");
+				mensajes.mensajeInfo(parent, "Ha habido un error en la inserción.", "Insercion incorrecta");
 				
 			}
+			
+			//SI EL DNI EXISTE, MUESTRA UN MENSAJE DE ERROR Y NO HACE LA INSERCION
+			}else {
+				mensajes.mensajeInfo(parent, "El empleado con el DNI que intenta introducir, ya existe en la base de datos.", "El Dni ya existe en la base de datos");
+			}
+
 			
 		}catch(SQLException ex) {
 			System.out.println(ex.getMessage() + " Error ingresando empleado");
@@ -588,28 +591,33 @@ public class Conexion{
 	/*/METODO PARA CONFIRMAR INCLUIR REGISTRO CON FECHA DUPLICADA/*/
 	public boolean fechaDuplicada(int codigo, Component parent) {
 		
+		//comprobamos si hay entregas anteriores para ese trabajador, con una fecha igual a la misma que se intenta insertar
 		try {
 			con = getConnection();
 			ps = con.prepareStatement("select ultimaEntrega from uniformidad where codigo = ?");
 			ps.setInt(1,codigo);
 			rs = ps.executeQuery();
-		while(rs.next()) {
-			System.out.println("entra en el while de fecha duplicada, codigo empleado: "+codigo+"\n y con fecha anterior de: "+ rs.getDate(1));
-			Integer i = null;		
-			if(rs.getDate(1).compareTo(new Date(local.toDate().getTime()))==0) {
-				System.out.println("fechas iguales");
-				i =  mensajes.mensajePregunta(parent,"Ya existe un registro con la misma fecha para esa entrega de uniformidad.\n"+
-						"¿Desea continuar con la insercion?", "Confirmar insercion");
-				System.out.println(i);		
-			}
 			
-			if(i==JOptionPane.YES_NO_OPTION) {
-				return true;
-			}else {
-				return false;
+			//si encuentra algun o varios resultados preguntará antes de hacer la insercion
+			while(rs.next()) {
+				Integer i = null;		
+				if(rs.getDate(1).compareTo(new Date(local.toDate().getTime()))==0) {
+					System.out.println("fechas iguales");
+					i =  mensajes.mensajePregunta(parent,"Ya existe un registro con la misma fecha para esa entrega de uniformidad.\n"+
+							"¿Desea continuar con la insercion?", "Confirmar insercion");
+					System.out.println(i);		
+				}
+
+				//si respondemos que si en el cuadro, devolvera true.
+				if(i==JOptionPane.YES_NO_OPTION) {
+					return true;
+					
+				//si respondemos que no, devolveá false.	
+				}else {
+					return false;
+				}
+
 			}
-				
-		}
 		}catch(Exception e) {
 			System.out.println(e.toString()+" en fecha duplicada");
 			e.getMessage();
@@ -618,33 +626,52 @@ public class Conexion{
 				if(con!=null)con.close();
 				if(ps!=null)ps.close();
 				if(rs!=null)rs.close();
-				
+
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
 		}
+		
+		//si no encuentra ninguna devolvera true;
 		return true;
 	}
 	
 	
 	/*/METODO PARA BORRAR UNA FILA (si borra una o mas filas devuelve 1, sino devuelve 0 o -1 en caso de error/*/
-	public int borrado(String tabla, String columna, Integer clausula) {
+	public void borrado(Component parent, String tabla, String columna, Integer clausula) {
 		
+		//PRIMERO HACEMOS UNA CONSULTAR PARA VER QUE EXISTE EL DATO QUE QUEREMOS BORRAR
 		try {
-			Integer i;
-			con = getConnection();
-			ps=con.prepareStatement("select * from "+tabla+" where "+columna+" = ? ");
-			ps.setInt(1, clausula);
-			rs = ps.executeQuery();
-			if(rs.next()) {
-				System.out.println("hay registros");
-				ps=con.prepareStatement("delete from "+tabla+" where "+columna+" = ?");
+			if(mensajes.mensajePregunta(parent, "¿Esta seguro de eliminar el registro?","Confirmar eliminar registro") == JOptionPane.YES_NO_OPTION) {
+				Integer i;
+				con = getConnection();
+				ps=con.prepareStatement("select * from "+tabla+" where "+columna+" = ? ");
 				ps.setInt(1, clausula);
-				System.out.println(ps.toString());
-				i = ps.executeUpdate();
-				return(i>0)?1:0;
-			}else {			
-				return -1;
+				rs = ps.executeQuery();
+
+				//SI EXISTE PROCEDEMOS A SU BORRADO
+				if(rs.next()) {
+					ps=con.prepareStatement("delete from "+tabla+" where "+columna+" = ?");
+					ps.setInt(1, clausula);
+					i = ps.executeUpdate();
+
+					//SI SE BORRA UN OBJETO O MAS MOSTRAMOS UN MENSAJE CONFIRMANDO EL BORRADO Y SINO CONFIRMAMOS QUE NO SE HA PODIDO BORRAR
+					if(i>0) {
+						if(i==1) {
+							mensajes.mensajeInfo(parent, i + " registro se ha borrado correctamente", "Registro borrado correctamente");	
+						}
+						mensajes.mensajeInfo(parent, i + " registros se han borrado", "Registros borrados correctamente");
+
+					}else {
+						mensajes.mensajeInfo(parent, "No existe el registro que pretende borrar", "No existe el registro");
+					}
+					//SI NO EXISTE EL REGISTRO QUE QUEREMOS BORRAR MOSTRAMOS UN MENSAJE
+				}else {		
+
+					mensajes.mensajeInfo(parent, "No existe el registro que pretende borrar", "No existe el registro");
+
+				}
+				mensajes.mensajeInfo(parent, "Ha cancelado borrar el registro", "Cancelado borrado");
 			}
 
 		}catch(Exception e) {
@@ -660,8 +687,7 @@ public class Conexion{
 			}catch(Exception e) {
 
 			}
-		}
-		return -1;		
+		}	
 	}
 	
 	/*/METODO PARA ACTUALIZAR EMPLEADO/*/
@@ -713,9 +739,11 @@ public class Conexion{
 	public void insertarUniformidad(Component parent, Empleado empleado, Uniformidad uniformidad){
 		try {	
 					boolean b = false;
-					System.out.println(empleado.getCodigo());
-					 b = fechaDuplicada(empleado.getCodigo(), parent);					
-					System.out.println("booleano de entrada al if para ingresar uniformidad " + b);
+					
+					//primero comprobamos si hay una entrega previa que corresponda con la misma fecha, para evitar duplicidades
+					 b = fechaDuplicada(empleado.getCodigo(), parent);	//				
+
+					 //si no la hubiera o damos permiso para añadirla con fecha duplicada, devolveria true; 
 					if(b) {
 						con = getConnection();
 						ps = con.prepareStatement("insert into uniformidad (codigo, camisa, forro, pantalon, zapatos, tipo, ultimaEntrega) values (?, ?, ?, ?, ?, ?, ?)");
@@ -737,6 +765,8 @@ public class Conexion{
 							System.out.println("** No se ha podido insertar la uniformidad para el empleado ");
 							mensajes.mensajeInfo(parent, "Uniformidad no se ha podido insertar", "Error insertando uniformidad");
 						}
+						
+						//si devuelve false, porque hayamos cancelado incluirla por duplicado mostrará un mensaje en pantalla
 					}else {
 						System.out.println("Se ha denegado duplicar fechas de entrega");
 						mensajes.mensajeInfo(parent, "Se ha denegado duplicar las fechas de entrega", "Denegado duplicar entrega");

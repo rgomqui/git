@@ -50,6 +50,7 @@ public class Login extends JFrame{
 		txtUsuario = new JTextField();
 		txtUsuario.setBounds(75, 160, 150, 20);
 		txtUsuario.setText("Nombre de usuario");
+		txtUsuario.setToolTipText("Introduzca el nombre de usuario");
 		txtUsuario.addFocusListener(new FocusListener() {
 			
 			@Override
@@ -69,19 +70,28 @@ public class Login extends JFrame{
 		
 		//textfield pass
 		
-		txtPass = new JTextField();
+		 
+		txtPass = new JPasswordField();
 		txtPass.setBounds(75, 200, 150, 20);
 		txtPass.setText("Contraseña");
+		txtPass.setToolTipText("Introduzca contraseña");
+		
 		txtPass.addFocusListener(new FocusListener() {
+		
 			
+		
 			@Override
 			public void focusGained(FocusEvent e) {
-				if(txtPass.getText().equals("Contraseña")) txtPass.setText("");
+				
+				char[] pass=txtPass.getPassword();
+				if(new String(pass).equals("Contraseña")) txtPass.setText("");
 			}
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				if(txtPass.getText().equals("")) txtPass.setText("Contraseña");	
+				char[] pass=txtPass.getPassword();
+				
+				if(new String(pass).equals("")) txtPass.setText("Contraseña");	
 			}
 			
 			
@@ -95,9 +105,10 @@ public class Login extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Conexion conexion = new Conexion();
-				if(conexion.login(txtUsuario.getText().toString(), txtPass.getText().toString())) {
+				char[] pass=txtPass.getPassword();
+				if(conexion.login(txtUsuario.getText().toString(), new String(pass))) {
 					
-					VentanaMenuPrincipal vMenu = new VentanaMenuPrincipal();
+					vMenu = new VentanaMenuPrincipal();
 					vMenu.setVisible(true);
 					dispose();
 					
@@ -157,13 +168,14 @@ public class Login extends JFrame{
 		
 	}
 	
-
-	VentanaMenuPrincipal vMenu;
-	Font fuente = new Font("arial", 3, 15);
-	JLabel lblUsuario, lblPass, lblTitulo, lblEntrar, lblSalir;
-	JTextField txtUsuario, txtPass;
-	JPanel panelFondo;
-	JButton btnIcono, btnEntrar, btnSalir;
+	private String cadenaPass = new String();
+	private VentanaMenuPrincipal vMenu;
+	private Font fuente = new Font("arial", 3, 15);
+	private JLabel lblUsuario, lblPass, lblTitulo, lblEntrar, lblSalir;
+	private JTextField txtUsuario;
+	private JPasswordField txtPass;
+	private JPanel panelFondo;
+	private JButton btnIcono, btnEntrar, btnSalir;
 	
 
 

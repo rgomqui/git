@@ -32,20 +32,4 @@ public class Mensajes {
 		return(i==null)?25:i;
 	}
 	
-	/*/METODO PARA ENVIAR MENSAJE AL LBL DE LA APLICACION/*/
-	
-	public void mensajeVisorEmpNuevo(JLabel componente,Color color, String mensaje) {
-		
-		componente.setText(mensaje);
-		componente.setForeground(color);
-		System.out.println(mensaje);
-	}
-	
-	Color verdeOscuro = new Color(67,185,86);
-	Color rojo = new Color(227,36,27); 
-	FormularioEmpleadoNuevo empNuevo;
-	FormularioActualizarEmpleado empActualiza;
-	FormularioActualizarVacaciones vacacionesActualiza;
-	FormularioVacacionesNueva vacacionesNuevo;
-
 }

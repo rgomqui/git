@@ -428,23 +428,7 @@ public class PanelEmpleado extends JPanel{
 				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					int i;
-					int respuesta =mensajes.mensajePregunta(getRootPane(), "¿Esta seguro de querer eliminar el empleado seleccionado?", "Confirmar eliminar empleado");
-					
-					System.out.println("Borrado: " + respuesta);
-					if(respuesta == 0) {
-						i = conexion.borrado("empleado","codigo", Integer.valueOf(txtCod.getText()));
-						if(i >0) {
-							mensajes.mensajeInfo(getParent(),"Registro con el codigo "+txtCod.getText()+" eliminado correctamente.","registro eliminado correctamente" );
-							comboNombre.removeAllItems();
-							conexion.devolverEmpleados(comboNombre,"");
-						}else{
-						mensajes.mensajeInfo(getParent(),"Registro con el codigo "+txtCod.getText()+" no se ha podido eliminar correctamente.","error eliminando registro" );
-					}
-					}else {
-						mensajes.mensajeInfo(getParent(),"Rechazado eliminar registro.","Rechazado eliminar registro" );
-					}
-					
+				 conexion.borrado(getRootPane(),"empleado","codigo", Integer.valueOf(txtCod.getText()));		
 					
 				}
 				

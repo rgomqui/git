@@ -237,10 +237,10 @@ public class FormularioEmpleadoNuevo extends JDialog {
 									
 									System.out.println("control");
 							
-										con.insertarEmpleado(lblMensajeError, comboNombre, empleado);
+										con.insertarEmpleado(getRootPane(), comboNombre, empleado);
 											
 								}else {	
-									mensajes.mensajeVisorEmpNuevo(lblMensajeError,Color.red, "** Se ha cancelado el registro del nuevo empleado.");
+									mensajes.mensajeInfo(getRootPane(), "Se ha cancelado el registro del nuevo empleado.", "registro cancelado");
 								}
 								
 							}else{
