@@ -33,6 +33,8 @@ public class FormularioEmpleadoNuevo extends JDialog {
 		
 			public FormularioEmpleadoNuevo(JComboBox comboNombre){
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			Image icon = new ImageIcon("src/img/icono.png").getImage();
+			this.setIconImage(icon);
 			setAlwaysOnTop(true);
 			setVisible(true);
 			setSize(600, 400);

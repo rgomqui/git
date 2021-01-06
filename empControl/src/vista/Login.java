@@ -14,6 +14,8 @@ public class Login extends JFrame{
 		this.setSize(300, 400);
 		this.setTitle("EmpControl 1.0");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		Image icon = new ImageIcon("src/img/icono.png").getImage();
+		this.setIconImage(icon);
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		componentesGraficos();
@@ -25,6 +27,27 @@ public class Login extends JFrame{
 		panelFondo = new JPanel();
 		panelFondo.setBackground(new Color(198,222,235));
 		panelFondo.setLayout(null);
+		panelFondo.setFocusable(true);
+		panelFondo.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				metodoAcceso();
+				
+			}
+		});
 		this.add(panelFondo);
 		
 		btnIcono = new JButton();
@@ -51,6 +74,28 @@ public class Login extends JFrame{
 		txtUsuario.setBounds(75, 160, 150, 20);
 		txtUsuario.setText("Nombre de usuario");
 		txtUsuario.setToolTipText("Introduzca el nombre de usuario");
+		txtUsuario.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getKeyChar()== KeyEvent.VK_ENTER) {
+				metodoAcceso();
+				}
+			}
+		});
 		txtUsuario.addFocusListener(new FocusListener() {
 			
 			@Override
@@ -75,6 +120,28 @@ public class Login extends JFrame{
 		txtPass.setBounds(75, 200, 150, 20);
 		txtPass.setText("Contraseña");
 		txtPass.setToolTipText("Introduzca contraseña");
+		txtPass.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getKeyChar()== KeyEvent.VK_ENTER) {
+					metodoAcceso();
+					}
+			}
+		});
 		
 		txtPass.addFocusListener(new FocusListener() {
 		
@@ -82,16 +149,12 @@ public class Login extends JFrame{
 		
 			@Override
 			public void focusGained(FocusEvent e) {
-				
-				char[] pass=txtPass.getPassword();
-				if(new String(pass).equals("Contraseña")) txtPass.setText("");
+				if(new String(txtPass.getPassword()).equals("Contraseña")) txtPass.setText("");
 			}
 
 			@Override
-			public void focusLost(FocusEvent e) {
-				char[] pass=txtPass.getPassword();
-				
-				if(new String(pass).equals("")) txtPass.setText("Contraseña");	
+			public void focusLost(FocusEvent e) {				
+				if(new String(txtPass.getPassword()).equals("")) txtPass.setText("Contraseña");	
 			}
 			
 			
@@ -104,17 +167,8 @@ public class Login extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Conexion conexion = new Conexion();
-				char[] pass=txtPass.getPassword();
-				if(conexion.login(txtUsuario.getText().toString(), new String(pass))) {
-					
-					vMenu = new VentanaMenuPrincipal();
-					vMenu.setVisible(true);
-					dispose();
-					
-				}else {
-					JOptionPane.showMessageDialog(null, "Usuario Erroneo", "Usuario Erroneo", JOptionPane.ERROR_MESSAGE);
-				}
+				
+				metodoAcceso();
 				
 				
 			}
@@ -168,6 +222,21 @@ public class Login extends JFrame{
 		
 	}
 	
+	//METODO PARA ACCEDER
+	
+	private void metodoAcceso() {
+		if(conexion.login(txtUsuario.getText().toString(), new String(txtPass.getPassword()))) {
+			
+			vMenu = new VentanaMenuPrincipal();
+			vMenu.setVisible(true);
+			dispose();
+		}else {
+			JOptionPane.showMessageDialog(null, "Usuario Erroneo", "Usuario Erroneo", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	
+	private Conexion conexion = new Conexion();
 	private String cadenaPass = new String();
 	private VentanaMenuPrincipal vMenu;
 	private Font fuente = new Font("arial", 3, 15);
@@ -176,7 +245,6 @@ public class Login extends JFrame{
 	private JPasswordField txtPass;
 	private JPanel panelFondo;
 	private JButton btnIcono, btnEntrar, btnSalir;
+
 	
-
-
 }

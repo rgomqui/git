@@ -17,6 +17,8 @@ public VentanaMenuPrincipal(){
 	
 	this.setTitle("EmpControl 1.0");
 	this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+	Image icon = new ImageIcon("src/img/icono.png").getImage();
+	this.setIconImage(icon);
 	this.setResizable(false);
 	this.setLocationRelativeTo(null);
 		panelFondoPrincipal();

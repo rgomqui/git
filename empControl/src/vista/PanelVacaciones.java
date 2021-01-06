@@ -217,6 +217,11 @@ public class PanelVacaciones extends JPanel{
 			lblMensaje2.setFont(new Font("arial",1,12));
 			lblMensaje2.setBounds(370, 370, 200, 30);
 			add(lblMensaje2);
+			lblMensaje3 = new JLabel("Seleccionando previamente un registro");
+			lblMensaje3.setFont(new Font("arial",1,12));
+			lblMensaje3.setBounds(370, 390, 200, 30);
+			add(lblMensaje3);
+
 
 			
 	}
@@ -271,11 +276,20 @@ public class PanelVacaciones extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
+				try {
 				//rescatamos el id del item seleccionado
-				Integer id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
+				int id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
 				
+				System.out.println("id: "+id);
 				//lo pasamos como argumento junto con la tabla y el campo del where
+				if(String.valueOf(id).length()>0) {
 				conexion.borrado(getRootPane(),"vacaciones", "id",id);
+				}else {
+					mensajes.mensajeInfo(getRootPane(), "No ha seleccionado ningun registro para eliminar", "Registro no seleccionado");
+				}
+				}catch(Exception e) {
+					System.out.println("Error en eliminar item: "+ e.getMessage());
+				}
 
 			}
 			
@@ -336,7 +350,7 @@ public class PanelVacaciones extends JPanel{
 	private Conexion conexion =  new Conexion();
 	private Empleado empleadoSeleccionado;
 	private Font fuente = new Font("arial", 1, 13);
-	private JLabel  lblTituloVacaciones, lblTituloDescansos,lblBuscarNombre,lblNombre, lblCodigo, lblTituloBuscar, lblEliminar, lblActualizar, lblInsertar, lblMensaje, lblMensaje2;
+	private JLabel  lblTituloVacaciones, lblTituloDescansos,lblBuscarNombre,lblNombre, lblCodigo, lblTituloBuscar, lblEliminar, lblActualizar, lblInsertar, lblMensaje, lblMensaje3, lblMensaje2;
 	private JTextField txtBuscarNombre, txtNombreEmpleado, txtCodigo;
 	private JButton btnInsertar, btnActualizar, btnEliminar, btnBuscarNombre;
 	private PanelEmpleado empleado;

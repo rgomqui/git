@@ -29,6 +29,8 @@ public class FormularioActualizarEmpleado extends JDialog {
 				this.comboNombre = comboNombre;
 				this.empleado = empleado;
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			Image icon = new ImageIcon("src/img/icono.png").getImage();
+			this.setIconImage(icon);
 			setAlwaysOnTop(true);
 			setVisible(true);
 			setSize(600, 400);

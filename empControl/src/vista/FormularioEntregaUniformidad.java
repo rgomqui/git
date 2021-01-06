@@ -45,6 +45,8 @@ public class FormularioEntregaUniformidad extends JDialog {
 		
 		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		Image icon = new ImageIcon("src/img/icono.png").getImage();
+		this.setIconImage(icon);
 		setAlwaysOnTop(true);
 		setVisible(true);
 		setSize(650, 430);

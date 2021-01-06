@@ -62,6 +62,8 @@ public class FormularioActualizarVacaciones extends JDialog {
 			
 			//cargamos la ventana, los graficos y la tabla
 			setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			Image icon = new ImageIcon("src/img/icono.png").getImage();
+			this.setIconImage(icon);
 			setAlwaysOnTop(true);
 			setVisible(true);
 			setSize(770, 560);
