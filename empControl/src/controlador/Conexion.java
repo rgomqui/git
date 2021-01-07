@@ -282,49 +282,43 @@ public class Conexion{
 	}
 	
 	/*/ METODO PARA DEVOLVER DIAS DE DESCANSO PENDIENTES DE DISFRUTAR/*/
-	public void devolverVacaciones(int codigoEmpleado, JTextField txtConvenio, JTextField txtCompensatorio, JTextField txtVacaciones, JTextField txtPermisos) {
+	public void devolverVacaciones(int codigoEmpleado, JTextField txtConvenio, JTextField txtCompensatorio, JTextField txtVacaciones) {
 		
-		configuracion = recuperaConfig();
-	diasPendienteVacaciones =0;
-	diasPendienteConvenio = 0;
-	diasPendientecompensatorio = 0;
-	diasPendientePermiso = 0;
+	configuracion = recuperaConfig();
+ 
+	diasPendienteVacaciones = configuracion.getDiasVacaciones();
+	diasPendienteConvenio = configuracion.getDiasConvenio();
+	diasPendienteCompensatorio = 0;
 	
 	//PONEMOS EN BLANCO LAS CAJAS DE TEXTO//
 	txtConvenio.setText("");
 	txtCompensatorio.setText("");
 	txtVacaciones.setText("");
-	txtPermisos.setText("");
 	
 	try {
 		
-			
+			listarVacaciones();
 		for(Vacaciones v:listaVacaciones) {
+			int fechaDevengo = Integer.valueOf(v.getFechaDevengo().toString().substring(0,4));
+			int anioActual = local.getYear();
+			
 			if(v.getCodigo()==codigoEmpleado) {
-				if(v.getTipo().equals("vacaciones")) {
-					diasPendienteVacaciones = Days.daysBetween(new LocalDate(v.getFechaInicio()), new LocalDate(v.getFechaFin())).getDays();
-					++diasPendienteVacaciones;
-				}
-				if(v.getTipo().equals("convenio")) {
-					diasPendienteConvenio+=diasPendienteConvenio;
-				}
-				if(v.getTipo().equals("compensatorio")) {
-					diasPendientecompensatorio += v.getDiasPorDisfrutar();
-				}
-				if(v.getTipo().equals("permiso")) {
-					diasPendientePermiso += v.getDiasPorDisfrutar();
+				if(v.getTipo().equals("Vacaciones") && fechaDevengo == anioActual) {
+					diasPendienteVacaciones -= v.getDiasDisfrutados();
+				}else if(v.getTipo().equals("Compensatorio")) {
+					if(!v.isDisfrutado() && fechaDevengo == anioActual)
+					diasPendienteCompensatorio += v.getDiasPorDisfrutar();
+				}else{	
+					if(fechaDevengo == anioActual)diasPendienteConvenio--;
+					
+					System.out.println("convenio$$");
 				}
 			}
 		}
-		
-			diasPendienteVacaciones = configuracion.getDiasVacaciones()-diasPendienteVacaciones;
-			diasPendienteConvenio = configuracion.getDiasConvenio()-diasPendienteConvenio;
-			
+				
 			txtConvenio.setText(String.valueOf(diasPendienteConvenio));
-			txtCompensatorio.setText(String.valueOf(diasPendientecompensatorio));
-			txtVacaciones.setText(String.valueOf(diasPendienteVacaciones));
-			txtPermisos.setText(String.valueOf(diasPendientePermiso));
-			
+			txtCompensatorio.setText(String.valueOf(diasPendienteCompensatorio));
+			txtVacaciones.setText(String.valueOf(diasPendienteVacaciones));			
 	
 		}catch(Exception e) {
 			System.out.println("Error mostrando vacaciones " + e.getMessage());
@@ -659,18 +653,21 @@ public class Conexion{
 					if(i>0) {
 						if(i==1) {
 							mensajes.mensajeInfo(parent, i + " registro se ha borrado correctamente", "Registro borrado correctamente");	
+						}else {
+							mensajes.mensajeInfo(parent, i + " registros se han borrado", "Registros borrados correctamente");
 						}
-						mensajes.mensajeInfo(parent, i + " registros se han borrado", "Registros borrados correctamente");
-
 					}else {
 						mensajes.mensajeInfo(parent, "No existe el registro que pretende borrar", "No existe el registro");
 					}
+					
 					//SI NO EXISTE EL REGISTRO QUE QUEREMOS BORRAR MOSTRAMOS UN MENSAJE
 				}else {		
 
 					mensajes.mensajeInfo(parent, "No existe el registro que pretende borrar", "No existe el registro");
 
 				}
+				
+			}else {
 				mensajes.mensajeInfo(parent, "Ha cancelado borrar el registro", "Cancelado borrado");
 			}
 
@@ -791,10 +788,7 @@ public class Conexion{
 	
 	
 	private ArrayList<Uniformidad> listaUniformes;
-	private int diasPendienteVacaciones;
-	private int diasPendienteConvenio;
-	private int diasPendientecompensatorio;
-	private int diasPendientePermiso;
+	private int diasPendienteVacaciones, diasPendienteConvenio, diasPendienteCompensatorio;
 	private String unoEneroAñoActual = (new LocalDate().now().getYear()-1)+"-12-31";
 	private String unoEneroAñoSiguiente =  (new LocalDate().now().getYear()+1)+"-01-01";
 	private SimpleDateFormat fechaEneroActual = new SimpleDateFormat("yyyy-MM-dd");

@@ -53,12 +53,12 @@ public class PanelVacaciones extends JPanel{
 		g.drawRoundRect(10, 300, 335, 140, 10, 10);    // CUADRO 3 "BUSQUEDA EMPLEADO"
 		g.fillRoundRect(10, 300, 335, 140, 10, 10); 
 		
-		g.drawRoundRect(350, 300, 250, 140, 10, 10);   // CUADRO 4 "BOTON AÑADIR"
+		g.drawRoundRect(350, 300, 250, 140, 10, 10);   // CUADRO 4 "INFO DEL MENU"
 		g.fillRoundRect(350, 300, 250, 140, 10, 10);
 		
 		g.setColor(new Color (228,241,245));
-		g.drawRoundRect(365, 355, 210, 45, 10, 10);   // CUADRO 5 "TEXTO MENU CONCEPTUAL"
-		g.fillRoundRect(365, 355, 210, 45, 10, 10);
+		g.drawRoundRect(355, 325, 235, 85, 10, 10);   // CUADRO 5 "CUADRO INFO MENU"
+		g.fillRoundRect(355, 325, 235, 85, 10, 10);
 		
 		
 	}
@@ -180,9 +180,7 @@ public class PanelVacaciones extends JPanel{
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
-				empleadoActualIndex =comboNombre.getSelectedIndex();
-				conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
-				comboNombre.setSelectedIndex(empleadoActualIndex);
+				actualizarEmpleado();
 				
 			}
 		});
@@ -211,20 +209,28 @@ public class PanelVacaciones extends JPanel{
 		
 			lblMensaje = new JLabel("Porfavor, utilice el menu contextual");
 			lblMensaje.setFont(new Font("arial",1,12));
-			lblMensaje.setBounds(370, 350, 200, 30);
+			lblMensaje.setBounds(360, 330, 200, 30);
 			add(lblMensaje);
 			lblMensaje2 = new JLabel("para interactuar con la tabla.");
 			lblMensaje2.setFont(new Font("arial",1,12));
-			lblMensaje2.setBounds(370, 370, 200, 30);
+			lblMensaje2.setBounds(360, 350, 200, 30);
 			add(lblMensaje2);
 			lblMensaje3 = new JLabel("Seleccionando previamente un registro");
 			lblMensaje3.setFont(new Font("arial",1,12));
-			lblMensaje3.setBounds(370, 390, 200, 30);
+			lblMensaje3.setBounds(360, 370, 250, 30);
 			add(lblMensaje3);
 
 
 			
 	}
+	
+	private void actualizarEmpleado() {
+		empleadoActualIndex =comboNombre.getSelectedIndex();
+		conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
+		comboNombre.setSelectedIndex(empleadoActualIndex);
+		cargarTabla((Empleado)comboNombre.getSelectedItem());
+	}
+	
 	private void cargarTabla(Empleado empleadoSeleccionado) {
 		try {
 			//borramos las tablas
@@ -232,8 +238,8 @@ public class PanelVacaciones extends JPanel{
 				modeloDescansos.removeRow(0);
 			}
 			
-			//añadimos dos filas vacias para poder interactuar con el menu contextual en las tablas//
-			modeloDescansos.addRow(new String[] {""});
+			//añadimos una vacias para poder interactuar con el menu contextual en las tablas//
+			modeloDescansos.addRow(new String[] {"0"});
 			
 			
 			//bucle para añadir los descansos a la tabla//
@@ -250,6 +256,8 @@ public class PanelVacaciones extends JPanel{
 			//si se han añadido registros borra la fila vacia//
 			if(modeloDescansos.getRowCount()>1)modeloDescansos.removeRow(0);
 			
+			//preseleccionamos el primer registro
+			tablaDescansos.setRowSelectionInterval(0, 0);
 			
 		}catch(Exception e){
 			System.out.println("Error en formulario llenado de lista descansos");
@@ -276,19 +284,27 @@ public class PanelVacaciones extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
+				int id = -5;
 				try {
-				//rescatamos el id del item seleccionado
-				int id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
-				
-				System.out.println("id: "+id);
-				//lo pasamos como argumento junto con la tabla y el campo del where
-				if(String.valueOf(id).length()>0) {
-				conexion.borrado(getRootPane(),"vacaciones", "id",id);
-				}else {
-					mensajes.mensajeInfo(getRootPane(), "No ha seleccionado ningun registro para eliminar", "Registro no seleccionado");
-				}
+					
+					//comprobamos que el registro no este vacio
+					 if(Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString())==0) {
+						mensajes.mensajeInfo(getRootPane(), "El registro seleccionado esta vacio", "No hay registro valido seleccionado");	
+						
+					}else {
+						
+						//rescatamos el id del registro
+						id = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());	
+						
+						//lo pasamos como argumento junto con la tabla y el campo del where
+						conexion.borrado(getRootPane(),"vacaciones", "id",id);
+					}
+					 
+					 actualizarEmpleado();
+					 
 				}catch(Exception e) {
 					System.out.println("Error en eliminar item: "+ e.getMessage());
+					
 				}
 
 			}
@@ -301,16 +317,21 @@ public class PanelVacaciones extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					//buscamos dentro de la lista de descansos el descanso que se ha seleccionado en la tabla y lo enviamos junto con el id y el empleado
-					int i = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
-					for(Vacaciones v : listaVacacionesEmpleado) {
-						if(v.getId() == i) {
-							formularioActualizarVacaciones = new FormularioActualizarVacaciones(v.getId(), listaVacacionesEmpleado, empleadoSeleccionado);	
-						}
+					//comprobamos que el registro no este vacio
+					 if(Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString())==0) {
+						mensajes.mensajeInfo(getRootPane(), "El registro seleccionado esta vacio", "No hay registro valido seleccionado");	
+						
+					}else {
+						//buscamos dentro de la lista de descansos el descanso que se ha seleccionado en la tabla y lo enviamos junto con el id y el empleado
+						int i = Integer.valueOf(modeloDescansos.getValueAt(tablaDescansos.getSelectedRow(), 0).toString());
+						for(Vacaciones v : listaVacacionesEmpleado) {
+							if(v.getId() == i) {
+								formularioActualizarVacaciones = new FormularioActualizarVacaciones(v.getId(), listaVacacionesEmpleado, empleadoSeleccionado);
+								actualizarEmpleado();
+							}
+						}					
 					}
-					empleadoActualIndex =comboNombre.getSelectedIndex();
-					conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
-					comboNombre.setSelectedIndex(empleadoActualIndex);
+					
 				}catch(Exception e) {
 					System.out.println("Excepcion en popup actualizar " + e.getMessage());
 				}

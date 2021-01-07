@@ -161,6 +161,22 @@ public class FormularioActualizarVacaciones extends JDialog {
 				ComboAnioFinVacaciones.setEnabled(true);
 				comboAnioDevengoVacaciones.setEnabled(true);
 				
+				//rellenamos todos los datos de las vacaciones que queremos modificar
+				
+				//fecha inicio
+				ComboAnioInicioVacaciones.setSelectedItem(vacaciones.getFechaInicio().toString().substring(0, 4));
+				comboMesInicioVacaciones.setSelectedItem(vacaciones.getFechaInicio().toString().substring(5, 7));
+				comboDiaInicioVacaciones.setSelectedItem(vacaciones.getFechaInicio().toString().substring(8));
+				
+				//fecha fin
+				
+				ComboAnioFinVacaciones.setSelectedItem(vacaciones.getFechaFin().toString().substring(0, 4));
+				comboMesFinVacaciones.setSelectedItem(vacaciones.getFechaFin().toString().substring(5, 7));
+				comboDiaFinVacaciones.setSelectedItem(vacaciones.getFechaFin().toString().substring(8));
+				
+				//año devengo
+				comboAnioDevengoVacaciones.setSelectedItem(vacaciones.getFechaDevengo().toString().substring(0,4));
+				
 				//se inhabilita lo referente a descanso
 				radioDescanso.setSelected(false);
 				radioDescanso.setEnabled(false);
@@ -715,10 +731,7 @@ public class FormularioActualizarVacaciones extends JDialog {
 
 						//fecha de fin del descanso
 						LocalDate fechaFin = fechaInicio.plusDays(Integer.valueOf(comboDiasCompensatorio.getSelectedItem().toString())-1);
-						//LocalDate fechaFin = new LocalDate(Integer.valueOf(comboAnioInicioDescanso.getSelectedItem().toString()),
-							//	Integer.valueOf(comboMesInicioDescanso.getSelectedItem().toString()), 
-							//	(Integer.valueOf(comboDiaInicioDescanso.getSelectedItem().toString())+(Integer.valueOf(comboDiasCompensatorio.getSelectedItem().toString())-1)));
-
+						
 						vacaciones.setFechaFin(Date.valueOf(fechaFin.toString()));
 
 						//pasamos un false a mes completo, ya que son dias sueltos

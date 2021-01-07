@@ -25,7 +25,7 @@ public class PanelEmpleado extends JPanel{
 		
 		
 		conexion.devolverEmpleados(comboNombre, "");
-		conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio,txtCompensatorio, txtVacaciones, txtPermisos);
+		conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio,txtCompensatorio, txtVacaciones);
 	}
 	
 	
@@ -267,37 +267,21 @@ public class PanelEmpleado extends JPanel{
 		
 		btnBuscarNombre = new JButton("Actualizar");
 		btnBuscarNombre.setBounds(235,325,95,20);
-		btnBuscarNombre.addMouseListener(new MouseListener() {
+		btnBuscarNombre.addActionListener(new ActionListener() {
 			
 			@Override
-			public void mouseReleased(MouseEvent arg0) {
-				// TODO Auto-generated method stub
+			public void actionPerformed(ActionEvent arg0) {
 				
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				// TODO Auto-generated method stub
+				//recuperamos el indice del empledo
+				int empleadoIndex = comboNombre.getSelectedIndex();
 				
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				// TODO Auto-generated method stub
+				//actualizamos la informacion de los empleados
 				conexion.devolverEmpleados(comboNombre, txtBuscarNombre.getText());
-				conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio,txtCompensatorio, txtVacaciones, txtPermisos);
+				conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio,txtCompensatorio, txtVacaciones);
+				
+				//preseleccionamos el empleado que estaba previamente
+				comboNombre.setSelectedIndex(empleadoIndex);
+				
 			}
 		});
 		
@@ -332,7 +316,7 @@ public class PanelEmpleado extends JPanel{
 					txtTallaInferior.setText(empleadoSeleccionado.getTallaInferior());
 					txtTallaCalzado.setText(empleadoSeleccionado.getTallaPie());
 					txtTipoCalzado.setText(empleadoSeleccionado.getTipoCalzado());
-					conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio, txtCompensatorio, txtVacaciones, txtPermisos);
+					conexion.devolverVacaciones(empleadoSeleccionado.getCodigo(), txtConvenio, txtCompensatorio, txtVacaciones);
 				}else {
 					txtCod.setText("");
 					txtNombre.setText("");
@@ -400,8 +384,10 @@ public class PanelEmpleado extends JPanel{
 			btnActualizar.addActionListener(new ActionListener() {
 				
 				@Override
-				public void actionPerformed(ActionEvent e) {			
+				public void actionPerformed(ActionEvent e) {
+					
 					formularioActualizarEmpleado = new FormularioActualizarEmpleado(empleadoSeleccionado, comboNombre);
+					
 				}
 			});
 			
