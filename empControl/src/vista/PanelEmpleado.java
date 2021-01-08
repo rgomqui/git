@@ -448,30 +448,17 @@ public class PanelEmpleado extends JPanel{
 		add(txtVacaciones);
 		
 		
-		//DIAS DE PERMISO DEL EMPLEADO
-		
-		lblPermisos = new JLabel("Permisos:");
-		lblPermisos.setFont(fuente);
-		lblPermisos.setBounds(350,320,110,20);
-		lblPermisos.setHorizontalAlignment(JLabel.RIGHT);
-		add(lblPermisos);
-				
-		txtPermisos = new JTextField();
-		txtPermisos.setBounds(460, 320, 30, 20);
-		txtPermisos.setEditable(false);
-		add(txtPermisos);
-		
 		
 		//DIAS DE CONVENIO DEL EMPLEADO
 		
 		lblConvenio = new JLabel("Convenio:");
 		lblConvenio.setFont(fuente);
-		lblConvenio.setBounds(350,350,110,20);
+		lblConvenio.setBounds(350,320,110,20);
 		lblConvenio.setHorizontalAlignment(JLabel.RIGHT);
 		add(lblConvenio);
 		
 		txtConvenio = new JTextField();
-		txtConvenio.setBounds(460, 350, 30, 20);
+		txtConvenio.setBounds(460, 320, 30, 20);
 		txtConvenio.setEditable(false);
 		add(txtConvenio);
 		
@@ -480,12 +467,12 @@ public class PanelEmpleado extends JPanel{
 		
 		lblCompensatorio = new JLabel("Compensatorios:");
 		lblCompensatorio.setFont(fuente);
-		lblCompensatorio.setBounds(350,380,110,20);
+		lblCompensatorio.setBounds(350,350,110,20);
 		lblCompensatorio.setHorizontalAlignment(JLabel.RIGHT);
 		add(lblCompensatorio);
 		
 		txtCompensatorio = new JTextField();
-		txtCompensatorio.setBounds(460, 380,30, 20);
+		txtCompensatorio.setBounds(460, 350,30, 20);
 		txtCompensatorio.setEditable(false);
 		add(txtCompensatorio);
 		

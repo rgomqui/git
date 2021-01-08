@@ -311,7 +311,7 @@ public class Conexion{
 				}else{	
 					if(fechaDevengo == anioActual)diasPendienteConvenio--;
 					
-					System.out.println("convenio$$");
+					
 				}
 			}
 		}
@@ -322,7 +322,7 @@ public class Conexion{
 	
 		}catch(Exception e) {
 			System.out.println("Error mostrando vacaciones " + e.getMessage());
-			//e.printStackTrace();
+
 			
 		}finally{
 			try{

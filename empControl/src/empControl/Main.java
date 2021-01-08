@@ -12,8 +12,8 @@ public class  Main{
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 
-				//login.setVisible(true);	
-				v1.setVisible(true);
+				login.setVisible(true);	
+				//v1.setVisible(true);
 				} 
 			});
 		
