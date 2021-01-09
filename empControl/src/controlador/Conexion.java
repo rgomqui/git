@@ -306,7 +306,7 @@ public class Conexion{
 				if(v.getTipo().equals("Vacaciones") && fechaDevengo == anioActual) {
 					diasPendienteVacaciones -= v.getDiasDisfrutados();
 				}else if(v.getTipo().equals("Compensatorio")) {
-					if(!v.isDisfrutado() && fechaDevengo == anioActual)
+					if(!v.isDisfrutado())
 					diasPendienteCompensatorio += v.getDiasPorDisfrutar();
 				}else{	
 					if(fechaDevengo == anioActual)diasPendienteConvenio--;
