@@ -117,7 +117,7 @@ public VentanaMenuPrincipal(){
 				public void actionPerformed(ActionEvent e) {
 					vacaciones = new PanelVacaciones();
 					scrollPaneles.setViewportView(vacaciones);
-					lblTitulo.setText("VACACIONES");
+					lblTitulo.setText("DESCANSOS");
 				}
 			});
 			
